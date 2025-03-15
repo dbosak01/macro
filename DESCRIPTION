@@ -1,16 +1,25 @@
 Package: macro
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A Macro Preprocessor for 'R' Programs
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "David", "Bosak",
+      email = "dbosak01@gmail.com",
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: A macro preprocessor for 'R' programs, which 
+    provides a macro facility similar to 'SAS®'.  This 
+    preprocessor contains basic macro capabilities 
+    like defining macro variables and executing conditional
+    logic. 
 License: CC0
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 4.0)
+Imports: common
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
