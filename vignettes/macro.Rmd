@@ -1,0 +1,17 @@
+---
+title: "macro"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{macro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here is a bit for the macro vignette.

@@ -7,6 +7,11 @@ Authors@R: c(
       "David", "Bosak",
       email = "dbosak01@gmail.com",
       role = c("aut", "cre")
+    ),
+    person(
+      "Duong", "Tran",
+      email = "trand000@aol.com",
+      role = c("ctb")
     )
   )
 Description: A macro preprocessor for 'R' programs, which 
@@ -16,10 +21,17 @@ Description: A macro preprocessor for 'R' programs, which
     logic. 
 License: CC0
 Encoding: UTF-8
+URL: https://macro.r-sassy.org, https://github.com/dbosak01/macro
+BugReports: https://github.com/dbosak01/macro/issues
 LazyData: true
-Depends: R (>= 4.0)
-Imports: common
+Depends: R (>= 4.0),
+         common
 Suggests: 
+    sassy,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr

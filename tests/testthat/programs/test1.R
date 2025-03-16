@@ -1,27 +1,21 @@
 
-# Syntax basically same as SAS
-#%let x = 1;
 
-#%if (&x; == 1) %then %do;
+#%let x = 3
+#%let y = floor(1 + 2.5)
+
+#%if (x. == 1)
 
 print("X is one")
 
-#%end;
-#%elseif (&x == 2)
+#%elseif (x. == 2)
 
 print("X is two")
 
-#%end;
-#%else %do;
+#%else
 
-print("X is &x;")
-
-#%end;
+print("X is x.")
 
 
+#%end
 
-
-
-
-
-
+print("Y is y.")

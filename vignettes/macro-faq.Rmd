@@ -1,0 +1,54 @@
+---
+title: "Frequently Asked Questions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FAQ}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(rmarkdown.html_vignette.check_title = FALSE)
+
+```
+
+Below are some frequently asked questions about the **macro** package. Click
+on the links below to navigate to the full question and answer content.
+
+## Index{#top}
+
+* [What functions does the macro package support?](#types)
+
+
+
+## Content
+
+### What file formats does reporter support? {#types}
+
+**Q:** I can see from the examples that the **reporter** package can create
+text reports.  Can it create any other types of reports?  PDF?  DOCX?
+
+
+**A:** The **reporter** package supports TXT, RTF, PDF, HTML, and DOCX
+output types.  
+
+[top](#top) 
+
+******
+
+
+<!-- ### Question 1? {#q1} -->
+
+<!-- **Q:** I have a question? -->
+
+<!-- **A:** Answer here. -->
+
+<!-- [top](#top) -->
+
+<!-- ****** -->
+

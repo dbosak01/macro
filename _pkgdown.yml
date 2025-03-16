@@ -1,4 +1,27 @@
-url: ~
+url: https://macro.r-sassy.org
 template:
   bootstrap: 5
 
+articles:
+- title: Examples
+  navbar: ~
+  contents:
+  - macro-example1
+  - macro-example2
+  - macro-faq
+
+reference:
+- title: Basic Functions
+  desc: Functions to preprocess code.
+  contents:
+  - msource
+
+navbar:
+  type: inverse
+  structure:
+    right: [home, intro, articles, reference, faq, news, github]
+    left: []
+  components:
+    faq:
+      text: FAQ
+      href: ./articles/macro-faq.html

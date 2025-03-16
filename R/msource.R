@@ -1,5 +1,5 @@
 
-
+e <- new.env()
 
 #' @title Preprocess and Source
 #' @description
@@ -10,6 +10,8 @@
 #' @returns The path of the sourced program.
 #' @export
 msource <- function(pth) {
+
+  #browser()
 
   if (!file.exists(pth)) {
     stop(paste0("File '", pth, "' not found."))
@@ -22,8 +24,10 @@ msource <- function(pth) {
   return(ret)
 }
 
-
+#' @noRd
 preprocess <- function(pth) {
+
+  # browser()
 
   # Create temp file name
   bs <- basename(pth)
@@ -32,33 +36,96 @@ preprocess <- function(pth) {
   print(npth)
 
   # Kill if exists
-  if (file.exists(ret))
-    file.remove(ret)
+  if (file.exists(npth))
+    file.remove(npth)
 
   # Input program
-  fl <- file(pth, open = "r", encoding = "unknown")
-  lns <- readLines(fl)
-  close(fl)
+  fl1 <- file(pth, open = "r", encoding = "UTF-8")
+  lns <- readLines(fl1)
+  close(fl1)
 
   # Process lines
   nlns <- mprocess(lns)
 
   # Output program
-  fl <- file(npth, open = "w", encoding = "native.enc")
-  lns <- writeLines(fl, con = fl, useBytes = TRUE)
-  close(fl)
+  fl2 <- file(npth, open = "w", encoding = "native.enc")
+  writeLines(nlns, con = fl2, useBytes = TRUE)
+  close(fl2)
 
   ret <- npth
 
   return(ret)
 }
 
+
+
+#' @noRd
 mprocess <- function(lns) {
 
-  ret <- lns
+  e <- new.env()
+  ret <- c()
+
+  isopen <- NULL
+
+  for (ln in lns) {
+
+    islet <- is_let(ln)
+
+    if (!islet) {
+
+
+
+      isif <-  is_if(ln)
+      iselseif <- is_elseif(ln)
+
+      if (as.logical(isif)) {
+        if (attr(isif, "value") == TRUE) {
+          isopen <- TRUE
+        } else {
+
+          isopen <- FALSE
+        }
+       } else if (as.logical(iselseif)) {
+        if (attr(iselseif, "value") == TRUE) {
+          isopen <- TRUE
+        } else {
+
+          isopen <- FALSE
+        }
+      } else if (is_else(ln)) {
+
+        isopen <- TRUE
+      } else if (is_end(ln)) {
+        isopen <- NULL
+      } else if (is.null(isopen)) {
+
+        ret <- append(ret, mreplace(ln))
+      } else if (isopen == TRUE) {
+
+        ret <- append(ret, mreplace(ln))
+      }
+    }
+  }
+
 
   return(ret)
 
+}
+
+
+mreplace <- function(ln) {
+
+  # browser()
+  ret <- ln
+  vrs <- ls(envir = e)
+  if (length(vrs) > 0) {
+    for (vr in vrs) {
+
+      ret <- gsub(vr, e[[vr]], ret, fixed = TRUE)
+    }
+  }
+
+  return(ret)
 }
 
 
