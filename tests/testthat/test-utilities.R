@@ -227,3 +227,25 @@ test_that("utils6: is_elseif() basic functionality.", {
 })
 
 
+
+test_that("utils7: sub_sysfunc() basic functionality.", {
+
+  ln <- "%let x <- %sysfunc(1 + 4)"
+
+  res <- sub_sysfunc(ln)
+
+  res
+
+  expect_equal(res, "%let x <- 5")
+
+
+  ln <- "%let x <- 1"
+
+  res <- sub_sysfunc(ln)
+
+  res
+
+  expect_equal(res, "%let x <- 1")
+
+})
+

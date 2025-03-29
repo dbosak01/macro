@@ -4,9 +4,9 @@
 # Basics
 # %let assignment
 # %if %else %end
-# %sysfunc not necessary?
-# %put not necessary?
-# %do not necessary?
-# %macro %mend not necessary?
+# %do loop
+# %sysfunc covered already in R
+# %put necessary?
+# %macro %mend necessary?
 
 

@@ -1,19 +1,25 @@
 
 
-#%let x = 2
+#%let x = c("mpg", "cyl", "disp")
+#%let y = mpg > 20
 
-#%if (x. == 1)
+print(x.)
+
+#%if length(x.) == 1
 
 print("X is one")
 
-#%elseif (x. == 2)
+#%elseif (length(x.) == 2)
 
 print("X is two")
 
 #%else
 
-print("X is x.")
+print("X is something else")
 
+dat <- subset(mtcars, subset = y., select = x.)
+
+print(dat)
 
 #%end
 
