@@ -15,3 +15,17 @@ knitr::opts_chunk$set(
 ```
 
 Here is a bit for the macro vignette.
+
+
+# Macro Concept
+
+## Macro Variables
+
+
+## Macro Logic 
+
+
+## Function Evaluation
+
+## Macro Do Loop
+

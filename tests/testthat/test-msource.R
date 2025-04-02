@@ -47,10 +47,20 @@ test_that("msource2: msource() basic functionality.", {
   fl <- file.path(base_path, "programs/test0.R")
   fl2 <- file.path(base_path, "programs/test0_mod.R")
 
-  res <- msource(fl, file_out = fl2)
+  if (file.exists(fl2))
+    file.remove(fl2)
 
-  expect_equal(TRUE, TRUE)
+  ne <- new.env()
 
+  # No environment passed
+  res <- msource(fl, file_out = fl2, envir = ne)
+
+  eres <- file.exists(fl2)
+  hasa <- exists("a")
+
+  expect_equal(eres, TRUE)
+  expect_equal(hasa, FALSE)
+  expect_equal(ne$a, 3)
 })
 
 
@@ -67,6 +77,9 @@ test_that("msource3: msource() file_out functionality.", {
   eres <- file.exists(fl2)
 
   expect_equal(eres, TRUE)
+  expect_equal(a, 3)
+  expect_equal(b, 4)
+  expect_equal(d, 3)
 
 })
 

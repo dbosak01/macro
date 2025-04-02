@@ -8,11 +8,16 @@ e <- new.env()
 #' @param pth The path to the R program to source.
 #' @param file_out If you want to save or view the generated code
 #' from the \code{msource} function, supply a full path and
-#' file name on this parameter.
+#' file name on this parameter. Default is NULL. When NULL,
+#' the function will create a temp file for the generated code.
+#' @param envir The environment to be used for program execution.
+#' Default is the global environment.
+#' @param ... Follow-on parameters to the \code{source} function. See
+#' the \code{\link{source}} function for additional information.
 #' @import common
 #' @returns The path of the sourced program.
 #' @export
-msource <- function(pth, file_out = NULL) {
+msource <- function(pth, file_out = NULL, envir = globalenv(), ...) {
 
   #browser()
 
@@ -20,9 +25,14 @@ msource <- function(pth, file_out = NULL) {
     stop(paste0("File '", pth, "' not found."))
   }
 
+  if (is.null(envir))
+    stop("Environment cannot be null.")
+  else
+    e <- envir
+
   ppth <- preprocess(pth, file_out)
 
-  ret <- source(ppth)
+  ret <- source(ppth, local = e, ...)
 
   return(ret)
 }
@@ -129,7 +139,7 @@ mprocess <- function(lns) {
       }
     }
 
-    print(paste0("Line: ", lncnt, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
+    # print(paste0("Line: ", lncnt, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
     lncnt <- lncnt + 1
   }
 

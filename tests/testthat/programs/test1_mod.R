@@ -5,7 +5,9 @@
 
 # Comment something
 print("X is 3")
-
+a <- 3
 
 print(paste("z is", 3))
 print("Y is 4")
+b <- 4
+d <- 3

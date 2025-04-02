@@ -4,14 +4,21 @@
 \alias{msource}
 \title{Preprocess and Source}
 \usage{
-msource(pth, file_out = NULL)
+msource(pth, file_out = NULL, envir = globalenv(), ...)
 }
 \arguments{
 \item{pth}{The path to the R program to source.}
 
 \item{file_out}{If you want to save or view the generated code
 from the \code{msource} function, supply a full path and
-file name on this parameter.}
+file name on this parameter. Default is NULL. When NULL,
+the function will create a temp file for the generated code.}
+
+\item{envir}{The environment to be used for program execution.
+Default is the global environment.}
+
+\item{...}{Follow-on parameters to the \code{source} function. See
+the \code{\link{source}} function for additional information.}
 }
 \value{
 The path of the sourced program.

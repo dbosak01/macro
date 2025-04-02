@@ -19,8 +19,10 @@ print("X is two")
 
 # Comment something
 print("X is x.")
-
+a <- x.
 #%end
 
 print(paste("z is", z.))
 print("Y is y.")
+b <- y.
+d <- z.
