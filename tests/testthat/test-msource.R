@@ -54,18 +54,7 @@ test_that("msource2: msource() basic functionality.", {
 })
 
 
-test_that("msource3: msource() if/then/else functionality.", {
-
-  fl <- file.path(base_path, "programs/test1.R")
-  fl2 <- file.path(base_path, "programs/test1_mod.R")
-
-  res <- msource(fl, file_out = fl2)
-
-  expect_equal(TRUE, TRUE)
-
-})
-
-test_that("msource4: msource() file_out functionality.", {
+test_that("msource3: msource() file_out functionality.", {
 
   fl1 <- file.path(base_path, "programs/test1.R")
   fl2 <- file.path(base_path, "programs/test1_mod.R")
@@ -82,7 +71,7 @@ test_that("msource4: msource() file_out functionality.", {
 })
 
 
-test_that("msource5: msource() if/then/else functionality.", {
+test_that("msource4: msource() if/then/else functionality.", {
 
   fl1 <- file.path(base_path, "programs/test2.R")
   fl2 <- file.path(base_path, "programs/test2_mod.R")
@@ -92,34 +81,47 @@ test_that("msource5: msource() if/then/else functionality.", {
   eres <- file.exists(fl2)
 
   expect_equal(eres, TRUE)
+  expect_equal(resx, c("mpg", "cyl", "disp"))
+  expect_equal(nrow(dat), 14)
+  expect_equal(ncol(dat), 3)
 
 })
 
 
 
-test_that("msource6: msource() if/then/else functionality.", {
+test_that("msource5: msource() if/then/else functionality.", {
 
   fl1 <- file.path(base_path, "programs/test3.R")
   fl2 <- file.path(base_path, "programs/test3_mod.R")
 
+  if (file.exists(fl2))
+    file.remove(fl2)
+
   res <- msource(fl1, file_out = fl2)
 
   eres <- file.exists(fl2)
 
   expect_equal(eres, TRUE)
+  expect_equal(resx, "two")
+
 
 })
 
-test_that("msource7: msource() nested if/then/else functionality.", {
+test_that("msource6: msource() nested if/then/else functionality.", {
 
   fl1 <- file.path(base_path, "programs/test4.R")
   fl2 <- file.path(base_path, "programs/test4_mod.R")
 
+  if (file.exists(fl2))
+    file.remove(fl2)
+
   res <- msource(fl1, file_out = fl2)
 
   eres <- file.exists(fl2)
 
   expect_equal(eres, TRUE)
+  expect_equal(resx, "one")
+  expect_equal(resy, 2)
 
 })
 

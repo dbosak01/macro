@@ -8,10 +8,14 @@
   #%if (y. == 1)
 
     print("X is one and Y is 1")
+    resx <- "one"
+    resy <- 1
 
   #%else
 
     print("X is one and Y is y.")
+    resx <- "one"
+    resy <- y.
 
   #%end
 

@@ -16,7 +16,7 @@ print("X is two")
 #%else
 
 print("X is something else")
-
+resx <- x.
 dat <- subset(mtcars, subset = y., select = x.)
 
 print(dat)

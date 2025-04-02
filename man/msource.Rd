@@ -4,10 +4,14 @@
 \alias{msource}
 \title{Preprocess and Source}
 \usage{
-msource(pth)
+msource(pth, file_out = NULL)
 }
 \arguments{
 \item{pth}{The path to the R program to source.}
+
+\item{file_out}{If you want to save or view the generated code
+from the \code{msource} function, supply a full path and
+file name on this parameter.}
 }
 \value{
 The path of the sourced program.

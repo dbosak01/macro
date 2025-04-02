@@ -21,7 +21,7 @@ test_that("utils1: is_let() basic functionality.", {
   e[["x."]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], 1)
+  expect_equal(e[["x."]], '1')
 
 
   l3 <- "#%let x = 2"
@@ -32,7 +32,7 @@ test_that("utils1: is_let() basic functionality.", {
   e[["x."]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], 2)
+  expect_equal(e[["x."]], '2')
 
 
   l4 <- "#%let x = 'hello'"
@@ -43,7 +43,7 @@ test_that("utils1: is_let() basic functionality.", {
   e[["x."]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], 'hello')
+  expect_equal(e[["x."]], "'hello'")
 
 })
 
@@ -57,7 +57,18 @@ test_that("utils2: is_let() sysfunc functionality.", {
   res
 
   expect_equal(res, TRUE)
-  expect_equal(e$x., 3)
+  expect_equal(e$x., 'floor(1 + 2.5)')
+
+
+  l2 <- "#%let y = %sysfunc(floor(1 + 2.5))"
+
+  l3 <- sub_sysfunc(l2)
+  res <- is_let(l3)
+
+  res
+
+  expect_equal(res, TRUE)
+  expect_equal(e$y., "3")
 
 
 })

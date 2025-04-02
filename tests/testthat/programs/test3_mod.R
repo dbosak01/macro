@@ -2,7 +2,7 @@
 
 
 
-print("X is 3")
-
+print("X is two")
+resx <- "two"
 
 

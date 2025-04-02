@@ -72,50 +72,65 @@ mprocess <- function(lns) {
   e <- new.env()
   ret <- c()
 
-  isopen <- NULL
+  lvl <- 1 # lvl 1 is open code
+  isopen <- list()
+  isopen[[lvl]] <- TRUE
+  elseflag <- list()
+  elseflag[[lvl]] <- TRUE
+  lncnt <- 1
 
   for (ln in lns) {
-    if (ln == "") {
-      ret <- append(ret, ln)
-    } else {
 
-      ln <- sub_sysfunc(ln)
+    ln <- sub_sysfunc(ln)
 
-      islet <- is_let(ln)
+    islet <- is_let(ln)
 
-      if (!islet) {
-        # browser()
-        isif <-  is_if(ln)
-        iselseif <- is_elseif(ln)
+    if (!islet) {
+      # browser()
+      isif <-  is_if(ln)
+      iselseif <- is_elseif(ln)
 
-        if (as.logical(isif)) {
+      if (as.logical(isif)) {
+        lvl <- lvl + 1
+        if (isopen[[lvl - 1]]) {
           if (attr(isif, "value") == TRUE) {
-            isopen <- TRUE
+            isopen[[lvl]] <- TRUE
+            elseflag[[lvl]] <- FALSE
           } else {
-
-            isopen <- FALSE
+            isopen[[lvl]]  <- FALSE
           }
-         } else if (as.logical(iselseif)) {
-          if (attr(iselseif, "value") == TRUE) {
-            isopen <- TRUE
-          } else {
-
-            isopen <- FALSE
-          }
-        } else if (is_else(ln)) {
-
-          isopen <- TRUE
-        } else if (is_end(ln)) {
-          isopen <- NULL
-        } else if (is.null(isopen)) {
-
-          ret <- append(ret, mreplace(ln))
-        } else if (isopen == TRUE) {
-
-          ret <- append(ret, mreplace(ln))
         }
+      } else if (as.logical(iselseif)) {
+        if (isopen[[lvl - 1]]) {
+          if (attr(iselseif, "value") == TRUE) {
+            isopen[[lvl]]  <- TRUE
+            elseflag[[lvl]] <- FALSE
+          } else {
+            isopen[[lvl]]  <- FALSE
+          }
+        }
+      } else if (is_else(ln)) {
+        if (isopen[[lvl - 1]]) {
+          if (length(elseflag) < lvl)
+            elseflag[[lvl]] <- TRUE
+
+          if (elseflag[[lvl]]) {
+            isopen[[lvl]]  <- TRUE
+          } else {
+            isopen[[lvl]]  <- FALSE
+          }
+        }
+      } else if (is_end(ln)) {
+        isopen[[lvl]]  <- FALSE
+        elseflag[[lvl]] <- TRUE
+        lvl <- lvl - 1
+      } else if (isopen[[lvl]] == TRUE) {
+        ret <- append(ret, mreplace(ln))
       }
     }
+
+    print(paste0("Line: ", lncnt, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
+    lncnt <- lncnt + 1
   }
 
 
