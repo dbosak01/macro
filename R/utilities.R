@@ -18,7 +18,7 @@ is_let <- function(ln) {
 
       # vl <- eval(str2expression(trimws(spl[2])), envir = e)
       # vl <- str2expression(trimws(spl[2]))
-      vl <- trimws(spl[2])
+      vl <- trimws(mreplace(spl[2]))
       assign(paste0(trimws(spl[1]), "."), vl, envir = e)
 
     } else {
@@ -141,5 +141,115 @@ is_else <- function(ln) {
 
   return(ret)
 }
+
+#' @noRd
+is_comment <- function(ln) {
+
+  ret <- FALSE
+
+  dtct <- grepl("#%", ln, fixed = TRUE)[[1]]
+  if (dtct) {
+    ret <- TRUE
+  }
+
+  return(ret)
+}
+
+
+#' @noRd
+is_include <- function(ln) {
+
+  ret <- FALSE
+
+  dtct <- grepl("#%include", ln, fixed = TRUE)[[1]]
+  if (dtct) {
+    ret <- TRUE
+
+    # Isolate path
+    nl <- trimws(sub("#%include", "", ln, fixed = TRUE))
+    nl <- gsub('^"|"$', '', nl)
+    nl <- gsub("^'|'$", "", nl)
+
+    attr(ret, "path") <- nl
+  }
+
+  return(ret)
+}
+
+get_include <- function(pth) {
+
+
+  if (!file.exists(pth)) {
+
+    stop(paste0("Include file '", pth, "' not found."))
+
+  }
+
+  f <- file(pth, encoding = "UTF-8")
+
+  ret <- readLines(f)
+
+  close(f)
+
+  return(ret)
+
+}
+
+
+
+is_do <- function(ln) {
+
+  ret <- FALSE
+
+  dtct <- grepl("#%do", ln, fixed = TRUE)[[1]]
+  if (dtct) {
+    ret <- TRUE
+
+    nl <- trimws(sub("#%do", "", ln, fixed = TRUE))
+    snl <- strsplit(nl, "=", fixed = TRUE)[[1]]
+
+    vr <- trimws(snl[1])
+    cnl <- strsplit(snl[2], "%to", fixed = TRUE)[[1]]
+
+    strt <- tryCatch({eval(str2expression(trimws(cnl[1])), envir = e)},
+                     error = function(cond) {NA})
+
+    end <- tryCatch({eval(str2expression(trimws(cnl[2])), envir = e)},
+                     error = function(cond) {NA})
+
+    if (is.na(strt) | is.na(end)) {
+      stop("Macro do loop improperly formed.")
+
+    }
+
+    attr(ret, "variable") <- vr
+    attr(ret, "start") <- strt
+    attr(ret, "end") <- end
+  }
+
+
+  return(ret)
+
+}
+
+do_info <- function(lvl, dolvl, var, start, end) {
+
+  di <- structure(list(), class = c("do_info", "list"))
+
+
+  di$lvl <- lvl
+  di$dolvl <- dolvl
+  di$var <- var
+  di$start <- start
+  di$end <- end
+  di$code <- NULL
+  di$cnt <- NULL
+
+  return(di)
+
+}
+
+
+
 
 

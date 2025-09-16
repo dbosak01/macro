@@ -4,7 +4,7 @@
 \alias{msource}
 \title{Preprocess and Source}
 \usage{
-msource(pth, file_out = NULL, envir = globalenv(), ...)
+msource(pth = Sys.path(), file_out = NULL, envir = globalenv(), ...)
 }
 \arguments{
 \item{pth}{The path to the R program to source.}

@@ -1,4 +1,7 @@
 
+base_path <- "c:\\packages\\macro\\tests\\testthat"
+
+base_path <- "./"
 
 dev <- FALSE
 
@@ -259,4 +262,106 @@ test_that("utils7: sub_sysfunc() basic functionality.", {
   expect_equal(res, "%let x <- 1")
 
 })
+
+
+
+test_that("utils7: is_include() basic functionality.", {
+
+  ln <- "#%include 'c:/fork/sammy.txt'"
+
+
+  res <- is_include(ln)
+
+  res
+
+  expect_equal(as.logical(res), TRUE)
+  expect_equal(attr(res, "path"), "c:/fork/sammy.txt")
+
+  ln <- '#%include "c:/fork/sammy.txt"'
+
+
+  res <- is_include(ln)
+
+  res
+
+  expect_equal(as.logical(res), TRUE)
+  expect_equal(attr(res, "path"), "c:/fork/sammy.txt")
+
+
+  ln <- "#%qualude 'c:/fork/sammy.txt'"
+
+  res <- is_include(ln)
+
+  res
+
+  expect_equal(as.logical(res), FALSE)
+
+})
+
+
+test_that("utils7: get_include() basic functionality.", {
+
+  pth <- file.path(base_path, "programs/test0.R")
+
+
+  lns <- get_include(pth)
+
+  lns
+
+  expect_equal(length(lns) > 0, TRUE)
+  expect_equal(is.character(lns), TRUE)
+
+})
+
+# test_that("utils8: is_do() basic functionality.", {
+#
+#   l1 <- "#%do x = 1 %to 3"
+#
+#   res <- is_do(l1)
+#
+#   expect_equal(as.logical(res), TRUE)
+#   expect_equal(attr(res, "variable"), "x")
+#   expect_equal(attr(res, "start"), 1)
+#   expect_equal(attr(res, "end"), 3)
+#
+#
+#   vct <- c(1, 2, 3, 4)
+#   l1 <- "#%do x = 2 %to length(vct)"
+#
+#   res <- is_do(l1)
+#
+#   expect_equal(as.logical(res), TRUE)
+#   expect_equal(attr(res, "variable"), "x")
+#   expect_equal(attr(res, "start"), 2)
+#   expect_equal(attr(res, "end"), 4)
+#
+#
+#   vct <- c(1, 2, 3, 4)
+#   l1 <- "#%do x = 2 to length(vct)"
+#
+#   expect_error(is_do(l1))
+#
+#
+#
+# })
+#
+# test_that("utils8: do_info() basic functionality.", {
+#
+#   l1 <- "#%do x = 1 %to 3"
+#
+#   r1 <- is_do(l1)
+#
+#   res <- do_info(1, 2, attr(r1, "variable"),
+#                  attr(r1, "start"),
+#                  attr(r1, "end"))
+#
+#   expect_equal(res$lvl, 1)
+#   expect_equal(res$dolvl, 2)
+#   expect_equal(res$var, "x")
+#   expect_equal(res$start, 1)
+#   expect_equal(res$end, 3)
+#
+#
+# })
+
 

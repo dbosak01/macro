@@ -1,7 +1,7 @@
 Package: macro
 Type: Package
-Title: A Macro Preprocessor for 'R' Programs
-Version: 0.1.0
+Title: A Macro Pre-processor for 'R' Programs
+Version: 0.1.1
 Authors@R: c(
     person(
       "David", "Bosak",
@@ -14,7 +14,7 @@ Authors@R: c(
       role = c("ctb")
     )
   )
-Description: A macro preprocessor for 'R' programs, which 
+Description: A macro pre-processor for 'R' programs, which 
     provides a macro facility similar to 'SAS®'.  This 
     preprocessor contains basic macro capabilities 
     like defining macro variables and executing conditional
@@ -31,6 +31,8 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
+Include:
+    logr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

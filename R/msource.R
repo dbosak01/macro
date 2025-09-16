@@ -17,7 +17,8 @@ e <- new.env()
 #' @import common
 #' @returns The path of the sourced program.
 #' @export
-msource <- function(pth, file_out = NULL, envir = globalenv(), ...) {
+msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
+                    ...) {
 
   #browser()
 
@@ -30,15 +31,17 @@ msource <- function(pth, file_out = NULL, envir = globalenv(), ...) {
   else
     e <- envir
 
-  ppth <- preprocess(pth, file_out)
+
+  ppth <- preprocess(pth, file_out, envir)
 
   ret <- source(ppth, local = e, ...)
 
   return(ret)
 }
 
+# Input macro code and output path to resolved code
 #' @noRd
-preprocess <- function(pth, file_out) {
+preprocess <- function(pth, file_out, envir) {
 
   # browser()
 
@@ -50,7 +53,7 @@ preprocess <- function(pth, file_out) {
     npth <- file_out
   }
 
-  print(npth)
+  # print(npth)
 
   # Kill if exists
   if (file.exists(npth))
@@ -60,6 +63,24 @@ preprocess <- function(pth, file_out) {
   fl1 <- file(pth, open = "r", encoding = "UTF-8")
   lns <- readLines(fl1)
   close(fl1)
+
+  # Clear out environment
+  enms <- ls(e)
+  if (length(enms) > 0) {
+    rm(list = enms, envir = e)
+  }
+
+  # Copy any macro variables to new environment
+  vrs <- ls(envir)
+  mvrs <- grepl("\\.$", vrs)
+  vrs <- vrs[mvrs]
+
+  for (nm in vrs) {
+    #ne[[nm]] <- envir[[nm]]
+    assign(nm, envir[[nm]], envir = e)
+  }
+
+  # print(ls(e))
 
   # Process lines
   nlns <- mprocess(lns)
@@ -75,32 +96,47 @@ preprocess <- function(pth, file_out) {
 }
 
 
-
+# Process macro statements
 #' @noRd
 mprocess <- function(lns) {
 
-  e <- new.env()
   ret <- c()
+
+  # print(ls(e))
 
   lvl <- 1 # lvl 1 is open code
   isopen <- list()
   isopen[[lvl]] <- TRUE
   elseflag <- list()
   elseflag[[lvl]] <- TRUE
-  lncnt <- 1
+  idx <- 1
+  lncnt <- length(lns)
 
-  for (ln in lns) {
+  while (idx <= lncnt) {
 
+    # Initialize line
+    ln <- lns[idx]
+
+    # Resolve sysfuncs
     ln <- sub_sysfunc(ln)
 
+    # Identify let statements
     islet <- is_let(ln)
 
     if (!islet) {
+
       # browser()
+
+      # If flag
       isif <-  is_if(ln)
+
+      # Ifelse flag
       iselseif <- is_elseif(ln)
 
-      if (as.logical(isif)) {
+      # Include flag
+      isinclude <- is_include(ln)
+
+      if (as.logical(isif)) {   # Deal with 'if'
         lvl <- lvl + 1
         if (isopen[[lvl - 1]]) {
           if (attr(isif, "value") == TRUE) {
@@ -110,7 +146,7 @@ mprocess <- function(lns) {
             isopen[[lvl]]  <- FALSE
           }
         }
-      } else if (as.logical(iselseif)) {
+      } else if (as.logical(iselseif)) {   # Deal with 'ifelse'
         if (isopen[[lvl - 1]]) {
           if (attr(iselseif, "value") == TRUE) {
             isopen[[lvl]]  <- TRUE
@@ -119,7 +155,7 @@ mprocess <- function(lns) {
             isopen[[lvl]]  <- FALSE
           }
         }
-      } else if (is_else(ln)) {
+      } else if (is_else(ln)) {   # Deal with 'else'
         if (isopen[[lvl - 1]]) {
           if (length(elseflag) < lvl)
             elseflag[[lvl]] <- TRUE
@@ -130,17 +166,43 @@ mprocess <- function(lns) {
             isopen[[lvl]]  <- FALSE
           }
         }
-      } else if (is_end(ln)) {
+      } else if (is_end(ln)) {   # Deal with 'end'
         isopen[[lvl]]  <- FALSE
         elseflag[[lvl]] <- TRUE
         lvl <- lvl - 1
-      } else if (isopen[[lvl]] == TRUE) {
+      } else if (as.logical(isinclude)) {  # Deal with 'include'
+
+        if (isopen[[lvl]] == TRUE) {
+
+          # Resolve any macro variables
+          pth <- mreplace(attr(isinclude, "path"))
+
+          # Get lines from include file
+          nlns <- get_include(pth)
+
+          # Insert into lns vector
+          lns <- c(lns[seq(1, idx - 1)], nlns, lns[seq(idx + 1, lncnt)])
+
+          # Reset line count
+          lncnt <- length(lns)
+
+          # Reset index
+          idx <- idx - 1
+
+        }
+      } else if (is_comment(ln)) {  # Deal with macro comment
+        # Do nothing
+        # Don't emit
+      } else if (isopen[[lvl]] == TRUE) {   # Deal with normal code
+
+        # If it makes it to this point,
+        # replace any macro variables and emit as code
         ret <- append(ret, mreplace(ln))
       }
     }
 
-    # print(paste0("Line: ", lncnt, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
-    lncnt <- lncnt + 1
+    # print(paste0("Line: ", idx, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
+    idx <- idx + 1
   }
 
 
@@ -156,7 +218,9 @@ mreplace <- function(ln) {
   if (nchar(ln) > 0) {
     # browser()
 
-    vrs <- ls(envir = e)
+    # print(ls(e))
+
+    vrs <- ls(e)  # ls(envir = e)
     if (length(vrs) > 0) {
       for (vr in vrs) {
 

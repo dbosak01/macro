@@ -42,7 +42,7 @@ test_that("msource1: mreplace() basic functionality.", {
 
 })
 
-test_that("msource2: msource() basic functionality.", {
+test_that("msource2: basic functionality.", {
 
   fl <- file.path(base_path, "programs/test0.R")
   fl2 <- file.path(base_path, "programs/test0_mod.R")
@@ -61,10 +61,11 @@ test_that("msource2: msource() basic functionality.", {
   expect_equal(eres, TRUE)
   expect_equal(hasa, FALSE)
   expect_equal(ne$a, 3)
+
 })
 
 
-test_that("msource3: msource() file_out functionality.", {
+test_that("msource3: file_out functionality.", {
 
   fl1 <- file.path(base_path, "programs/test1.R")
   fl2 <- file.path(base_path, "programs/test1_mod.R")
@@ -84,7 +85,7 @@ test_that("msource3: msource() file_out functionality.", {
 })
 
 
-test_that("msource4: msource() if/then/else functionality.", {
+test_that("msource4: if/then/else functionality.", {
 
   fl1 <- file.path(base_path, "programs/test2.R")
   fl2 <- file.path(base_path, "programs/test2_mod.R")
@@ -102,7 +103,7 @@ test_that("msource4: msource() if/then/else functionality.", {
 
 
 
-test_that("msource5: msource() if/then/else functionality.", {
+test_that("msource5: if/then/else functionality.", {
 
   fl1 <- file.path(base_path, "programs/test3.R")
   fl2 <- file.path(base_path, "programs/test3_mod.R")
@@ -120,7 +121,7 @@ test_that("msource5: msource() if/then/else functionality.", {
 
 })
 
-test_that("msource6: msource() nested if/then/else functionality.", {
+test_that("msource6: nested if/then/else functionality.", {
 
   fl1 <- file.path(base_path, "programs/test4.R")
   fl2 <- file.path(base_path, "programs/test4_mod.R")
@@ -137,4 +138,77 @@ test_that("msource6: msource() nested if/then/else functionality.", {
   expect_equal(resy, 2)
 
 })
+
+
+test_that("msource7: assignments.", {
+
+  fl1 <- file.path(base_path, "programs/test6.R")
+  fl2 <- file.path(base_path, "programs/test6_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+  e1$z. <- 4
+
+  res <- msource(fl1, file_out = fl2, e1)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$v1, 1)
+  expect_equal(e1$v2, 1.2)
+  expect_equal(e1$v3, "Hello World!")
+  expect_equal(e1$v4, as.Date("2025-07-15"))
+  expect_equal(class(e1$v4), "Date")
+  expect_equal(e1$v5, c(1, 2, 3, 4, 5))
+  expect_equal(e1$v6, 4)
+  expect_equal(e1$v7, 4)
+  expect_equal(e1$v8, 5)
+  expect_equal(e1$v9, 4)
+
+})
+
+test_that("msource8: test include.", {
+
+  fl1 <- file.path(base_path, "programs/test7.R")
+  fl2 <- file.path(base_path, "programs/test7_mod.R")
+  l1 <- file.path(base_path, "programs/test0.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+  e1$z. <- l1
+
+  res <- msource(fl1, file_out = fl2, e1)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$a, 3)
+  expect_equal(e1$b, 2)
+  expect_equal(e1$c, 3)
+
+})
+
+
+# test_that("msource8: msource() do loop functionality.", {
+#
+#   fl1 <- file.path(base_path, "programs/test5.R")
+#   fl2 <- file.path(base_path, "programs/test5_mod.R")
+#
+#   if (file.exists(fl2))
+#     file.remove(fl2)
+#
+#   res <- msource(fl1, file_out = fl2)
+#
+#   eres <- file.exists(fl2)
+#
+#   expect_equal(eres, TRUE)
+#   expect_equal(resx, "one")
+#   expect_equal(resy, 2)
+#
+# })
+
 
