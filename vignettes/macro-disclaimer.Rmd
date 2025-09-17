@@ -1,0 +1,32 @@
+---
+title: "Disclaimer"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Disclaimer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The **macro** package should not be used as a substitute for normal R variables and 
+conditions.  In general, the R macro facility should be used 
+sparingly.  There are only a few scenarios when the R macro facility is advantageous.
+
+The primary scenario **macro** package was written for is code generation. In this
+scenario, macro capability allows you to easily produce a resolved code file
+that can be saved and run independently.  It is easier to produce such a resolved
+program using a macro language than alternative methods.
+
+The other scenario the **macro** package may be useful is for translation of
+programs from SAS.  The R macro syntax can be translated quite directly from 
+SAS, without having to rethink the logic.
+
+Outside of these two scenarios, using R macros must be carefully considered, 
+as they can introduce unnecessary complexity and make your code harder to debug.
+Please do not use the **macro** package as an excuse to avoid learning R.

@@ -29,7 +29,7 @@ on the links below to navigate to the full question and answer content.
 * [Can I nest macro conditionals?](#nest)
 * [How does %include work?](#include)
 * [How can I use this package to generate code?](#generate)
-
+* [Why should I use this package for code generation?](#benefits)
 
 ## Content
 
@@ -145,7 +145,17 @@ the function will create a temporary output file.  When the second parameter
 is supplied, the function will output the resolved code to the specified path.
 That file is the generated code.
 
-The advantages of using the **macro** package for code generation are:
+[top](#top) 
+
+******
+
+### Why should I use this package for code generation? {#benefits}
+
+**Q:** There are several ways to do code generation in R already.  Why
+would I want to use the **macro** package?
+
+
+**A:** The advantages of using the **macro** package for code generation are:
 
 * It is easy to combine code from several files using the "#%include" command.
 * Only the code inside TRUE macro conditions will be emitted to the output file.

@@ -36,7 +36,7 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
 
   ret <- source(ppth, local = e, ...)
 
-  return(ret)
+  invisible(ret)
 }
 
 # Input macro code and output path to resolved code
@@ -136,6 +136,18 @@ mprocess <- function(lns) {
       # Include flag
       isinclude <- is_include(ln)
 
+      # Next line macro
+      if (idx < lncnt) {
+        nl <- lns[idx + 1]
+        if (is_comment(nl) | trimws(nl) == "") {
+          ismacro <- TRUE
+        } else {
+          ismacro <- FALSE
+        }
+      } else {
+        ismacro <- FALSE
+      }
+
       if (as.logical(isif)) {   # Deal with 'if'
         lvl <- lvl + 1
         if (isopen[[lvl - 1]]) {
@@ -195,9 +207,14 @@ mprocess <- function(lns) {
         # Don't emit
       } else if (isopen[[lvl]] == TRUE) {   # Deal with normal code
 
-        # If it makes it to this point,
-        # replace any macro variables and emit as code
-        ret <- append(ret, mreplace(ln))
+        if (nchar(trimws(ln)) == 0 & ismacro) {
+          # Do nothing
+          # Eliminate blank lines before macro statements
+        } else {
+          # If it makes it to this point,
+          # replace any macro variables and emit as code
+          ret <- append(ret, mreplace(ln))
+        }
       }
     }
 

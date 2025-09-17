@@ -1,6 +1,6 @@
 url: https://macro.r-sassy.org
 template:
-  bootstrap: 5
+  bootstrap: 3
 
 articles:
 - title: Examples
@@ -8,6 +8,7 @@ articles:
   contents:
   - macro-example1
   - macro-example2
+  - macro-disclaimer
   - macro-faq
 
 reference:

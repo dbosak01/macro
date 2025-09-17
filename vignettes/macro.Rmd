@@ -13,6 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+The **macro** package provides macro commands and a pre-processor for R programs.
+The package can be useful in several ways.  Before illustrating the functionality,
+Let's first discuss the macro concept at a high level.
 
 # Macro Concept
 
@@ -40,7 +43,7 @@ Therefore, to build a macro-like functionality in R, we must get a little creati
 
 The first thing to note is that macro statements in the **macro** package are 
 written as code comments.  The comments ensure that the R syntax checker will not
-generate an error when reading the macro functions. 
+generate an error when parsing the macro functions. 
 
 In SAS, macro functions are
 prefixed with a percent sign (%).  In R, macro statements are therefore prefixed
@@ -48,7 +51,6 @@ with a comment symbol (#) and a percent sign (%).  A simple macro assignment
 looks like this:
 
 ```{r eval=FALSE, echo=TRUE}
-#% Assign the macro variable "x"
 #%let x = 1
 ```
 A simple macro conditional looks like this:
@@ -68,17 +70,15 @@ is a blend of SAS and R syntax, all inside a macro comment.
 # The msource() function
 
 In the **macro** package, pre-processing of the macro code is accomplished by a special function:
-msource().  
-
-The msource() function is similar to the "source()" function in R.
-The msource() function will execute your code, just like the "source()" function.
+`msource()`. The `msource()` function is similar to the `source()` function in R.
+The `msource()` function will execute your code, just like the `source()` function.
 First, however, it will execute the **macro** pre-processor.  
 
 The steps can be summarized as follows:
 
 Step 1: Pre-process the code and resolve all macro language syntax.  
 Step 2: Generate a new code file with the resolved code.
-Step 3: Execute the resolved code with the "source()" function.
+Step 3: Execute the resolved code with the `source()` function.
 
 Notice that the above steps map directly to the way the SAS
 macro processor works.
@@ -87,12 +87,24 @@ In addition, the R macro language is a text-replacement language, just like SAS.
 variables are swapped out with real values as text replacements.  Macro conditions
 are evaluated, and only the code in the TRUE macro conditions is executed. 
 
-All of the above is handled by the msource() function.  `msource()` is in fact the 
+All of the above is handled by the `msource()` function. `msource()` is in fact the 
 only user-facing function in the **macro** package.
+
+## How to Use
+
+You will write your macro-enabled R code in a regular .R code file.  You can use
+RStudio or another code editor.  The macro statements are written as special
+comments, as described above.  To execute a macro-enabled program, simply
+call the `msource()` function in the console and pass the program path.  That's it!  
+
+If you are working in RStudio, the function will use the path of the currently 
+active program by default. In that case, you don't need to do hardly anything!
+Just call `msource()` in the console with no parameters.
 
 ## Available Functionality
 
-The **macro** package supports the following functionality:
+The **macro** package supports the most basic functionality of a macro system.
+That includes: 
 
 1. Macro Comments: Like regular R comments, but are not emitted to the output file.
 2. Macro Variables:  Allow you to assign a value to a macro variable, and use
@@ -101,58 +113,89 @@ the macro variable as a text replacement token.
 execute a chunk of code.
 4. System Function: The system function allows you to execute R functions
 and operators as part of a macro statement.
+5. Macro Include: Inserts the contents of an external file into your program.
 
-### Macro Comments
-
-
-### Macro Variables
+### Macro Comments and Variables
 
 Above we saw a simple macro variable assignment. Macro variables are defined with
 the keyword `#%let` and then the variable name and value.  
 
-Here are a few macro variable assignments for different data types:
+We can document those macro assignments with macro comments.  Macro comments
+are prefixed with `#%`.  You can type anything after the prefix.
+These comments are not emitted to the generated file.  
+
+Note that macro comments are a single line comment.  There are no multi-line 
+comments in R.
+
+Here are a few macro variable assignments with comments for different data types:
 
 ```{r eval=FALSE, echo=TRUE}
 #% Assign integer value 
-#%let x = 1
+#%let v1 = 1
 
 #% Assign double value
-#%let x = 1.2
+#%let v2 = 1.2
 
 #% Assign character value
-#%let x = "Hello World!"
+#%let v3 = "Hello World!"
 
 #% Assign date value
-#%let x = as.Date("2025-07-15")
+#%let v4 = as.Date("2025-07-15")
 
 #% Assign vector
-#%let x = c(1, 2, 3, 4, 5)
+#%let v5 = c(1, 2, 3, 4, 5)
 
 #% Assign calculated value
-#%let x = 2 + 2
+#%let v6 = 2 + 2
 
 #% Assign using another macro variable
-#%let y = x.
+#%let v7 = v6.
 
 #% Calculate using another macro variable
-#%let y = x. + 1
+#%let v8 = v7. + 1
 ```
 Once a macro variable is assigned, it can be used as a text replacement token
-anywhere in your program.  
+anywhere in your program. 
+
+Note that R macro variables have no ampersand ("&") 
+prefix.  The reason is that R does not allow special characters in variable names.
+Therefore, R macro variables are identified simply by a dot (".") suffix.
 
 For example, we can use some of the above macro assignments like this:
+```{r eval=FALSE, echo=TRUE}
+# Print inside loop
+for (idx in seq(1, v6.)) {
+  
+  print(v3.)
+}
 
+```
+If we execute the above code using `msource()`, we'll get the following result:
+```
+> msource()
+[1] "Hello World!"
+[1] "Hello World!"
+[1] "Hello World!"
+[1] "Hello World!"
+```
+And the generated code would look like this:
+```{r eval=FALSE, echo=TRUE}
+# Print inside loop
+for (idx in seq(1, 2 + 2)) {
 
-
+  print("Hello World!")
+}
+```
+Notice in the above generated code that the macro variables `v3.` and `v6.` were
+replaced exactly as they were assigned.  Macro variable expressions are not resolved
+unless explicitly evaluated.  
 
 ### Simple Macro Conditionals
 
 Macro conditionals allows you to conditionally execute a chunk of code.  If
 a macro condition is TRUE, the code inside that condition will be output
-to the generated code file and executed.  Code inside macro conditions that are 
-FALSE will not be output to the generated code file.  In other words, 
-only the code that is desired will be output to the generated code file.
-This feature makes the code file more compact and easy to read.
+to the generated code file and executed.  Otherwise, the code will not be
+emitted. This feature makes the generated code file more compact.
 
 Here are some examples of simple macro conditions:
 ```{r eval=FALSE, echo=TRUE}
@@ -175,7 +218,7 @@ When executed with `msource()`, the above code will generate the result
 `"Inside the first condition"`.  If you pass a file name to the `file_out`
 parameter of the `msource()` function, a code file will be generated.  That
 code fill will contain the following content:
-```
+```{r eval=FALSE, echo=TRUE}
   # X is one
   print("Inside the first condition")
 
@@ -187,7 +230,7 @@ code files with minimal effort.
 
 ### Nested Macro Conditionals
 
-Note that you can also nest macro conditionals.  Here is an 
+Macro conditionals can also be nested. Here is an 
 example that illustrates such conditionals:
 
 ```{r eval=FALSE, echo=TRUE}
@@ -234,30 +277,40 @@ example that illustrates such conditionals:
 #%end
 
 ```
-The result of the above code will be "X is one and Y is 2".  The 
+The result of the above code will be "X is one and Y is 2", and the output
+file will look like this:
+```{r eval=FALSE, echo=TRUE}
 
+    print("X is one and Y is 2")
+
+
+```
 
 ### System Function
 
+Not sure what to do with this?
 
 ### Macro Include
 
+There is no equivalent in R for a SAS macro include.  The R `source()` function
+executes an external code file.  But it does not "include" or "insert" the
+code into the calling program.  Therefore, the macro include from the 
+**macro** package brings a useful feature to R.
 
+A macro include from the **macro** package looks like this:
+```{r eval=FALSE, echo=TRUE}
+#%include 'c:/myfolder/myprogram.R'
 
-## Disclaimer
+```
+Upon execution by `msource()`, the contents of "myprogram.R" will be extracted
+from the file and copied into the calling program as text.  The calling program
+will then be scanned for macro commands that may have existed in "myprogram.R".
+The result will be a fully integrated program with all macro commands resolved.
 
-The **macro** package should not be used as a substitute for normal R variables and 
-conditions.  In general, the R macro facility should be used 
-sparingly.  There are only a few scenarios when the R macro facility is advantageous.
+# Next Steps
 
-The primary scenario **macro** package was written for is code generation. In this
-scenario, macro capability allows you to easily produce a resolved code file
-that can be saved and run independently.  It is easier to produce such a resolved
-program using a macro language than alternative methods.
+Here are the things to look at next:
 
-The other scenario the **macro** package may be useful is for translation of
-programs from SAS.  The R macro syntax can be translated quite directly from 
-SAS, without having to rethink the logic.
-
-Outside of these two scenarios, using R macros must be carefully considered, 
-as they can introduce unnecessary complexity and make your code harder to debug.
+- Example 1
+- Example 2
+- Disclaimer
