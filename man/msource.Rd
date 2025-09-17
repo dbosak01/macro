@@ -34,14 +34,14 @@ Additional details...
 
 Below is the complete list of available macro commands:
 \itemize{
-\item{\strong{#\%\if{html}{\out{<comment>}}}: A macro comment.}
-\item{\strong{#\%include '\if{html}{\out{<path>}}'}: Inserts code from included file as text
+\item{\strong{#\%<comment>}: A macro comment.}
+\item{\strong{#\%include '<path>'}: Inserts code from included file as text
 into current program.}
-\item{\strong{#\%if (\if{html}{\out{<condition>}})}: Begins a macro conditional block.}
+\item{\strong{#\%if (<condition>)}: Begins a macro conditional block.}
 \item{\strong{#\%elseif (<condition>)}: Defines a subsequent conditional block.}
 \item{\strong{#\%else}: Identifies the default behavior in a condition.}
 \item{\strong{#\%end}: Ends a macro condition.}
-\item{\strong{\%sysfunc(\if{html}{\out{<expression>}})}: Executes an R expression as part of
+\item{\strong{\%sysfunc(<expression>)}: Executes an R expression as part of
 a macro command.}
 }
 }

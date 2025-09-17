@@ -259,8 +259,37 @@ mreplace <- function(ln) {
       for (vr in vrs) {
 
         # vl <- deparse1(e[[vr]])
+        # Get value
         vl <- e[[vr]]
-        ret <- gsub(vr, vl, ret, fixed = TRUE)
+
+        # Ensure value is suitable for replacement
+        if (length(vl) > 1) {
+          if (is.vector(vl)) {
+            if (is.character(vl)) {
+              vl <- paste0("c('", paste0(vl, collapse = "','"), "')")
+            } else {
+              vl <- paste0("c(", paste0(vl, collapse = ','), ")")
+            }
+          } else {
+            vl <- as.character(vl)
+
+          }
+        } else if ("Date" %in% class(vl)) {
+          vl <- paste0("as.Date('", vl, "')")
+        } else if ("POSIXct" %in% class(vl)) {
+          vl <- paste0("as.POSIXct('", vl, "')")
+        } else if ("POSIXlt" %in% class(vl)) {
+          vl <- paste0("as.POSIXlt('", vl, "')")
+        } else if (is.character(vl) == FALSE) {
+          vl <- as.character(vl)
+        }
+
+        # Perform replacement if valid character value
+        if (length(vl) == 1 & is.character(vl) == TRUE) {
+          ret <- gsub(vr, vl, ret, fixed = TRUE)
+        } else {
+          stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
+        }
       }
     }
   }

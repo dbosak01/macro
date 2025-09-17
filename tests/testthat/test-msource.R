@@ -192,6 +192,34 @@ test_that("msource8: test include.", {
 
 })
 
+test_that("msource9: test vector in if condition.", {
+
+  fl1 <- file.path(base_path, "programs/test8.R")
+  fl2 <- file.path(base_path, "programs/test8_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+  e1$vars. <- c("age", "ageg")
+  e1$v1. <- 2
+  e1$v2. <- as.Date("2025-01-01")
+  e1$v3. <- as.POSIXct("2025-09-17 15:25:18 EDT")
+  e1$v4. <- as.POSIXlt("2025-09-17 15:25:18 EDT")
+
+  res <- msource(fl1, file_out = fl2, e1)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$fnd, TRUE)
+  expect_equal(e1$v1, 2)
+  expect_equal(e1$v2, as.Date("2025-01-01"))
+  expect_equal(e1$v3, as.POSIXct("2025-09-17 15:25:18 EDT"))
+  expect_equal(e1$v4, as.POSIXlt("2025-09-17 15:25:18 EDT"))
+
+})
+
 
 # test_that("msource8: msource() do loop functionality.", {
 #
