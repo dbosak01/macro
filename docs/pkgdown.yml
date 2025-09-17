@@ -1,0 +1,13 @@
+pandoc: 3.6.3
+pkgdown: 2.1.0
+pkgdown_sha: ~
+articles:
+  macro-disclaimer: macro-disclaimer.html
+  macro-example1: macro-example1.html
+  macro-example2: macro-example2.html
+  macro-faq: macro-faq.html
+  macro: macro.html
+last_built: 2025-09-17T07:33Z
+urls:
+  reference: https://macro.r-sassy.org/reference
+  article: https://macro.r-sassy.org/articles
