@@ -1,10 +1,27 @@
 
 e <- new.env()
 
-#' @title Preprocess and Source
+#' @title Pre-process and Source
 #' @description
-#' The \code{msource} function runs the macro preprocessor
+#' The \code{msource} function runs the macro pre-processor
 #' and then executes the program normally.
+#' @details
+#' Additional details...
+#'
+#' @section Macro Commands:
+#' Below is the complete list of available macro commands:
+#' \itemize{
+#'   \item{\strong{#%<comment>}: A macro comment.}
+#'   \item{\strong{#%include '<path>'}: Inserts code from included file as text
+#'   into current program.}
+#'   \item{\strong{#%if (<condition>)}: Begins a macro conditional block.}
+#'   \item{\strong{#%elseif (&lt;condition&gt;)}: Defines a subsequent conditional block.}
+#'   \item{\strong{#%else}: Identifies the default behavior in a condition.}
+#'   \item{\strong{#%end}: Ends a macro condition.}
+#'   \item{\strong{%sysfunc(<expression>)}: Executes an R expression as part of
+#'   a macro command.}
+#' }
+#'
 #' @param pth The path to the R program to source.
 #' @param file_out If you want to save or view the generated code
 #' from the \code{msource} function, supply a full path and
@@ -15,7 +32,7 @@ e <- new.env()
 #' @param ... Follow-on parameters to the \code{source} function. See
 #' the \code{\link{source}} function for additional information.
 #' @import common
-#' @returns The path of the sourced program.
+#' @returns The results of the \code{source()} function, invisibly.
 #' @export
 msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
                     ...) {

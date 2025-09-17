@@ -2,7 +2,7 @@
 % Please edit documentation in R/msource.R
 \name{msource}
 \alias{msource}
-\title{Preprocess and Source}
+\title{Pre-process and Source}
 \usage{
 msource(pth = Sys.path(), file_out = NULL, envir = globalenv(), ...)
 }
@@ -21,9 +21,28 @@ Default is the global environment.}
 the \code{\link{source}} function for additional information.}
 }
 \value{
-The path of the sourced program.
+The results of the \code{source()} function, invisibly.
 }
 \description{
-The \code{msource} function runs the macro preprocessor
+The \code{msource} function runs the macro pre-processor
 and then executes the program normally.
 }
+\details{
+Additional details...
+}
+\section{Macro Commands}{
+
+Below is the complete list of available macro commands:
+\itemize{
+\item{\strong{#\%\if{html}{\out{<comment>}}}: A macro comment.}
+\item{\strong{#\%include '\if{html}{\out{<path>}}'}: Inserts code from included file as text
+into current program.}
+\item{\strong{#\%if (\if{html}{\out{<condition>}})}: Begins a macro conditional block.}
+\item{\strong{#\%elseif (<condition>)}: Defines a subsequent conditional block.}
+\item{\strong{#\%else}: Identifies the default behavior in a condition.}
+\item{\strong{#\%end}: Ends a macro condition.}
+\item{\strong{\%sysfunc(\if{html}{\out{<expression>}})}: Executes an R expression as part of
+a macro command.}
+}
+}
+
