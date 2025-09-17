@@ -1,8 +1,6 @@
 
 # Here is a normal comment
 
-
-
 # Comment something
 print("X is 3")
 a <- 3

@@ -187,7 +187,7 @@ get_include <- function(pth) {
 
   f <- file(pth, encoding = "UTF-8")
 
-  ret <- readLines(f)
+  ret <- readLines(f, warn = FALSE)
 
   close(f)
 

@@ -11,14 +11,14 @@ e <- new.env()
 #' @section Macro Commands:
 #' Below is the complete list of available macro commands:
 #' \itemize{
-#'   \item{\strong{#%<comment>}: A macro comment.}
-#'   \item{\strong{#%include '<path>'}: Inserts code from included file as text
+#'   \item{\strong{#%&lt;comment&gt;}: A macro comment.}
+#'   \item{\strong{#%include '&lt;path&gt;'}: Inserts code from included file as text
 #'   into current program.}
-#'   \item{\strong{#%if (<condition>)}: Begins a macro conditional block.}
+#'   \item{\strong{#%if (&lt;condition&gt;)}: Begins a macro conditional block.}
 #'   \item{\strong{#%elseif (&lt;condition&gt;)}: Defines a subsequent conditional block.}
 #'   \item{\strong{#%else}: Identifies the default behavior in a condition.}
 #'   \item{\strong{#%end}: Ends a macro condition.}
-#'   \item{\strong{%sysfunc(<expression>)}: Executes an R expression as part of
+#'   \item{\strong{%sysfunc(&lt;expression&gt;)}: Executes an R expression as part of
 #'   a macro command.}
 #' }
 #'
@@ -78,7 +78,7 @@ preprocess <- function(pth, file_out, envir) {
 
   # Input program
   fl1 <- file(pth, open = "r", encoding = "UTF-8")
-  lns <- readLines(fl1)
+  lns <- readLines(fl1, warn = FALSE)
   close(fl1)
 
   # Clear out environment
