@@ -9,7 +9,7 @@
 #%let c = %sysfunc(sum(a.) / 1.3)
 
 #% Format expression with %sysfunc
-#%let d = %sysfunc(sum(a.) / 1.3)
+#%let d = %sysfunc(sum(a.) / 1.3, '%.2f')
 
 # Text replacement
 w <- a.

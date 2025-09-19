@@ -77,8 +77,8 @@ First, however, it will execute the **macro** pre-processor.
 The steps can be summarized as follows:
 
 Step 1: Pre-process the code and resolve all macro language syntax.  
-Step 2: Generate a new code file with the resolved code.
-Step 3: Execute the resolved code with the `source()` function.
+Step 2: Generate a new code file with the resolved code.  
+Step 3: Execute the resolved code with the `source()` function.  
 
 Notice that the above steps map directly to the way the SAS
 macro processor works.
@@ -92,7 +92,7 @@ only user-facing function in the **macro** package.
 
 ## How to Use
 
-You will write your macro-enabled R code in a regular .R code file.  You can use
+To use the **macro** package, you will first write your macro-enabled R code in a regular ".R" code file.  You can use
 RStudio or another code editor.  The macro statements are written as special
 comments, as described above.  To execute a macro-enabled program, simply
 call the `msource()` function in the console and pass the program path.  That's it!  
@@ -112,8 +112,8 @@ the macro variable as a text replacement token.
 3. Macro Conditionals: If-Then-Else logic that allows you to conditionally 
 execute a chunk of code.
 4. Macro Include: Inserts the contents of an external file into your program.
-5. Macro Functions: The package supports a small number of macro functions
-to make the system more useful.
+5. Macro Functions: A small number of macro functions
+to make the system more practical.
 
 ### Macro Comments and Variables
 
@@ -225,8 +225,7 @@ code fill will contain the following content:
 ```
 Notice that all spacing and comments from inside the condition are preserved.
 Also notice that all macro code and code from inside other conditions has 
-been removed.  This feature allows you to generate efficient and readable 
-code files with minimal effort.
+been removed.  
 
 ### Nested Macro Conditionals
 
@@ -288,7 +287,7 @@ file will look like this:
 
 ### Macro Include
 
-There is no equivalent in R for a SAS macro include.  The R `source()` function
+There is no equivalent in Base R for a SAS macro include.  The R `source()` function
 executes an external code file.  But it does not "include" or "insert" the
 code into the calling program.  Therefore, the macro include from the 
 **macro** package brings a useful feature to R.
@@ -309,7 +308,7 @@ There are a couple macro functions that are considered necessary for proper
 operation of the system.  The essential functions are `%sysfunc()` and 
 `%symexist()`.
 
-#### %sysfunc()
+### Evaluating and Formatting Expressions: %sysfunc()
 
 The `%sysfunc()` macro function allows you to evaluate an R expression as
 part of a macro command.  The expression can contain any valid R function
@@ -327,7 +326,7 @@ or operator.  Observe:
 #%let c = %sysfunc(sum(a.) / 1.3)
 
 #% Format expression with %sysfunc
-#%let d = %sysfunc(sum(a.) / 1.3)
+#%let d = %sysfunc(sum(a.) / 1.3, '%.2f')
 
 # Text replacement
 w <- a.
@@ -362,7 +361,7 @@ z <- 18.46
 Notice how the macro values resolve differently depending on whether
 `%sysfunc()` is used or not used.
 
-#### %symexist()
+### Checking For Macro Variables: %symexist()
 
 The `%symexist()` macro function is used to determine whether or not 
 a macro variable exists.  You will pass the name of the macro variable

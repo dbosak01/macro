@@ -30,6 +30,8 @@ is_let <- function(ln) {
   return(ret)
 }
 
+#' @noRd
+#' @import fmtr
 sub_funcs <- function(ln) {
 
   # browser()
@@ -46,6 +48,8 @@ sub_funcs <- function(ln) {
     open <- 0
     sysex <- ""
     idx <- spos
+    cma <- NA
+    fmt <- NA
     for (chr in splt) {
       if (chr == "(") {
         open <- open + 1
@@ -53,9 +57,21 @@ sub_funcs <- function(ln) {
       if (chr == ")") {
         open <- open - 1
       }
+      if (chr == "," & open == 1) {
+
+        cma <- idx
+      }
       if (open == 0) {
         epos <- idx
-        sysex <- substring(ln, spos + 1, epos - 1)
+        if (is.na(cma)) {
+
+          sysex <- substring(ln, spos + 1, epos - 1)
+        } else {
+          sysex <- substring(ln, spos + 1, cma - 1)
+          fmt <- trimws(substring(ln, cma + 1, epos - 1))
+          fmt <- gsub('"', "", fmt, fixed = TRUE)
+          fmt <- gsub("'", "", fmt, fixed = TRUE)
+        }
         break
       }
       idx <- idx + 1
@@ -63,6 +79,11 @@ sub_funcs <- function(ln) {
     if (sysex != "") {
 
       tres <- eval(str2expression(mreplace(sysex)), envir = e)
+
+      if (!is.na(fmt)) {
+
+         tres <- fapply(tres, fmt)
+      }
       ret <- paste0(substring(ln, 1, pos -1),
                     as.character(tres),
                     substring(ln, epos + 1))
@@ -105,7 +126,7 @@ sub_funcs <- function(ln) {
   return(ret)
 }
 
-sub_sysfunc <- function(ln) {
+sub_sysfunc_back <- function(ln) {
 
   # browser()
 

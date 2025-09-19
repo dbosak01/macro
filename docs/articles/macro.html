@@ -168,8 +168,9 @@ will execute the <strong>macro</strong> pre-processor.</p>
 <p>The steps can be summarized as follows:</p>
 <p>Step 1: Pre-process the code and resolve all macro language
 syntax.<br>
-Step 2: Generate a new code file with the resolved code. Step 3: Execute
-the resolved code with the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function.</p>
+Step 2: Generate a new code file with the resolved code.<br>
+Step 3: Execute the resolved code with the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code>
+function.</p>
 <p>Notice that the above steps map directly to the way the SAS macro
 processor works.</p>
 <p>In addition, the R macro language is a text-replacement language,
@@ -182,11 +183,12 @@ TRUE macro conditions is executed.</p>
 <div class="section level3">
 <h3 id="how-to-use">How to Use<a class="anchor" aria-label="anchor" href="#how-to-use"></a>
 </h3>
-<p>You will write your macro-enabled R code in a regular .R code file.
-You can use RStudio or another code editor. The macro statements are
-written as special comments, as described above. To execute a
-macro-enabled program, simply call the <code><a href="../reference/msource.html">msource()</a></code> function
-in the console and pass the program path. That’s it!</p>
+<p>To use the <strong>macro</strong> package, you will first write your
+macro-enabled R code in a regular “.R” code file. You can use RStudio or
+another code editor. The macro statements are written as special
+comments, as described above. To execute a macro-enabled program, simply
+call the <code><a href="../reference/msource.html">msource()</a></code> function in the console and pass the
+program path. That’s it!</p>
 <p>If you are working in RStudio, the function will use the path of the
 currently active program by default. In that case, you don’t need to do
 hardly anything! Just call <code><a href="../reference/msource.html">msource()</a></code> in the console with no
@@ -206,8 +208,8 @@ and use the macro variable as a text replacement token.</li>
 conditionally execute a chunk of code.</li>
 <li>Macro Include: Inserts the contents of an external file into your
 program.</li>
-<li>Macro Functions: The package supports a small number of macro
-functions to make the system more useful.</li>
+<li>Macro Functions: A small number of macro functions to make the
+system more practical.</li>
 </ol>
 <div class="section level4">
 <h4 id="macro-comments-and-variables">Macro Comments and Variables<a class="anchor" aria-label="anchor" href="#macro-comments-and-variables"></a>
@@ -312,8 +314,7 @@ code fill will contain the following content:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Inside the first condition"</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that all spacing and comments from inside the condition are
 preserved. Also notice that all macro code and code from inside other
-conditions has been removed. This feature allows you to generate
-efficient and readable code files with minimal effort.</p>
+conditions has been removed.</p>
 </div>
 <div class="section level4">
 <h4 id="nested-macro-conditionals">Nested Macro Conditionals<a class="anchor" aria-label="anchor" href="#nested-macro-conditionals"></a>
@@ -371,7 +372,7 @@ output file will look like this:</p>
 <div class="section level4">
 <h4 id="macro-include">Macro Include<a class="anchor" aria-label="anchor" href="#macro-include"></a>
 </h4>
-<p>There is no equivalent in R for a SAS macro include. The R
+<p>There is no equivalent in Base R for a SAS macro include. The R
 <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function executes an external code file. But it
 does not “include” or “insert” the code into the calling program.
 Therefore, the macro include from the <strong>macro</strong> package
@@ -392,9 +393,10 @@ be a fully integrated program with all macro commands resolved.</p>
 <p>There are a couple macro functions that are considered necessary for
 proper operation of the system. The essential functions are
 <code>%sysfunc()</code> and <code>%symexist()</code>.</p>
-<div class="section level5">
-<h5 id="sysfunc">%sysfunc()<a class="anchor" aria-label="anchor" href="#sysfunc"></a>
-</h5>
+</div>
+<div class="section level4">
+<h4 id="evaluating-and-formatting-expressions-sysfunc">Evaluating and Formatting Expressions: %sysfunc()<a class="anchor" aria-label="anchor" href="#evaluating-and-formatting-expressions-sysfunc"></a>
+</h4>
 <p>The <code>%sysfunc()</code> macro function allows you to evaluate an
 R expression as part of a macro command. The expression can contain any
 valid R function or operator. Observe:</p>
@@ -410,7 +412,7 @@ valid R function or operator. Observe:</p>
 <span><span class="co">#%let c = %sysfunc(sum(a.) / 1.3)</span></span>
 <span></span>
 <span><span class="co">#% Format expression with %sysfunc</span></span>
-<span><span class="co">#%let d = %sysfunc(sum(a.) / 1.3)</span></span>
+<span><span class="co">#%let d = %sysfunc(sum(a.) / 1.3, '%.2f')</span></span>
 <span></span>
 <span><span class="co"># Text replacement</span></span>
 <span><span class="va">w</span> <span class="op">&lt;-</span> <span class="va">a.</span></span>
@@ -440,9 +442,9 @@ valid R function or operator. Observe:</p>
 <p>Notice how the macro values resolve differently depending on whether
 <code>%sysfunc()</code> is used or not used.</p>
 </div>
-<div class="section level5">
-<h5 id="symexist">%symexist()<a class="anchor" aria-label="anchor" href="#symexist"></a>
-</h5>
+<div class="section level4">
+<h4 id="checking-for-macro-variables-symexist">Checking For Macro Variables: %symexist()<a class="anchor" aria-label="anchor" href="#checking-for-macro-variables-symexist"></a>
+</h4>
 <p>The <code>%symexist()</code> macro function is used to determine
 whether or not a macro variable exists. You will pass the name of the
 macro variable without quotes and without the “.” suffix.</p>
@@ -479,7 +481,6 @@ macro variable without quotes and without the “.” suffix.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: 1"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
 </div>
 </div>

@@ -83,6 +83,17 @@ test_that("utils2: is_let() sub_func functionality.", {
   expect_equal(res, TRUE)
   expect_equal(e$z., "TRUE")
 
+  l6 <- "#%let w = %sysfunc(floor(1 + 2.5) / 1.3, '%.3f')"
+
+  l7 <- sub_funcs(l6)
+  res <- is_let(l7)
+
+  res
+
+  expect_equal(res, TRUE)
+  expect_equal(e$w., "2.308")
+
+
 })
 
 
@@ -251,11 +262,11 @@ test_that("utils6: is_elseif() basic functionality.", {
 
 
 
-test_that("utils7: sub_sysfunc() basic functionality.", {
+test_that("utils7: sub_funcs() basic functionality.", {
 
   ln <- "%let x <- %sysfunc(1 + 4)"
 
-  res <- sub_sysfunc(ln)
+  res <- sub_funcs(ln)
 
   res
 
@@ -264,7 +275,7 @@ test_that("utils7: sub_sysfunc() basic functionality.", {
 
   ln <- "%let x <- 1"
 
-  res <- sub_sysfunc(ln)
+  res <- sub_funcs(ln)
 
   res
 
