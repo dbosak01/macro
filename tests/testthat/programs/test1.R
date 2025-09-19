@@ -3,7 +3,12 @@
 
 #%let x = 3
 #%let y = %sysfunc(floor(2 + 2.5))
-#%let z = %sysfunc(x.)
+#%let z = %sysfunc(9/x. + max(x.))
+#%let q = floor(2 + 2.5)
+#%let f = %symexist(x)
+#%let g = %symexist(k)
+
+print("z is z.")
 
 #%if (x. == 1)
 
@@ -25,4 +30,8 @@ a <- x.
 print(paste("z is", z.))
 print("Y is y.")
 b <- y.
+q <- q.
 d <- z.
+f <- f.
+g <- g.
+

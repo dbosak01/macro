@@ -50,7 +50,7 @@ test_that("utils1: is_let() basic functionality.", {
 
 })
 
-test_that("utils2: is_let() sysfunc functionality.", {
+test_that("utils2: is_let() sub_func functionality.", {
 
 
   l1 <- "#%let x = floor(1 + 2.5)"
@@ -65,7 +65,7 @@ test_that("utils2: is_let() sysfunc functionality.", {
 
   l2 <- "#%let y = %sysfunc(floor(1 + 2.5))"
 
-  l3 <- sub_sysfunc(l2)
+  l3 <- sub_funcs(l2)
   res <- is_let(l3)
 
   res
@@ -73,6 +73,15 @@ test_that("utils2: is_let() sysfunc functionality.", {
   expect_equal(res, TRUE)
   expect_equal(e$y., "3")
 
+  l4 <- "#%let z = %symexist(y)"
+
+  l5 <- sub_funcs(l4)
+  res <- is_let(l5)
+
+  res
+
+  expect_equal(res, TRUE)
+  expect_equal(e$z., "TRUE")
 
 })
 

@@ -80,7 +80,10 @@ test_that("msource3: file_out functionality.", {
   expect_equal(eres, TRUE)
   expect_equal(a, 3)
   expect_equal(b, 4)
-  expect_equal(d, 3)
+  expect_equal(d, 6)
+  # expect_equal(q, floor(2 + 2.5))  # Can't get this to work
+  expect_equal(f, TRUE)
+  expect_equal(g, FALSE)
 
 })
 
@@ -219,6 +222,9 @@ test_that("msource9: test vector in if condition.", {
   expect_equal(e1$v4, as.POSIXlt("2025-09-17 15:25:18 EDT"))
 
 })
+
+
+
 
 
 # test_that("msource8: msource() do loop functionality.", {

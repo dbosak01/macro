@@ -111,9 +111,9 @@ That includes:
 the macro variable as a text replacement token.
 3. Macro Conditionals: If-Then-Else logic that allows you to conditionally 
 execute a chunk of code.
-4. System Function: The system function allows you to execute R functions
-and operators as part of a macro statement.
-5. Macro Include: Inserts the contents of an external file into your program.
+4. Macro Include: Inserts the contents of an external file into your program.
+5. Macro Functions: The package supports a small number of macro functions
+to make the system more useful.
 
 ### Macro Comments and Variables
 
@@ -286,10 +286,6 @@ file will look like this:
 
 ```
 
-### System Function
-
-Not sure what to do with this?
-
 ### Macro Include
 
 There is no equivalent in R for a SAS macro include.  The R `source()` function
@@ -306,6 +302,111 @@ Upon execution by `msource()`, the contents of "myprogram.R" will be extracted
 from the file and copied into the calling program as text.  The calling program
 will then be scanned for macro commands that may have existed in "myprogram.R".
 The result will be a fully integrated program with all macro commands resolved.
+
+### Macro Functions
+
+There are a couple macro functions that are considered necessary for proper
+operation of the system.  The essential functions are `%sysfunc()` and 
+`%symexist()`.
+
+#### %sysfunc()
+
+The `%sysfunc()` macro function allows you to evaluate an R expression as
+part of a macro command.  The expression can contain any valid R function
+or operator.  Observe:
+
+```{r eval=FALSE, echo=TRUE}
+
+#% Assign integer vector
+#%let a = c(2, 5, 8, 9)
+
+#% Sum vector without %sysfunc
+#%let b = sum(a.) / 1.3
+
+#% Sum vector with %sysfunc
+#%let c = %sysfunc(sum(a.) / 1.3)
+
+#% Format expression with %sysfunc
+#%let d = %sysfunc(sum(a.) / 1.3)
+
+# Text replacement
+w <- a.
+
+# Expression replacement
+x <- b.
+
+# Evaluated with %sysfunc()
+y <- c.
+
+# Formatted with %sysfunc()
+z <- d.
+
+
+```
+Here is the above code after pre-processing:
+```{r eval=FALSE, echo=TRUE}
+
+# Text replacement
+w <- c(2, 5, 8, 9)
+
+# Expression replacement
+x <- sum(c(2, 5, 8, 9)) / 1.3
+
+# Evaluated with %sysfunc()
+y <- 18.4615384615385
+
+# Formatted with %sysfunc()
+z <- 18.46
+
+```
+Notice how the macro values resolve differently depending on whether
+`%sysfunc()` is used or not used.
+
+#### %symexist()
+
+The `%symexist()` macro function is used to determine whether or not 
+a macro variable exists.  You will pass the name of the macro variable
+without quotes and without the "." suffix.  
+
+Here is a very simple example:
+
+```{r eval=FALSE, echo=TRUE}
+
+#%let a = 1
+
+#%if (%symexist(a))
+
+  print("Macro variable 'a' exists!")
+  print("Here is the value: a.")
+
+#%else
+
+  print("Macro variable 'a' does not exist!")
+
+#%end
+
+#%if (%symexist(b))
+
+  print("Macro variable 'b' exists!")
+  print("Here is the value: b.")
+
+#%else
+
+  print("Macro variable 'b' does not exist!")
+
+#%end
+
+```
+And the resulting code looks like this:
+```{r eval=FALSE, echo=TRUE}
+
+  print("Macro variable 'a' exists!")
+  print("Here is the value: 1")
+
+  print("Macro variable 'b' does not exist!")
+
+```
+
 
 # Next Steps
 

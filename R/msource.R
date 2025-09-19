@@ -135,7 +135,7 @@ mprocess <- function(lns) {
     ln <- lns[idx]
 
     # Resolve sysfuncs
-    ln <- sub_sysfunc(ln)
+    ln <- sub_funcs(ln)
 
     # Identify let statements
     islet <- is_let(ln)

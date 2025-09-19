@@ -204,10 +204,10 @@ output file.</li>
 and use the macro variable as a text replacement token.</li>
 <li>Macro Conditionals: If-Then-Else logic that allows you to
 conditionally execute a chunk of code.</li>
-<li>System Function: The system function allows you to execute R
-functions and operators as part of a macro statement.</li>
 <li>Macro Include: Inserts the contents of an external file into your
 program.</li>
+<li>Macro Functions: The package supports a small number of macro
+functions to make the system more useful.</li>
 </ol>
 <div class="section level4">
 <h4 id="macro-comments-and-variables">Macro Comments and Variables<a class="anchor" aria-label="anchor" href="#macro-comments-and-variables"></a>
@@ -369,11 +369,6 @@ output file will look like this:</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is one and Y is 2"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="system-function">System Function<a class="anchor" aria-label="anchor" href="#system-function"></a>
-</h4>
-<p>Not sure what to do with this?</p>
-</div>
-<div class="section level4">
 <h4 id="macro-include">Macro Include<a class="anchor" aria-label="anchor" href="#macro-include"></a>
 </h4>
 <p>There is no equivalent in R for a SAS macro include. The R
@@ -390,6 +385,101 @@ this:</p>
 calling program as text. The calling program will then be scanned for
 macro commands that may have existed in “myprogram.R”. The result will
 be a fully integrated program with all macro commands resolved.</p>
+</div>
+<div class="section level4">
+<h4 id="macro-functions">Macro Functions<a class="anchor" aria-label="anchor" href="#macro-functions"></a>
+</h4>
+<p>There are a couple macro functions that are considered necessary for
+proper operation of the system. The essential functions are
+<code>%sysfunc()</code> and <code>%symexist()</code>.</p>
+<div class="section level5">
+<h5 id="sysfunc">%sysfunc()<a class="anchor" aria-label="anchor" href="#sysfunc"></a>
+</h5>
+<p>The <code>%sysfunc()</code> macro function allows you to evaluate an
+R expression as part of a macro command. The expression can contain any
+valid R function or operator. Observe:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#% Assign integer vector</span></span>
+<span><span class="co">#%let a = c(2, 5, 8, 9)</span></span>
+<span></span>
+<span><span class="co">#% Sum vector without %sysfunc</span></span>
+<span><span class="co">#%let b = sum(a.) / 1.3</span></span>
+<span></span>
+<span><span class="co">#% Sum vector with %sysfunc</span></span>
+<span><span class="co">#%let c = %sysfunc(sum(a.) / 1.3)</span></span>
+<span></span>
+<span><span class="co">#% Format expression with %sysfunc</span></span>
+<span><span class="co">#%let d = %sysfunc(sum(a.) / 1.3)</span></span>
+<span></span>
+<span><span class="co"># Text replacement</span></span>
+<span><span class="va">w</span> <span class="op">&lt;-</span> <span class="va">a.</span></span>
+<span></span>
+<span><span class="co"># Expression replacement</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">b.</span></span>
+<span></span>
+<span><span class="co"># Evaluated with %sysfunc()</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">c.</span></span>
+<span></span>
+<span><span class="co"># Formatted with %sysfunc()</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">d.</span></span></code></pre></div>
+<p>Here is the above code after pre-processing:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Text replacement</span></span>
+<span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">9</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Expression replacement</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.3</span></span>
+<span></span>
+<span><span class="co"># Evaluated with %sysfunc()</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">18.4615384615385</span></span>
+<span></span>
+<span><span class="co"># Formatted with %sysfunc()</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">18.46</span></span></code></pre></div>
+<p>Notice how the macro values resolve differently depending on whether
+<code>%sysfunc()</code> is used or not used.</p>
+</div>
+<div class="section level5">
+<h5 id="symexist">%symexist()<a class="anchor" aria-label="anchor" href="#symexist"></a>
+</h5>
+<p>The <code>%symexist()</code> macro function is used to determine
+whether or not a macro variable exists. You will pass the name of the
+macro variable without quotes and without the “.” suffix.</p>
+<p>Here is a very simple example:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#%let a = 1</span></span>
+<span></span>
+<span><span class="co">#%if (%symexist(a))</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'a' exists!"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: a."</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%else</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'a' does not exist!"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%end</span></span>
+<span></span>
+<span><span class="co">#%if (%symexist(b))</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' exists!"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: b."</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%else</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
+<p>And the resulting code looks like this:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'a' exists!"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: 1"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 </div>
 </div>

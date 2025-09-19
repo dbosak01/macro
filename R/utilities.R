@@ -30,6 +30,81 @@ is_let <- function(ln) {
   return(ret)
 }
 
+sub_funcs <- function(ln) {
+
+  # browser()
+
+  ret <- ln
+
+  pos <- regexpr("%sysfunc(", ln, fixed = TRUE)[[1]]
+  if (pos > 0) {
+
+    spos <- pos + 8
+    tmp <- substring(ln, spos)
+    epos <- nchar(ln)
+    splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
+    open <- 0
+    sysex <- ""
+    idx <- spos
+    for (chr in splt) {
+      if (chr == "(") {
+        open <- open + 1
+      }
+      if (chr == ")") {
+        open <- open - 1
+      }
+      if (open == 0) {
+        epos <- idx
+        sysex <- substring(ln, spos + 1, epos - 1)
+        break
+      }
+      idx <- idx + 1
+    }
+    if (sysex != "") {
+
+      tres <- eval(str2expression(mreplace(sysex)), envir = e)
+      ret <- paste0(substring(ln, 1, pos -1),
+                    as.character(tres),
+                    substring(ln, epos + 1))
+    }
+  }
+
+  pos2 <- regexpr("%symexist(", ret, fixed = TRUE)[[1]]
+  if (pos2 > 0) {
+
+    spos <- pos2 + 9
+    tmp <- substring(ret, spos)
+    epos <- nchar(ret)
+    splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
+    open <- 0
+    sysex <- ""
+    idx <- spos
+    for (chr in splt) {
+      if (chr == "(") {
+        open <- open + 1
+      }
+      if (chr == ")") {
+        open <- open - 1
+      }
+      if (open == 0) {
+        epos <- idx
+        sysex <- substring(ret, spos + 1, epos - 1)
+        break
+      }
+      idx <- idx + 1
+    }
+    if (sysex != "") {
+
+      tres <- exists(paste0(sysex, "."), envir = e)
+      ret <- paste0(substring(ret, 1, pos2 -1),
+                    as.character(tres),
+                    substring(ret, epos + 1))
+    }
+  }
+
+  return(ret)
+}
+
 sub_sysfunc <- function(ln) {
 
   # browser()
@@ -71,7 +146,6 @@ sub_sysfunc <- function(ln) {
 
   return(ret)
 }
-
 
 #' @noRd
 is_if <- function(ln) {
