@@ -107,34 +107,142 @@
 
     
     
+<p>In this example, we will generate code for a listing using the
+<strong>macro</strong> package. Generating the code makes it more
+readable and more compact. Note that this example has been intentionally
+simplified to make it easier to understand how the macro language
+works.</p>
+<div class="section level2">
+<h2 id="generate-a-listing">Generate a Listing<a class="anchor" aria-label="anchor" href="#generate-a-listing"></a>
+</h2>
+<p>To generate the listing, we will need two files:</p>
+<ul>
+<li>A template listing program<br>
+</li>
+<li>A macro driver script</li>
+</ul>
 <div class="section level3">
-<h3 id="create-a-simple-listing">Create a Simple Listing<a class="anchor" aria-label="anchor" href="#create-a-simple-listing"></a>
+<h3 id="template-listing-program">Template Listing Program<a class="anchor" aria-label="anchor" href="#template-listing-program"></a>
 </h3>
-<p>Here is an example of a regulatory-style listing using
-<strong>reporter</strong> and the iris sample data frame. Notice how the
-<code><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report()</a></code> function breaks the page automatically and
-appropriately:</p>
+<p>Here is the template listing program:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reporter.r-sassy.org" class="external-link">reporter</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co">#####################################################################</span></span>
+<span><span class="co"># Program Name: prog_name.</span></span>
+<span><span class="co"># Study: study.</span></span>
+<span><span class="co">#####################################################################</span></span>
 <span></span>
-<span><span class="co"># Create temp file name</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"example1.pdf"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reporter.r-sassy.org" class="external-link">reporter</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create the report</span></span>
-<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">tmp</span>, orientation <span class="op">=</span> <span class="st">"portrait"</span>, output_type <span class="op">=</span> <span class="st">"PDF"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span>left <span class="op">=</span> <span class="st">"Client: 1-800-Flowers"</span>, right <span class="op">=</span> <span class="st">"Study: Iris"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"IRIS Data Listing"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="st">"* Bulletin of the American Iris Society, 1935"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span>left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>              center <span class="op">=</span> <span class="st">"Confidential"</span>,</span>
-<span>              right <span class="op">=</span> <span class="st">"Page [pg] of [tpg]"</span><span class="op">)</span></span>
+<span><span class="co"># Output path</span></span>
+<span><span class="va">out_pth</span> <span class="op">&lt;-</span> <span class="st">"output_dir./prog_name."</span></span>
 <span></span>
-<span><span class="co"># Write the report</span></span>
+<span><span class="co"># Get listing data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"data_dir./data_file."</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create table object</span></span>
+<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">USUBJID</span>, id_var <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create report object</span></span>
+<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">out_pth</span>, font <span class="op">=</span> <span class="st">"Courier"</span>, output_type <span class="op">=</span> <span class="st">"RTF"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: sponsor."</span>, <span class="st">"Study: study."</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="va">titles.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span>, align <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="va">footnotes.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"CONFIDENTIAL"</span>, <span class="st">"Page [pg] of [tpg]"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Write report to file</span></span>
+<span><span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span><span class="op">)</span></span></code></pre></div>
+<p>Notice in the above code that there are several macro variables. They
+end with a dot (.). These macro variables will be replaced with real
+values when the macro driver runs.</p>
+</div>
+<div class="section level3">
+<h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
+</h3>
+<p>Here is the macro driver script:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
+<span><span class="co">#% Define Macro Variables</span></span>
+<span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
+<span><span class="co">#%let sponsor = Acme</span></span>
+<span><span class="co">#%let study = ABC</span></span>
+<span><span class="co">#%let prog_name = l_dm</span></span>
+<span><span class="co">#%let base_dir = c:/packages/Testing/macro/code</span></span>
+<span><span class="co">#%let output_dir = base_dir./output</span></span>
+<span><span class="co">#%let data_dir = base_dir./data</span></span>
+<span><span class="co">#%let data_file = dm.rda</span></span>
+<span><span class="co">#%let titles = c("Listing 1.0", "SDTM Demographics")</span></span>
+<span><span class="co">#%let footnotes = c("Program: prog_name..R")</span></span>
+<span></span>
+<span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
+<span><span class="co">#% Pull in listing template code</span></span>
+<span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
+<span><span class="co">#%include 'base_dir./templates/lst01.R'</span></span></code></pre></div>
+<p>As you can see, the macro driver is very simple. All it does is
+assign the necessary macro variables, and include the listing
+template.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="how-to-run">How To Run<a class="anchor" aria-label="anchor" href="#how-to-run"></a>
+</h2>
+<p>To run the macro, we will simply call <code><a href="../reference/msource.html">msource()</a></code> from the
+command line. We will pass the name of the program to run and the
+generated code file to output.</p>
+<p>Like this:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="st">"./macro/Example1.R"</span>, <span class="st">"./macro/code/l_dm.R"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="generated-code">Generated Code<a class="anchor" aria-label="anchor" href="#generated-code"></a>
+</h3>
+<p>The generated code looks like this:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#####################################################################</span></span>
+<span><span class="co"># Program Name: l_dm</span></span>
+<span><span class="co"># Study: ABC</span></span>
+<span><span class="co">#####################################################################</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reporter.r-sassy.org" class="external-link">reporter</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Output path</span></span>
+<span><span class="va">out_pth</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/Testing/macro/code/output/l_dm"</span></span>
+<span></span>
+<span><span class="co"># Get listing data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"c:/packages/Testing/macro/code/data/dm.rda"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create table object</span></span>
+<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">USUBJID</span>, id_var <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create report object</span></span>
+<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">out_pth</span>, font <span class="op">=</span> <span class="st">"Courier"</span>, output_type <span class="op">=</span> <span class="st">"RTF"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: Acme"</span>, <span class="st">"Study: ABC"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span>, align <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Program: l_dm.R"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"CONFIDENTIAL"</span>, <span class="st">"Page [pg] of [tpg]"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Write report to file</span></span>
 <span><span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># file.show(tmp)</span></span></code></pre></div>
+<span>  </span></code></pre></div>
+<p>Notice that all macro variables have been resolved, and the code is
+easily readable. The code actually looks like a human wrote it.
+Readability is a major advantage of generating code instead of writing a
+generalized program.</p>
+<p>This technique gives you the best of all worlds: It is easy to build
+and maintain, allows a high degree of code reuse, provides flexible
+parameterization, and yet still produces simple, readable programs.
+These readable programs will be greatly appreciated by anyone who needs
+to review the code.</p>
+</div>
+<div class="section level3">
+<h3 id="output-report">Output Report<a class="anchor" aria-label="anchor" href="#output-report"></a>
+</h3>
+<p>Here is the output report:
+<img src="../man/images/example1.png"></p>
 <p>Next: <a href="macro-example2.html">Example 2: Table</a></p>
+</div>
 </div>
   </div>
 

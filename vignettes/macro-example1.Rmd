@@ -13,36 +13,141 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+In this example, we will generate code for a listing using the **macro** package.
+Generating the code makes it more readable and more compact.  Note that this example 
+has been intentionally simplified to make it easier to understand how the macro
+language works.
 
-### Create a Simple Listing
+## Generate a Listing
 
-Here is an example of
-a regulatory-style listing using **reporter** and the iris sample data frame.
-Notice how the `write_report()` function breaks the page automatically
-and appropriately:
+To generate the listing, we will need two files:
+
+  * A template listing program  
+  * A macro driver script  
+
+### Template Listing Program
+
+Here is the template listing program:
 
 ```{r eval=FALSE, echo=TRUE}
+#####################################################################
+# Program Name: prog_name.
+# Study: study.
+#####################################################################
+
 library(reporter)
 
-# Create temp file name
-tmp <- file.path(tempdir(), "example1.pdf")
+# Output path
+out_pth <- "output_dir./prog_name."
 
-# Create the report
-rpt <- create_report(tmp, orientation = "portrait", output_type = "PDF") %>%
-  page_header(left = "Client: 1-800-Flowers", right = "Study: Iris") %>%
-  titles("Listing 1.0", "IRIS Data Listing") %>%
-  add_content(create_table(iris)) %>%
-  footnotes("* Bulletin of the American Iris Society, 1935") %>%
-  page_footer(left = Sys.time(),
-              center = "Confidential",
-              right = "Page [pg] of [tpg]")
+# Get listing data
+load("data_dir./data_file.")
 
-# Write the report
+# Create table object
+tbl <- create_table(dm) |> 
+  define(USUBJID, id_var = TRUE)
+
+# Create report object
+rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |> 
+  page_header("Sponsor: sponsor.", "Study: study.") |> 
+  titles(titles.) |> 
+  add_content(tbl, align = "left") |> 
+  footnotes(footnotes.) |> 
+  page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
+
+# Write report to file
 write_report(rpt)
 
-# file.show(tmp)
+```
+Notice in the above code that there are several macro variables.  They end
+with a dot (.).  These macro variables will be replaced with real values
+when the macro driver runs.
+
+### Macro Driver Script
+
+Here is the macro driver script:
+```{r eval=FALSE, echo=TRUE}
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#% Define Macro Variables
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#%let sponsor = Acme
+#%let study = ABC
+#%let prog_name = l_dm
+#%let base_dir = c:/packages/Testing/macro/code
+#%let output_dir = base_dir./output
+#%let data_dir = base_dir./data
+#%let data_file = dm.rda
+#%let titles = c("Listing 1.0", "SDTM Demographics")
+#%let footnotes = c("Program: prog_name..R")
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#% Pull in listing template code
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#%include 'base_dir./templates/lst01.R'
 
 ```
+As you can see, the macro driver is very simple.  All it does is assign the 
+necessary macro variables, and include the listing template.
+
+## How To Run 
+
+To run the macro, we will simply call `msource()` from the command line. 
+We will pass the name of the program to run and the 
+generated code file to output.
+
+Like this:
+```{r eval=FALSE, echo=TRUE}
+msource("./macro/Example1.R", "./macro/code/l_dm.R")
+```
+
+### Generated Code
+
+The generated code looks like this:
+```{r eval=FALSE, echo=TRUE}
+#####################################################################
+# Program Name: l_dm
+# Study: ABC
+#####################################################################
+
+library(reporter)
+
+# Output path
+out_pth <- "c:/packages/Testing/macro/code/output/l_dm"
+
+# Get listing data
+load("c:/packages/Testing/macro/code/data/dm.rda")
+
+# Create table object
+tbl <- create_table(dm) |> 
+  define(USUBJID, id_var = TRUE)
+
+# Create report object
+rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |> 
+  page_header("Sponsor: Acme", "Study: ABC") |> 
+  titles(c("Listing 1.0", "SDTM Demographics")) |> 
+  add_content(tbl, align = "left") |> 
+  footnotes(c("Program: l_dm.R")) |> 
+  page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
+
+# Write report to file
+write_report(rpt)
+  
+```
+Notice that all macro variables have been resolved, and the code is easily
+readable. The code actually looks like a human wrote it. Readability is a 
+major advantage of generating code instead of 
+writing a generalized program. 
+
+This technique gives you the best of all worlds: It is easy to build and 
+maintain, allows a high degree of code reuse, provides flexible parameterization,
+and yet still produces simple, readable programs.  These readable
+programs will be greatly appreciated by anyone who needs to review the code.
+
+### Output Report
+
+Here is the output report:
+<img src="../man/images/example1.png"/>
+
 
 
 Next: [Example 2: Table](macro-example2.html)
