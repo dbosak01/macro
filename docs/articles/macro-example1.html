@@ -109,9 +109,9 @@
     
 <p>In this example, we will generate code for a listing using the
 <strong>macro</strong> package. Generating the code makes it more
-readable and more compact. Note that this example has been intentionally
-simplified to make it easier to understand how the macro language
-works.</p>
+readable and more compact.</p>
+<p>Note that this example has been intentionally simplified to make it
+easier to understand how the macro language works.</p>
 <div class="section level2">
 <h2 id="generate-a-listing">Generate a Listing<a class="anchor" aria-label="anchor" href="#generate-a-listing"></a>
 </h2>
@@ -156,6 +156,10 @@ works.</p>
 <p>Notice in the above code that there are several macro variables. They
 end with a dot (.). These macro variables will be replaced with real
 values when the macro driver runs.</p>
+<p>Also notice that the macro variables can be located anywhere in the
+program: in comments, in text strings, or in open code. The resolution
+routine will examine the entire program from top to bottom, replacing
+values as it goes.</p>
 </div>
 <div class="section level3">
 <h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
@@ -189,14 +193,13 @@ template.</p>
 </h2>
 <p>To run the macro, we will simply call <code><a href="../reference/msource.html">msource()</a></code> from the
 command line. We will pass the name of the program to run and the
-generated code file to output.</p>
-<p>Like this:</p>
+generated code file to output. Like this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="st">"./macro/Example1.R"</span>, <span class="st">"./macro/code/l_dm.R"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="generated-code">Generated Code<a class="anchor" aria-label="anchor" href="#generated-code"></a>
 </h3>
-<p>The generated code looks like this:</p>
+<p>Upon execution, the generated code file will look like this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################################################</span></span>
 <span><span class="co"># Program Name: l_dm</span></span>
@@ -234,7 +237,7 @@ generalized program.</p>
 and maintain, allows a high degree of code reuse, provides flexible
 parameterization, and yet still produces simple, readable programs.
 These readable programs will be greatly appreciated by anyone who needs
-to review the code.</p>
+to review your work.</p>
 </div>
 <div class="section level3">
 <h3 id="output-report">Output Report<a class="anchor" aria-label="anchor" href="#output-report"></a>

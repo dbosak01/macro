@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 In this example, we will generate code for a listing using the **macro** package.
-Generating the code makes it more readable and more compact.  Note that this example 
+Generating the code makes it more readable and more compact.  
+
+Note that this example 
 has been intentionally simplified to make it easier to understand how the macro
 language works.
 
@@ -63,6 +65,10 @@ Notice in the above code that there are several macro variables.  They end
 with a dot (.).  These macro variables will be replaced with real values
 when the macro driver runs.
 
+Also notice that the macro variables can be located anywhere in the program:
+in comments, in text strings, or in open code. The resolution routine will
+examine the entire program from top to bottom, replacing values as it goes.
+
 ### Macro Driver Script
 
 Here is the macro driver script:
@@ -87,22 +93,20 @@ Here is the macro driver script:
 
 ```
 As you can see, the macro driver is very simple.  All it does is assign the 
-necessary macro variables, and include the listing template.
+necessary macro variables, and include the listing template.  
 
 ## How To Run 
 
 To run the macro, we will simply call `msource()` from the command line. 
 We will pass the name of the program to run and the 
-generated code file to output.
-
-Like this:
+generated code file to output. Like this:
 ```{r eval=FALSE, echo=TRUE}
 msource("./macro/Example1.R", "./macro/code/l_dm.R")
 ```
 
 ### Generated Code
 
-The generated code looks like this:
+Upon execution, the generated code file will look like this:
 ```{r eval=FALSE, echo=TRUE}
 #####################################################################
 # Program Name: l_dm
@@ -141,7 +145,7 @@ writing a generalized program.
 This technique gives you the best of all worlds: It is easy to build and 
 maintain, allows a high degree of code reuse, provides flexible parameterization,
 and yet still produces simple, readable programs.  These readable
-programs will be greatly appreciated by anyone who needs to review the code.
+programs will be greatly appreciated by anyone who needs to review your work.
 
 ### Output Report
 
