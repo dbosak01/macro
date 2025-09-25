@@ -24,8 +24,35 @@ language works.
 
 To generate the listing, we will need two files:
 
+  * A macro driver script 
   * A template listing program  
-  * A macro driver script  
+  
+  ### Macro Driver Script
+
+Here is the macro driver script:
+```{r eval=FALSE, echo=TRUE}
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#% Define Macro Variables
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#%let sponsor = Acme
+#%let study = ABC
+#%let prog_name = l_dm
+#%let base_dir = c:/packages/Testing/macro/code
+#%let output_dir = base_dir./output
+#%let data_dir = base_dir./data
+#%let data_file = dm.rda
+#%let data_name = dm
+#%let titles = c("Listing 1.0", "SDTM Demographics")
+#%let footnotes = c("Program: prog_name..R")
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#% Pull in listing template code
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+#%include 'base_dir./templates/lst01.R'
+
+```
+As you can see, the macro driver is very simple.  All it does is assign the 
+necessary macro variables, and include the listing template.  
 
 ### Template Listing Program
 
@@ -46,7 +73,7 @@ out_pth <- "output_dir./prog_name."
 load("data_dir./data_file.")
 
 # Create table object
-tbl <- create_table(dm) |> 
+tbl <- create_table(data_name.) |> 
   define(USUBJID, id_var = TRUE)
 
 # Create report object
@@ -68,32 +95,6 @@ when the macro driver runs.
 Also notice that the macro variables can be located anywhere in the program:
 in comments, in text strings, or in open code. The resolution routine will
 examine the entire program from top to bottom, replacing values as it goes.
-
-### Macro Driver Script
-
-Here is the macro driver script:
-```{r eval=FALSE, echo=TRUE}
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#% Define Macro Variables
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#%let sponsor = Acme
-#%let study = ABC
-#%let prog_name = l_dm
-#%let base_dir = c:/packages/Testing/macro/code
-#%let output_dir = base_dir./output
-#%let data_dir = base_dir./data
-#%let data_file = dm.rda
-#%let titles = c("Listing 1.0", "SDTM Demographics")
-#%let footnotes = c("Program: prog_name..R")
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#% Pull in listing template code
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#%include 'base_dir./templates/lst01.R'
-
-```
-As you can see, the macro driver is very simple.  All it does is assign the 
-necessary macro variables, and include the listing template.  
 
 ## How To Run 
 
@@ -152,6 +153,7 @@ programs will be greatly appreciated by anyone who needs to review your work.
 Here is the output report:
 <img src="../man/images/example1.png"/>
 
-
+To create a listing for a different dataset, all you need is a new macro 
+driver, with different parameters.  The template code will be the same.
 
 Next: [Example 2: Table](macro-example2.html)

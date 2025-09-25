@@ -14,33 +14,45 @@ knitr::opts_chunk$set(
 )
 ```
 
-### Create a Simple Listing
+Now let's look at a more complicated example.  In this example, we will 
+create a parameterized demographics table.   
 
-Here is an example of
-a regulatory-style listing using **reporter** and the iris sample data frame.
-Notice how the `write_report()` function breaks the page automatically
-and appropriately:
+### Create a Demographics Table
+
+We want to create a demographics table that can be used across different studies.
+Therefore, we'll need to let the user pass in different parameters like treatment
+groups, the path to the data, and which variables to include in the analysis.
+The **macro** package makes it easy to create such a parameterized table.
+
+In the listing example, we assigned parameters using the `#%let` macro command.
+In this example, we set them directly in R code.  Here is how it is done:
 
 ```{r eval=FALSE, echo=TRUE}
-library(reporter)
 
-# Create temp file name
-tmp <- file.path(tempdir(), "example1.pdf")
+#####################################
+# Assign Macro Variables
+#####################################
+base_path <- "c:/Projects/David/SESUG/macro/code"
 
-# Create the report
-rpt <- create_report(tmp, orientation = "portrait", output_type = "PDF") %>%
-  page_header(left = "Client: 1-800-Flowers", right = "Study: Iris") %>%
-  titles("Listing 1.0", "IRIS Data Listing") %>%
-  add_content(create_table(iris)) %>%
-  footnotes("* Bulletin of the American Iris Society, 1935") %>%
-  page_footer(left = Sys.time(),
-              center = "Confidential",
-              right = "Page [pg] of [tpg]")
+log_path. <- file.path(base_path, "log")
+output_path. <- file.path(base_path, "output")
+template_path. <- file.path(base_path, "templates")
+data_path. <- file.path(base_path, "data")
 
-# Write the report
-write_report(rpt)
+vars. <- c("age", "ageg", "sex", "race")
 
-# file.show(tmp)
+titles. <- '"Table 1.0",
+         "Analysis of Demographic Characteristics",
+         "Safety Population"'
+
+
+trt_grps <- c("ARM A" = "Placebo", "ARM B" = "Drug 50mg", "ARM C" = "Drug 100mg",
+              "ARM D" = "Competitor")
+
+env. <- "prod" # "dev"
+out_type. <- "PDF"
 
 ```
-
+Since these parameters are defined as standard R variables, you have some
+more flexibility in how the parameters are populated. For example, you can 
+populate them dynamically from functions.
