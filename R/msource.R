@@ -122,6 +122,145 @@ mprocess <- function(lns) {
   # print(ls(e))
 
   lvl <- 1 # lvl 1 is open code
+  isopen <- c()
+  isopen[lvl] <- TRUE
+  elseflag <- c()
+  elseflag[lvl] <- TRUE
+  idx <- 1
+  lncnt <- length(lns)
+
+  while (idx <= lncnt) {
+
+    # Initialize line
+    ln <- lns[idx]
+
+    # Resolve sysfuncs
+    ln <- sub_funcs(ln)
+
+    # Identify let statements
+    islet <- is_let(ln, isopen[lvl])
+
+    if (!islet) {
+
+      # browser()
+
+      # If flag
+      isif <-  is_if(ln)
+
+      # Ifelse flag
+      iselseif <- is_elseif(ln)
+
+      # Include flag
+      isinclude <- is_include(ln)
+
+      # Next line macro
+      if (idx < lncnt) {
+        nl <- lns[idx + 1]
+        if (is_comment(nl) | trimws(nl) == "") {
+          ismacro <- TRUE
+        } else {
+          ismacro <- FALSE
+        }
+      } else {
+        ismacro <- FALSE
+      }
+
+      if (as.logical(isif)) {   # Deal with 'if'
+        lvl <- lvl + 1
+        elseflag[lvl] <- TRUE # Default else to TRUE
+
+        if (all(isopen)) {
+          if (attr(isif, "value") == TRUE) {
+            isopen[lvl] <- TRUE
+            elseflag[lvl] <- FALSE
+          } else {
+            isopen[lvl]  <- FALSE
+          }
+        } else {
+          isopen[lvl]  <- FALSE
+        }
+      } else if (as.logical(iselseif)) {   # Deal with 'ifelse'
+        if (all(isopen[seq(1, lvl - 1)])) {
+          if (attr(iselseif, "value") == TRUE) {
+            isopen[lvl]  <- TRUE
+            elseflag[lvl] <- FALSE
+          } else {
+            isopen[lvl]  <- FALSE
+          }
+        }
+      } else if (is_else(ln)) {   # Deal with 'else'
+        if (all(isopen[seq(1, lvl - 1)])) {
+          if (length(elseflag) < lvl)
+            elseflag[lvl] <- TRUE
+
+          if (elseflag[lvl]) {
+            isopen[lvl]  <- TRUE
+          } else {
+            isopen[lvl]  <- FALSE
+          }
+        }
+      } else if (is_end(ln)) {   # Deal with 'end'
+        isopen  <- isopen[lvl * -1] # FALSE
+        elseflag <- elseflag[lvl * -1] # TRUE
+        lvl <- lvl - 1
+      } else if (as.logical(isinclude)) {  # Deal with 'include'
+
+        if (all(isopen)) {
+
+          # Resolve any macro variables
+          pth <- mreplace(attr(isinclude, "path"))
+
+          # Get lines from include file
+          nlns <- get_include(pth)
+
+          # Insert into lns vector
+          lns <- c(lns[seq(1, idx - 1)], nlns, lns[seq(idx + 1, lncnt)])
+
+          # Reset line count
+          lncnt <- length(lns)
+
+          # Reset index
+          idx <- idx - 1
+
+        }
+      } else if (is_comment(ln)) {  # Deal with macro comment
+        # Do nothing
+        # Don't emit
+      } else if (all(isopen)) {   # Deal with normal code
+
+        if (nchar(trimws(ln)) == 0 & ismacro) {
+          # Do nothing
+          # Eliminate blank lines before macro statements
+        } else {
+          # If it makes it to this point,
+          # replace any macro variables and emit as code
+          ret <- append(ret, mreplace(ln))
+        }
+      }
+    }
+
+    # print(paste0("Line: ", idx, ", Level: ", lvl, ", isopen: ", isopen[lvl], ", elseflag: ", elseflag[lvl]))
+    # print(paste0(isopen, collapse = ", "))
+    # print(paste0(elseflag, collapse = ", "))
+    idx <- idx + 1
+  }
+
+
+  return(ret)
+
+}
+
+
+
+# Process macro statements
+#' @noRd
+mprocess_back <- function(lns) {
+
+  ret <- c()
+
+  # print(ls(e))
+
+  lvl <- 1 # lvl 1 is open code
   isopen <- list()
   isopen[[lvl]] <- TRUE
   elseflag <- list()
@@ -138,14 +277,18 @@ mprocess <- function(lns) {
     ln <- sub_funcs(ln)
 
     # Identify let statements
-    islet <- is_let(ln)
+    islet <- is_let(ln, isopen[[lvl]])
 
     if (!islet) {
 
       # browser()
 
       # If flag
-      isif <-  is_if(ln)
+      if (isopen[[lvl]] == TRUE) {
+        isif <-  is_if(ln)
+      } else {
+        isif <- FALSE
+      }
 
       # Ifelse flag
       iselseif <- is_elseif(ln)
@@ -235,7 +378,7 @@ mprocess <- function(lns) {
       }
     }
 
-    # print(paste0("Line: ", idx, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
+    print(paste0("Line: ", idx, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
     idx <- idx + 1
   }
 
@@ -243,7 +386,6 @@ mprocess <- function(lns) {
   return(ret)
 
 }
-
 
 mreplace <- function(ln) {
 
@@ -264,11 +406,26 @@ mreplace <- function(ln) {
 
         # Ensure value is suitable for replacement
         if (length(vl) > 1) {
+
           if (is.vector(vl)) {
-            if (is.character(vl)) {
-              vl <- paste0("c('", paste0(vl, collapse = "','"), "')")
+            if (length(names(vl)) > 0) {
+              # browser()
+              nms <- names(vl)
+              nmstr <- paste0("'", nms, "'")
+
+              if (is.character(vl)) {
+                vlstr <- paste0("'", vl, "'")
+
+              } else {
+                vlstr <- vl
+              }
+              vl <- paste0("c(", paste0(nmstr, " = ", vlstr, collapse = ", "), ")")
             } else {
-              vl <- paste0("c(", paste0(vl, collapse = ','), ")")
+              if (is.character(vl)) {
+                vl <- paste0("c('", paste0(vl, collapse = "', '"), "')")
+              } else {
+                vl <- paste0("c(", paste0(vl, collapse = ', '), ")")
+              }
             }
           } else {
             vl <- as.character(vl)

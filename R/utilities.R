@@ -2,7 +2,7 @@
 
 
 #' @noRd
-is_let <- function(ln) {
+is_let_back <- function(ln) {
 
   ret <- FALSE
 
@@ -12,7 +12,13 @@ is_let <- function(ln) {
 
     nl <- trimws(sub("#%let", "", ln, fixed = TRUE))
 
-    spl <- strsplit(nl, "=", fixed = TRUE)[[1]]
+    if (grepl("<-", ln, fixed = TRUE)[[1]]) {
+      spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+    } else {
+      # Replace first = with <- to deal with vectors that contain =
+      nl <- sub("=", "<-", nl, fixed = TRUE)
+      spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+    }
 
     if (length(spl) > 1) {
 
@@ -23,12 +29,52 @@ is_let <- function(ln) {
 
     } else {
 
+      # Clear out macro variable
       assign(paste0(trimws(spl), "."), NULL, envir = e)
+    }
+
+  }
+
+  return(ret)
+}
+
+is_let <- function(ln, opn = TRUE) {
+
+  ret <- FALSE
+
+  dtct <- grepl("#%let", ln, fixed = TRUE)[[1]]
+  if (dtct) {
+    ret <- TRUE
+
+    if (opn) {
+      nl <- trimws(sub("#%let", "", ln, fixed = TRUE))
+
+      if (grepl("<-", ln, fixed = TRUE)[[1]]) {
+        spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+      } else {
+        # Replace first = with <- to deal with vectors that contain =
+        nl <- sub("=", "<-", nl, fixed = TRUE)
+        spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+      }
+
+      if (length(spl) > 1) {
+
+        # vl <- eval(str2expression(trimws(spl[2])), envir = e)
+        # vl <- str2expression(trimws(spl[2]))
+        vl <- trimws(mreplace(spl[2]))
+        assign(paste0(trimws(spl[1]), "."), vl, envir = e)
+
+      } else {
+
+        # Clear out macro variable
+        assign(paste0(trimws(spl), "."), NULL, envir = e)
+      }
     }
   }
 
   return(ret)
 }
+
 
 #' @noRd
 #' @import fmtr

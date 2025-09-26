@@ -9,8 +9,8 @@ dev <- FALSE
 
 test_that("msource1: mreplace() basic functionality.", {
 
-  is_let("#%let x = 3")
-  is_let("#%let y = 2")
+  is_let("#%let x = 3", TRUE)
+  is_let("#%let y = 2", TRUE)
 
   ln <- "Y is y."
 
@@ -18,7 +18,7 @@ test_that("msource1: mreplace() basic functionality.", {
 
   expect_equal(res, "Y is 2")
 
-  is_let("#%let y = 3")
+  is_let("#%let y = 3", TRUE)
   ln <- "Y is y."
 
   res <- mreplace(ln)
@@ -39,8 +39,62 @@ test_that("msource1: mreplace() basic functionality.", {
 
   expect_equal(res, "X is 3")
 
+  # Numeric vector
+  is_let("#%let z = c(1, 2, 3)", TRUE)
+
+  ln <- "Z is z."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "Z is c(1, 2, 3)")
+
+  # Character vector
+  is_let("#%let z = c('A', 'B', 'C')", TRUE)
+
+  ln <- "Z is z."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "Z is c('A', 'B', 'C')")
+
+  # Numeric vector with names
+  is_let("#%let z <- c(A = 1, B = 2, C = 3)", TRUE)
+
+  ln <- "Z is z."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "Z is c(A = 1, B = 2, C = 3)")
+
+  # Character vector with names
+  is_let("#%let z <- c('A' = 'One', 'B' = 'Two', 'C' = 'Three')", TRUE)
+
+  ln <- "Z is z."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "Z is c('A' = 'One', 'B' = 'Two', 'C' = 'Three')")
+
+  # Numeric vector with names and =
+  is_let("#%let z = c(A = 1, B = 2, C = 3)", TRUE)
+
+  ln <- "Z is z."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "Z is c(A = 1, B = 2, C = 3)")
+
+  # Character vector with names and =
+  is_let("#%let z = c('A' = 'One', 'B' = 'Two', 'C' = 'Three')", TRUE)
+
+  ln <- "Z is z."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "Z is c('A' = 'One', 'B' = 'Two', 'C' = 'Three')")
 
 })
+
 
 test_that("msource2: basic functionality.", {
 
@@ -224,7 +278,60 @@ test_that("msource9: test vector in if condition.", {
 })
 
 
+test_that("msource10: let in if condition.", {
 
+  fl1 <- file.path(base_path, "programs/test9.R")
+  fl2 <- file.path(base_path, "programs/test9_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+  e1$a. <- 1
+
+  res <- msource(fl1, file_out = fl2, e1)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$v1, 1)
+
+
+})
+
+
+
+test_that("msource11: Vector resolution works as expected.", {
+
+  fl1 <- file.path(base_path, "programs/test10.R")
+  fl2 <- file.path(base_path, "programs/test10_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  e1$x. <- 3
+  e1$y. <- 2
+  e1$z1. <- c(1, 2, 3)
+  e1$z2. <- c("A", "B", "C")
+  e1$z3. <- c(A = 1, B = 2, C = 3)
+  e1$z4. <- c(A = "One", B = "Two", C = "Three")
+
+
+  res <- msource(fl1, file_out = fl2, e1)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$v1, 3)
+  expect_equal(e1$v2, 2)
+  expect_equal(e1$v3, c(1, 2, 3))
+  expect_equal(e1$v4, c("A", "B", "C"))
+  expect_equal(e1$v5, c(A = 1, B = 2, C = 3))
+  expect_equal(e1$v6, c(A = "One", B = "Two", C = "Three"))
+
+})
 
 
 # test_that("msource8: msource() do loop functionality.", {

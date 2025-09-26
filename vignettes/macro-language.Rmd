@@ -1,0 +1,17 @@
+---
+title: "Macro Language"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Macro Language}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Full dictionary, explanations, and examples for each available macro command...

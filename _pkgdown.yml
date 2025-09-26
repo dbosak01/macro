@@ -6,6 +6,7 @@ articles:
 - title: Examples
   navbar: ~
   contents:
+  - macro-language
   - macro-example1
   - macro-example2
   - macro-disclaimer

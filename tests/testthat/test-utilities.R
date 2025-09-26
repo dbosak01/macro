@@ -10,7 +10,7 @@ test_that("utils1: is_let() basic functionality.", {
 
   l1 <- "let x = 1"
 
-  res <- is_let(l1)
+  res <- is_let(l1, TRUE)
 
   res
 
@@ -18,7 +18,7 @@ test_that("utils1: is_let() basic functionality.", {
 
   l2 <- "#%let x = 1"
 
-  res <- is_let(l2)
+  res <- is_let(l2, TRUE)
 
   res
   e[["x."]]
@@ -29,7 +29,7 @@ test_that("utils1: is_let() basic functionality.", {
 
   l3 <- "#%let x = 2"
 
-  res <- is_let(l3)
+  res <- is_let(l3, TRUE)
 
   res
   e[["x."]]
@@ -40,7 +40,7 @@ test_that("utils1: is_let() basic functionality.", {
 
   l4 <- "#%let x = 'hello'"
 
-  res <- is_let(l4)
+  res <- is_let(l4, TRUE)
 
   res
   e[["x."]]
@@ -55,7 +55,7 @@ test_that("utils2: is_let() sub_func functionality.", {
 
   l1 <- "#%let x = floor(1 + 2.5)"
 
-  res <- is_let(l1)
+  res <- is_let(l1, TRUE)
 
   res
 
@@ -66,7 +66,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   l2 <- "#%let y = %sysfunc(floor(1 + 2.5))"
 
   l3 <- sub_funcs(l2)
-  res <- is_let(l3)
+  res <- is_let(l3, TRUE)
 
   res
 
@@ -76,7 +76,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   l4 <- "#%let z = %symexist(y)"
 
   l5 <- sub_funcs(l4)
-  res <- is_let(l5)
+  res <- is_let(l5, TRUE)
 
   res
 
@@ -86,7 +86,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   l6 <- "#%let w = %sysfunc(floor(1 + 2.5) / 1.3, '%.3f')"
 
   l7 <- sub_funcs(l6)
-  res <- is_let(l7)
+  res <- is_let(l7, TRUE)
 
   res
 
