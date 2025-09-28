@@ -123,22 +123,24 @@ easier to understand how the macro language works.</p>
 <li>A macro driver script</li>
 <li>A template listing program</li>
 </ul>
-<p>### Macro Driver Script</p>
+<div class="section level3">
+<h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
+</h3>
 <p>Here is the macro driver script:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
 <span><span class="co">#% Define Macro Variables</span></span>
 <span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
-<span><span class="co">#%let sponsor = Acme</span></span>
-<span><span class="co">#%let study = ABC</span></span>
-<span><span class="co">#%let prog_name = l_dm</span></span>
-<span><span class="co">#%let base_dir = c:/packages/Testing/macro/code</span></span>
-<span><span class="co">#%let output_dir = base_dir./output</span></span>
-<span><span class="co">#%let data_dir = base_dir./data</span></span>
-<span><span class="co">#%let data_file = dm.rda</span></span>
-<span><span class="co">#%let data_name = dm</span></span>
-<span><span class="co">#%let titles = c("Listing 1.0", "SDTM Demographics")</span></span>
-<span><span class="co">#%let footnotes = c("Program: prog_name..R")</span></span>
+<span><span class="co">#%let sponsor_name &lt;- Acme</span></span>
+<span><span class="co">#%let study_name &lt;- ABC</span></span>
+<span><span class="co">#%let prog_name &lt;- l_dm</span></span>
+<span><span class="co">#%let base_dir &lt;- c:/packages/Testing/macro/code</span></span>
+<span><span class="co">#%let output_dir &lt;- base_dir./output</span></span>
+<span><span class="co">#%let data_dir &lt;- base_dir./data</span></span>
+<span><span class="co">#%let data_file &lt;- dm.rda</span></span>
+<span><span class="co">#%let data_name &lt;- dm</span></span>
+<span><span class="co">#%let titles &lt;- c("Listing 1.0", "SDTM Demographics")</span></span>
+<span><span class="co">#%let footnotes &lt;- c("Program: prog_name..R")</span></span>
 <span></span>
 <span><span class="co">#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#</span></span>
 <span><span class="co">#% Pull in listing template code</span></span>
@@ -147,6 +149,7 @@ easier to understand how the macro language works.</p>
 <p>As you can see, the macro driver is very simple. All it does is
 assign the necessary macro variables, and include the listing
 template.</p>
+</div>
 <div class="section level3">
 <h3 id="template-listing-program">Template Listing Program<a class="anchor" aria-label="anchor" href="#template-listing-program"></a>
 </h3>
@@ -154,7 +157,7 @@ template.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################################################</span></span>
 <span><span class="co"># Program Name: prog_name.</span></span>
-<span><span class="co"># Study: study.</span></span>
+<span><span class="co"># Study: study_name.</span></span>
 <span><span class="co">#####################################################################</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reporter.r-sassy.org" class="external-link">reporter</a></span><span class="op">)</span></span>
@@ -171,7 +174,7 @@ template.</p>
 <span></span>
 <span><span class="co"># Create report object</span></span>
 <span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">out_pth</span>, font <span class="op">=</span> <span class="st">"Courier"</span>, output_type <span class="op">=</span> <span class="st">"RTF"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: sponsor."</span>, <span class="st">"Study: study."</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: sponsor_name."</span>, <span class="st">"Study: study_name."</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="va">titles.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span>, align <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="va">footnotes.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>

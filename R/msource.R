@@ -29,12 +29,15 @@ e <- new.env()
 #' the function will create a temp file for the generated code.
 #' @param envir The environment to be used for program execution.
 #' Default is the global environment.
+#' @param exec Whether or not to execute the output file after pre-processing.
+#' Default is TRUE
 #' @param ... Follow-on parameters to the \code{source} function. See
 #' the \code{\link{source}} function for additional information.
 #' @import common
 #' @returns The results of the \code{source()} function, invisibly.
 #' @export
 msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
+                    exec = TRUE,
                     ...) {
 
   #browser()
@@ -51,7 +54,15 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
 
   ppth <- preprocess(pth, file_out, envir)
 
-  ret <- source(ppth, local = e, ...)
+  if (exec) {
+    ret <- source(ppth, local = e, ...)
+  } else {
+
+    ret <- list()
+    ret$value <- NA
+  }
+
+  ret$output <- ppth
 
   invisible(ret)
 }
@@ -203,6 +214,11 @@ mprocess <- function(lns) {
         isopen  <- isopen[lvl * -1] # FALSE
         elseflag <- elseflag[lvl * -1] # TRUE
         lvl <- lvl - 1
+
+        if (lvl < 1) {
+          stop(paste0("Unexpected '#%end' on line ", idx, "."))
+        }
+
       } else if (as.logical(isinclude)) {  # Deal with 'include'
 
         if (all(isopen)) {
@@ -245,6 +261,10 @@ mprocess <- function(lns) {
     idx <- idx + 1
   }
 
+  if (lvl > 1) {
+
+    stop("End of file reached with conditional block unfinalized. Did you forget an '#%end'?")
+  }
 
   return(ret)
 
@@ -396,7 +416,14 @@ mreplace <- function(ln) {
 
     # print(ls(e))
 
+    # Get variables
     vrs <- ls(e)  # ls(envir = e)
+
+    # Sort by number of characters
+    # to avoid variable confounding
+    nc <- nchar(vrs)
+    vrs <- vrs[order(nc, decreasing = TRUE)]
+
     if (length(vrs) > 0) {
       for (vr in vrs) {
 
@@ -408,6 +435,8 @@ mreplace <- function(ln) {
         if (length(vl) > 1) {
 
           if (is.vector(vl)) {
+            # Deal with vectors
+            # Need to be converted to a string suitable for replacement
             if (length(names(vl)) > 0) {
               # browser()
               nms <- names(vl)

@@ -110,8 +110,396 @@
 
     
     
-<p>Full dictionary, explanations, and examples for each available macro
-command…</p>
+<p>Below is a glossary for all macro commands in the
+<strong>macro</strong> package. The glossary contains the syntax, a
+detailed explanation, and examples for each of the available
+commands.</p>
+<div class="section level2">
+<h2 id="macro-comments">Macro Comments<a class="anchor" aria-label="anchor" href="#macro-comments"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax">Syntax<a class="anchor" aria-label="anchor" href="#syntax"></a>
+</h3>
+<pre><code><span><span class="co">#% &lt;comment&gt;</span></span></code></pre>
+<p>Where “&lt;comment&gt;” is any text string.</p>
+<p>The macro comment is a single line comment. If you need multiple
+lines, use multiple macro comments.</p>
+</div>
+<div class="section level3">
+<h3 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
+</h3>
+<p>A macro comment is like a regular R comment, but with a “#%” prefix.
+The macro comment can be used to document your macro statements. The
+macro comment will be removed during pre-processing.</p>
+</div>
+<div class="section level3">
+<h3 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h3>
+<p>Here is a macro comment and a regular R comment:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#% Here is a macro comment</span></span>
+<span></span>
+<span><span class="co"># Here is a regular comment</span></span></code></pre></div>
+<p>During pre-processing, the macro comment and the blank line before it
+are removed:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Here is a regular comment</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="macro-variables">Macro Variables<a class="anchor" aria-label="anchor" href="#macro-variables"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax-1">Syntax<a class="anchor" aria-label="anchor" href="#syntax-1"></a>
+</h3>
+<pre><code><span><span class="co">#%let &lt;variable&gt; &lt;- &lt;value&gt;</span></span>
+<span><span class="co">#%let &lt;variable&gt; = &lt;value&gt;</span></span>
+<span><span class="co">#%let &lt;variable&gt;</span></span></code></pre>
+<p>Where “&lt;variable&gt;” is the name of the variable, and
+“&lt;value&gt;” is some value assigned to the variable.</p>
+<p>Note that R variables must begin with an alphabetic character. They
+can contain only alphabetic characters, numbers, and an underscore
+(“_“).</p>
+<p>Macro variables should be named without a trailing dot (“.”). The
+trailing dot will be appended automatically when the variable is added
+to the symbol table.</p>
+<p>Either the left arrow (“&lt;-”) or equals sign (“=”) is a valid
+assignment operator for macro variables.</p>
+<p>To clear a macro variable, leave it unassigned. This action will
+remove the macro variable from the symbol table.</p>
+</div>
+<div class="section level3">
+<h3 id="details-1">Details<a class="anchor" aria-label="anchor" href="#details-1"></a>
+</h3>
+<p>Macro variables are variables that have a temporary existence during
+pre-processing. The variables are stored in the pre-processor symbol
+table, and used as text replacement tokens during pre-processing.</p>
+<p>The assigned value is treated as a string, and replaced exactly as
+assigned. That means if the value is assigned without quotes, it will be
+replaced without quotes. If the value is quoted, the quotes will be
+retained during replacement.</p>
+</div>
+<div class="section level3">
+<h3 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a>
+</h3>
+<div class="section level4">
+<h4 id="basic-assignment">Basic Assignment<a class="anchor" aria-label="anchor" href="#basic-assignment"></a>
+</h4>
+<p>Here is a basic macro assignment of numeric values. Note that either
+the left arrow assignment operator or equals sign are valid:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Assignment using left arrow</span></span>
+<span><span class="co">#%let a &lt;- 1</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">a.</span></span>
+<span></span>
+<span><span class="co">#% Assignment using equals sign</span></span>
+<span><span class="co">#%let b = 2</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">b.</span></span></code></pre></div>
+<p>Here is the resolved output:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></code></pre></div>
+<p>Both variables <code>a.</code> an <code>b.</code> have been replaced
+as assigned.</p>
+</div>
+<div class="section level4">
+<h4 id="quoted-assignment">Quoted Assignment<a class="anchor" aria-label="anchor" href="#quoted-assignment"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Quoted Assignment</span></span>
+<span><span class="co">#%let a &lt;- "One"</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">a.</span></span>
+<span></span>
+<span><span class="co">#% Unquoted Assignment</span></span>
+<span><span class="co">#%let b &lt;- Two</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="st">"b."</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="st">'b.'</span></span></code></pre></div>
+<p>The above code will resolve as follows:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"One"</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="st">"Two"</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="st">'Two'</span></span></code></pre></div>
+<p>Observe that single or double quotes have no effect on macro variable
+resolution. Both are resolved normally. This behavior is different from
+SAS.</p>
+<p>If you do not quote the macro variable value, and do not quote the
+macro variable to be replaced, it will result in an error:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Unquoted Assignment</span></span>
+<span><span class="co">#%let c &lt;- Three</span></span>
+<span></span>
+<span><span class="co"># Unquoted resolution</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">c.</span></span></code></pre></div>
+<p>The error is:</p>
+<pre><code>Error in eval(ei, envir) : object 'Three' not found</code></pre>
+<p>The error occurs because the value “Three” is now left unquoted in
+open code. The R parser thinks it is the name of a variable or object,
+and will try to look it up in the environment. If it can’t find the name
+in the environment, the parser generates an error.</p>
+</div>
+<div class="section level4">
+<h4 id="variable-removal">Variable Removal<a class="anchor" aria-label="anchor" href="#variable-removal"></a>
+</h4>
+<p>If you want to remove an existing macro variable from the symbol
+table, leave it unassigned. Like this:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Clear assignment</span></span>
+<span><span class="co">#%let b</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">b.</span></span></code></pre></div>
+<p>Note that the above code will generate an error, as the
+<code>y &lt;- b.</code> runs after the variable has been cleared. Here
+is the error that is generated:</p>
+<pre><code>Error in mreplace(ln) : 
+  Macro variable 'b.' not valid for text replacement.</code></pre>
+</div>
+<div class="section level4">
+<h4 id="global-macro-assignment">Global Macro Assignment<a class="anchor" aria-label="anchor" href="#global-macro-assignment"></a>
+</h4>
+<p>Macro variables can also be assigned in regular R code, as long as it
+is done before <code><a href="../reference/msource.html">msource()</a></code> is executed. In the below code,
+macro variable <code>c.</code> is assigned the value of 3, and then the
+template code file “temp1.R” is executed via <code><a href="../reference/msource.html">msource()</a></code>:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Assignment before msource()</span></span>
+<span><span class="va">c.</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span></span>
+<span><span class="co"># Pre-process</span></span>
+<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="st">"./temp1.R"</span>, <span class="st">"./temp1_mod.R"</span><span class="op">)</span></span></code></pre></div>
+<p>Here is the file “temp1.R”:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Print macro variable</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">c.</span></span></code></pre></div>
+<p>When the “temp1.R” file is resolved, it will look like this:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Print macro variable</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></code></pre></div>
+<p>Note that the macro variable <code>c.</code> is replaced normally.
+The reason is because any variable with a trailing dot (“.”) in the
+parent environment will be copied to the macro symbol table when the
+pre-processor begins.</p>
+<p>Also note that parent macro assignments do not need to take place in
+the same code file as <code><a href="../reference/msource.html">msource()</a></code>. You can assign them in a
+setup file if desired. As long as they exist in the parent environment,
+the macro assignments will be resolved in the pre-processor.</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="macro-conditionals">Macro Conditionals<a class="anchor" aria-label="anchor" href="#macro-conditionals"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax-2">Syntax<a class="anchor" aria-label="anchor" href="#syntax-2"></a>
+</h3>
+<pre><code><span><span class="co">#%if &lt;condition&gt;</span></span>
+<span><span class="co">#%if (&lt;condition&gt;)</span></span>
+<span></span>
+<span><span class="co">#%ifelse &lt;condition&gt;</span></span>
+<span><span class="co">#%ifelse (&lt;condition&gt;)</span></span>
+<span></span>
+<span><span class="co">#%else</span></span>
+<span></span>
+<span><span class="co">#%end</span></span></code></pre>
+<p>Where “&lt;condition&gt;” is an expression that evaluates to TRUE or
+FALSE.</p>
+<p>A macro conditional block must begin with an <code>#%if</code>
+condition and be finalized with a <code>#%end</code>. The
+<code>#%ifelse</code> and <code>#%else</code> blocks are optional.
+Failure to finalize the block with an <code>#%end</code> will result in
+an error or other unexpected behavior.</p>
+<p>Parenthesis around the conditional expressions are optional but
+recommended.</p>
+</div>
+<div class="section level3">
+<h3 id="details-2">Details<a class="anchor" aria-label="anchor" href="#details-2"></a>
+</h3>
+<p>The conditional expressions to be evaluated should be regular R
+expressions, using R syntax. For comparisons, the expression should use
+the double-equals (“==”) comparison operator, as in a normal R “if”
+statement.<br>
+Likewise, all other comparison operators should follow Base R
+syntax.</p>
+<p>The conditional expression may contain macro variables. These macro
+variables will be resolved before the expression is evaluated. Reminder
+that the macro variables are text replacements, and will be resolved
+accordingly.</p>
+<p>If an expression in a macro “if” block are TRUE, the code inside that
+block will be emitted during pre-processing. If the expression evaluates
+to FALSE, code inside that block will be ignored.</p>
+<p>Macro conditions may be nested inside one another. There is no limit
+on the number of nested levels.</p>
+</div>
+<div class="section level3">
+<h3 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a>
+</h3>
+<div class="section level4">
+<h4 id="simple-conditional">Simple Conditional<a class="anchor" aria-label="anchor" href="#simple-conditional"></a>
+</h4>
+<p>Here is a simple condition to construct a path. The source directory
+can change depending on the environment.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%let dev_path &lt;- ./dev/data</span></span>
+<span><span class="co">#%let prod_path &lt;- ./prod/data</span></span>
+<span><span class="co">#%let env &lt;- dev</span></span>
+<span></span>
+<span><span class="co"># Path to data</span></span>
+<span><span class="co">#%if ("env." == "prod")</span></span>
+<span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="st">"prod_path./dm.sas7bdat"</span></span>
+<span><span class="co">#%else </span></span>
+<span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="st">"dev_path./dm.sas7bdat"</span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
+<p>When run through the macro processor, the above code will generate
+the following:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Path to data</span></span>
+<span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="st">"./dev/data/dm.sas7bdat"</span></span></code></pre></div>
+<p>The macro selected the “dev” path as indicated, constructed the path
+appropriately, and removed all macro statements.</p>
+</div>
+<div class="section level4">
+<h4 id="nested-conditionals">Nested Conditionals<a class="anchor" aria-label="anchor" href="#nested-conditionals"></a>
+</h4>
+<p>Macro conditionals may also be nested inside one another. Nesting
+allows you to construct more complicated logic. Here is an example:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Data source SAS or RDS</span></span>
+<span><span class="co">#%let src &lt;- SAS</span></span>
+<span></span>
+<span><span class="co">#% Select analysis variables</span></span>
+<span><span class="co">#%let anal_vars &lt;- c("AGE", "AGEG", "SEX", "RACE", "PULSE", "TEMP")</span></span>
+<span></span>
+<span><span class="co">###################</span></span>
+<span><span class="co"># Get data</span></span>
+<span><span class="co">###################</span></span>
+<span><span class="co">#%if ("src." == "SAS")</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://haven.tidyverse.org" class="external-link">haven</a></span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Get adsl dataset</span></span>
+<span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADSL.sas7bdat"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co">#%if (any(c("PULSE", "TEMP", "BP") %in% anal_vars.))</span></span>
+<span>  <span class="co"># Get advs dataset</span></span>
+<span>  <span class="va">advs</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADVS.sas7bdat"</span><span class="op">)</span></span>
+<span>  <span class="co">#%end</span></span>
+<span></span>
+<span><span class="co">#%else </span></span>
+<span>  </span>
+<span>  <span class="co"># Get adsl dataset</span></span>
+<span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./data/ADSL.rds"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co">#%if (any(c("PULSE", "TEMP", "BP") %in% anal_vars.))</span></span>
+<span>  <span class="co"># Get advs dataset</span></span>
+<span>  <span class="va">advs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./data/ADVS.rds"</span><span class="op">)</span></span>
+<span>  <span class="co">#%end</span></span>
+<span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">######################</span></span>
+<span><span class="co"># Get data</span></span>
+<span><span class="co">######################</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://haven.tidyverse.org" class="external-link">haven</a></span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Get adsl dataset</span></span>
+<span>  <span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADSL.sas7bdat"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Get advs dataset</span></span>
+<span>  <span class="va">advs</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADVS.sas7bdat"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="macro-include">Macro Include<a class="anchor" aria-label="anchor" href="#macro-include"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax-3">Syntax<a class="anchor" aria-label="anchor" href="#syntax-3"></a>
+</h3>
+<pre><code><span><span class="co">#%include &lt;path&gt;</span></span>
+<span><span class="co">#%include '&lt;path&gt;'</span></span>
+<span><span class="co">#%include "&lt;path&gt;"</span></span></code></pre>
+<p>Where “&lt;path&gt;” is a path to the file to include.</p>
+<p>The file path may be quoted or unquoted. If the path is quoted,
+single or double quotes may be used.</p>
+</div>
+<div class="section level3">
+<h3 id="details-3">Details<a class="anchor" aria-label="anchor" href="#details-3"></a>
+</h3>
+<p>The <code>#%include()</code> macro command inserts text from an
+external file into the generated output file. This behavior is different
+from the Base R <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function, which only executes the
+code from the external file. The macro include actually copies the code
+into the generated file. The included code does not have to be fully
+functional. It can be a code snippet that only works when combined with
+other included code.</p>
+</div>
+<div class="section level3">
+<h3 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a>
+</h3>
+<p>The below example includes code from the file “dat01.R”. This file
+contains a snippet of sample data:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create sample data</span></span>
+<span><span class="co">#%include "./templates/dat01.R"</span></span>
+<span></span>
+<span><span class="co"># Print sample data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
+<p>The resolved macro will look like this:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create sample data</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header <span class="op">=</span> <span class="cn">TRUE</span>, text <span class="op">=</span> <span class="st">'</span></span>
+<span><span class="st">  SUBJID  ARM    SEX  RACE    AGE</span></span>
+<span><span class="st">  "001"   "ARM A" "F"  "WHITE" 19 </span></span>
+<span><span class="st">  "002"   "ARM B" "F"  "WHITE" 21 </span></span>
+<span><span class="st">  "003"   "ARM C" "F"  "WHITE" 23 </span></span>
+<span><span class="st">  "004"   "ARM D" "F"  "BLACK" 28 </span></span>
+<span><span class="st">  "005"   "ARM A" "M"  "WHITE" 37  </span></span>
+<span><span class="st">  "006"   "ARM B" "M"  "WHITE" 34 </span></span>
+<span><span class="st">  "007"   "ARM C" "M"  "WHITE" 36  </span></span>
+<span><span class="st">  "008"   "ARM D" "M"  "WHITE" 30   </span></span>
+<span><span class="st">  "009"   "ARM A" "F"  "WHITE" 39  </span></span>
+<span><span class="st">  "010"   "ARM B" "F"  "WHITE" 31  </span></span>
+<span><span class="st">  "011"   "ARM C" "F"  "BLACK" 33 </span></span>
+<span><span class="st">  "012"   "ARM D" "F"  "WHITE" 38 </span></span>
+<span><span class="st">  "013"   "ARM A" "M"  "BLACK" 37 </span></span>
+<span><span class="st">  "014"   "ARM B" "M"  "WHITE" 34  </span></span>
+<span><span class="st">  "015"   "ARM C" "M"  "WHITE" 36</span></span>
+<span><span class="st">  "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print sample data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
+<p>Notice that the included code is integrated with the surrounding code
+from the macro-enabled program. In this way, you can collate a program
+from multiple code snippets into a unified result.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="macro-functions">Macro Functions<a class="anchor" aria-label="anchor" href="#macro-functions"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax-4">Syntax<a class="anchor" aria-label="anchor" href="#syntax-4"></a>
+</h3>
+<pre><code>%sysfunc(&lt;expression&gt;, [&lt;format&gt;])</code></pre>
+<p>Where “&lt;expression&gt;” is an R expression that resolves to a
+numeric value, and “&lt;format&amp;ft;” is an optional format code. The
+expression may contain R functions, operators, hard-coded values, and
+macro variables. If “&lt;format&amp;ft;” is supplied, the function will
+apply the format after the expression is resolved, and return the
+formatted value.</p>
+<pre><code>%symexist(&lt;name&gt;)</code></pre>
+<p>Where “&lt;name&gt;” is an unquoted name of a macro variable. If the
+macro variable exists, the function will return TRUE. Otherwise, the
+function will return FALSE.</p>
+</div>
+<div class="section level3">
+<h3 id="details-4">Details<a class="anchor" aria-label="anchor" href="#details-4"></a>
+</h3>
+</div>
+<div class="section level3">
+<h3 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a>
+</h3>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

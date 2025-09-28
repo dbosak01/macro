@@ -4,7 +4,13 @@
 \alias{msource}
 \title{Pre-process and Source}
 \usage{
-msource(pth = Sys.path(), file_out = NULL, envir = globalenv(), ...)
+msource(
+  pth = Sys.path(),
+  file_out = NULL,
+  envir = globalenv(),
+  exec = TRUE,
+  ...
+)
 }
 \arguments{
 \item{pth}{The path to the R program to source.}
@@ -16,6 +22,9 @@ the function will create a temp file for the generated code.}
 
 \item{envir}{The environment to be used for program execution.
 Default is the global environment.}
+
+\item{exec}{Whether or not to execute the output file after pre-processing.
+Default is TRUE}
 
 \item{...}{Follow-on parameters to the \code{source} function. See
 the \code{\link{source}} function for additional information.}

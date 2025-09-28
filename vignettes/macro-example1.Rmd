@@ -27,23 +27,23 @@ To generate the listing, we will need two files:
   * A macro driver script 
   * A template listing program  
   
-  ### Macro Driver Script
+### Macro Driver Script
 
 Here is the macro driver script:
 ```{r eval=FALSE, echo=TRUE}
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 #% Define Macro Variables
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#%let sponsor = Acme
-#%let study = ABC
-#%let prog_name = l_dm
-#%let base_dir = c:/packages/Testing/macro/code
-#%let output_dir = base_dir./output
-#%let data_dir = base_dir./data
-#%let data_file = dm.rda
-#%let data_name = dm
-#%let titles = c("Listing 1.0", "SDTM Demographics")
-#%let footnotes = c("Program: prog_name..R")
+#%let sponsor_name <- Acme
+#%let study_name <- ABC
+#%let prog_name <- l_dm
+#%let base_dir <- c:/packages/Testing/macro/code
+#%let output_dir <- base_dir./output
+#%let data_dir <- base_dir./data
+#%let data_file <- dm.rda
+#%let data_name <- dm
+#%let titles <- c("Listing 1.0", "SDTM Demographics")
+#%let footnotes <- c("Program: prog_name..R")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 #% Pull in listing template code
@@ -61,7 +61,7 @@ Here is the template listing program:
 ```{r eval=FALSE, echo=TRUE}
 #####################################################################
 # Program Name: prog_name.
-# Study: study.
+# Study: study_name.
 #####################################################################
 
 library(reporter)
@@ -78,7 +78,7 @@ tbl <- create_table(data_name.) |>
 
 # Create report object
 rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |> 
-  page_header("Sponsor: sponsor.", "Study: study.") |> 
+  page_header("Sponsor: sponsor_name.", "Study: study_name.") |> 
   titles(titles.) |> 
   add_content(tbl, align = "left") |> 
   footnotes(footnotes.) |> 

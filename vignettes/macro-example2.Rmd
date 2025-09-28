@@ -14,15 +14,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-Now let's look at a more complicated example.  In this example, we will 
-create a parameterized demographics table.   
-
-## Create a Demographics Table
-
-We want to create a demographics table that can be used across different studies.
+Now let's look at a more complicated example. For this example,
+we want to create a demographics table that can be used across different studies.
 Therefore, we'll need to let the user pass in different parameters like treatment
 groups, the path to the data, and which variables to include in the analysis.
 The **macro** package makes it easy to create such a parameterized table.
+
+## Generate a Demographics Table
+
+To generate the table, we will need four files:
+
+  * A macro driver script 
+  * A template table program
+  * A sample data code snippet
+  * A report code snippet
 
 ### Macro Driver Script
 
@@ -30,10 +35,6 @@ In the listing example, we assigned parameters using the `#%let` macro command.
 In this example, we set them directly in R code.  Here is how it is done:
 
 ```{r eval=FALSE, echo=TRUE}
-
-#####################################
-# Assign Macro Variables
-#####################################
 
 # Assign base path
 base_path <- "c:/packages/Testing/macro/code"
@@ -44,16 +45,25 @@ output_path. <- file.path(base_path, "output")
 template_path. <- file.path(base_path, "templates")
 data_path. <- file.path(base_path, "data")
 
-# Select analysis variables  
-vars. <- c("age", "ageg", "sex", "race")
+# Assign global variables
+sponsor_name. <- "Acme, Inc."
+study_name. <- "ABC"
+prog_nm. <- "t_dm"
+
+# Select analysis variables 
+vars. <- c("age", "ageg") # "sex", "race"
 
 # Assign or get titles
-titles. <- '"Table 1.0",
-         "Analysis of Demographic Characteristics",
-         "Safety Population"'
+titles. <- c("Table 1.0", 
+             "Analysis of Demographic Characteristics",
+             "Safety Population")
+
+# Assign or get footnotes
+footnotes. <- c(paste0("Program: ", prog_nm., ".R"),
+                "NOTE: Denominator based on number of non-missing responses.")
 
 # Assign treatment groups and labels
-trt_grps <- c("ARM A" = "Placebo", "ARM B" = "Drug 50mg", "ARM C" = "Drug 100mg",
+trt_grps. <- c("ARM A" = "Placebo", "ARM B" = "Drug 50mg", "ARM C" = "Drug 100mg",
               "ARM D" = "Competitor")
 
 # Assign other parameters
@@ -64,21 +74,32 @@ out_type. <- "PDF"
 macro::msource("c:/packages/Testing/macro/Example2.R", "c:/packages/Testing/macro/code/t_dm.R")
 
 ```
-The 
-
 Since these parameters are defined as standard R variables, you have some
 more flexibility in how the parameters are populated. For example, you can 
 populate them dynamically from functions.
 
-These parameters should be sourced and available in the global environment 
-before the `msource()` function is run.  
+These parameters should be sourced and available in the environment 
+before the `msource()` function is run. Any macro variables in the environment
+will be copied to the pre-processor environment at the beginning of execution.
+
+Another advantage of this approach is that you can source the macro driver
+directly from the development environment. You do not need to run `msource()`
+from the command line because it is called in the macro driver.
+
+Observe that there are four possible analysis variables for this demographics
+table: "age", "ageg", "sex", and "race".  The program allows the user
+to pick which variables will end up in the final report.  The template table
+program will conditionalize the code on the selected analysis variables.
 
 ### Template Table Program
 
 Here is the macro-enabled template program that the above driver is running:
 
 ```{r eval=FALSE, echo=TRUE}
-
+#####################################################################
+# Program Name: prog_name.
+# Study: study_name.
+#####################################################################
 
 library(sassy)
 
@@ -90,7 +111,8 @@ options("logr.autolog" = TRUE,
         "logr.notes" = FALSE,
         "procs.print" = FALSE)
 
-prog_nm <- "dm01"
+# Assign program name
+prog_nm <- "prog_nm."
 
 # Construct paths
 l_path <- file.path("log_path.", paste0(prog_nm, ".log"))
@@ -140,6 +162,7 @@ proc_freq(adsl_f, tables = ARM,
           options = v(nopercent, nonobs)) -> arm_pop
 
 put("Log treatment groups variable")
+trt_grps <- trt_grps.
 put(trt_grps)
 
 # Initialize block variables ----------------------------------------------
@@ -368,12 +391,29 @@ log_close()
 
 # Uncomment to view log
 # file.show(lf)
-
 ```
+In the above code, notice the following:
 
+  * The template program includes logging from the **logr** package and formatting
+  from the **fmtr** package.
+  * Several macro variables are used from the macro driver. These macro variables
+  include the program name, treatment groups, sponsor name, study name, etc.
+  * Data for the program can either come from the "prod" or "dev" environment.
+  If the environment is "dev", sample data is used.  If the environment is 
+  "prod", a real dataset is used. The "dev" sample data comes from an 
+  included code snippet.
+  * The code for all four analysis variables
+  is included in the program.  The code section for each analysis variable
+  is surrounded by macro conditions.  These conditions will include or 
+  exclude that code from the generated file.
+  * Analysis variable blocks are created using functions from the **procs**
+  package.
+  * The report code comes from an included code snippet.  
+  
 
 ### Template Code Snippets
 
+Here is the template code for the sample dataset:
 
 ```{r eval=FALSE, echo=TRUE}
 adsl <- read.table(header = TRUE, text = '
@@ -398,20 +438,16 @@ adsl <- read.table(header = TRUE, text = '
 ```
 
 
-
+Here is the template code for reporting:
 
 ```{r eval=FALSE, echo=TRUE}
 
+
 sep("Create and print report")
 
-print("out_type.")
-print("%symexist(out_type)")
-
 #%if (%symexist(out_type) == FALSE)
-  out_type. <- "RTF"
+  #%let out_type <- "RTF"
 #%end
-
-print("out_type.")
 
 # Create Table
 tbl <- create_table(final, first_row_blank = TRUE) |>  
@@ -442,14 +478,27 @@ rpt <- create_report(o_path,
 put("Write out the report")
 res <- write_report(rpt)
 
-
 ```
+In the above reporting code, notice the following:
+
+  * The code starts by setting a default output type of "RTF" if the 
+  `out_type` variable does not exist.  The condition uses the `%symexist()`
+  function to make that determination.
+  * Definitions for the treatment group columns are created dynamically
+  from the `trt_grps` variable.
+  * Titles, footnotes, etc. are populated from the macro driver.
+  The report functions come from the **reporter** package.
 
 ### Generated Code
 
-
+Upon execution of the call to `msource()`, the following code will be generated:
 
 ```{r eval=FALSE, echo=TRUE}
+
+#####################################################################
+# Program Name: t_dm
+# Study: ABC
+#####################################################################
 
 library(sassy)
 
@@ -460,7 +509,8 @@ options("logr.autolog" = TRUE,
         "logr.notes" = FALSE,
         "procs.print" = FALSE)
 
-prog_nm <- "dm01"
+# Assign program name
+prog_nm <- "t_dm"
 
 # Construct paths
 l_path <- file.path("c:/packages/Testing/macro/code/log", paste0(prog_nm, ".log"))
@@ -515,6 +565,8 @@ proc_freq(adsl_f, tables = ARM,
           options = v(nopercent, nonobs)) -> arm_pop
 
 put("Log treatment groups variable")
+trt_grps <- c('ARM A' = 'Placebo', 'ARM B' = 'Drug 50mg', 
+              'ARM C' = 'Drug 100mg', 'ARM D' = 'Competitor')
 put(trt_grps)
 
 # Initialize block variables ----------------------------------------------
@@ -606,113 +658,9 @@ if (is.null(final)) {
   final <- rbind(final, ageg_block) 
 }
 
-# Sex Block ---------------------------------------------------------------
-
-sep("Create frequency counts for SEX")
-
-put("Sex decodes")
-fmt_sex <- value(condition(x == "M", "Male"),
-                 condition(x == "F", "Female"),
-                 condition(TRUE, "Other"),
-                 as.factor = TRUE) 
-
-put("Get sex frequency counts")
-proc_freq(adsl_f, tables = SEX,
-          by = ARM,
-          options = nonobs) -> sex_freq 
-
-put("Combine counts and percents.")
-datastep(sex_freq, 
-         format = fc, 
-         rename = list(CAT = "LABEL"),
-         drop = v(CNT, PCT), 
-         {
-           
-           VAR <- "Sex"
-           CNTPCT <- fapply2(CNT, PCT)
-           
-         }) -> sex_comb 
-
-put("Transpose ARMs into columns")
-proc_transpose(sex_comb, id = BY, 
-               var = CNTPCT,
-               copy = VAR, by = LABEL,
-               options = noname) -> sex_trans
-
-put("Apply formats")
-datastep(sex_trans,
-         {
-           
-           LABEL <- fapply(LABEL, fmt_sex)
-           
-         }) -> sex_cnts
-
-put("Sort by label")
-proc_sort(sex_cnts, by = LABEL) -> sex_block 
-
-put("Append results")
-if (is.null(final)) {
-  final <- sex_block
-} else {
-  final <- rbind(final, sex_block) 
-}
-
-# Race block --------------------------------------------------------------
-
-sep("Create frequency counts for RACE")
-
-put("Race decodes")
-fmt_race <- value(condition(x == "WHITE", "White"),
-                  condition(x == "BLACK", "Black or African American"),
-                  condition(TRUE, "Other"),
-                  as.factor = TRUE)
-
-put("Get race frequency counts")
-proc_freq(adsl_f, tables = RACE,
-          by = ARM,
-          options = nonobs) -> race_freq 
-
-put("Combine counts and percents.")
-datastep(race_freq, 
-         format = fc, 
-         rename = list(CAT = "LABEL"),
-         drop = v(CNT, PCT), 
-         {
-           
-           CNTPCT <- fapply2(CNT, PCT)
-           
-         }) -> race_comb 
-
-put("Transpose ARMs into columns")
-proc_transpose(race_comb, id = BY, var = CNTPCT,
-               copy = VAR, by = LABEL, options = noname) -> race_trans
-
-put("Clean up")
-datastep(race_trans, 
-         {
-           VAR <- "Race"
-           LABEL <- fapply(LABEL, fmt_race)
-           
-         }) -> race_cnts 
-
-put("Sort by label")
-proc_sort(race_cnts, by = LABEL) -> race_block 
-
-put("Append results")
-if (is.null(final)) {
-  final <- race_block
-} else {
-  final <- rbind(final, race_block) 
-}
-
 # Report ------------------------------------------------------------------
 
 sep("Create and print report")
-
-print("PDF")
-print("TRUE")
-
-print("PDF")
 
 # Create Table
 tbl <- create_table(final, first_row_blank = TRUE) |>  
@@ -721,20 +669,22 @@ tbl <- create_table(final, first_row_blank = TRUE) |>
   define(VAR, blank_after = TRUE, dedupe = TRUE, label = "Variable",
          label_row = TRUE) |>  
   define(LABEL, indent = .25, label = "Demographic Category") |> 
-  titles(c('Table 1.0','Analysis of Demographic Characteristics','Safety Population'), bold = TRUE) |> 
-  footnotes(paste0("Program: ", prog_nm, ".R"),
-            "NOTE: Denominator based on number of non-missing responses.") 
+  titles(c('Table 1.0', 'Analysis of Demographic Characteristics', 
+           'Safety Population'), bold = TRUE) |> 
+  footnotes(c('Program: t_dm.R', 
+              'NOTE: Denominator based on number of non-missing responses.')) 
 
 # Add treatment groups
 for (trt in names(trt_grps)) {
-  tbl <- define(tbl, trt, label = trt_grps[trt], n = arm_pop[trt], standard_eval = TRUE)
+  tbl <- define(tbl, trt, label = trt_grps[trt], n = arm_pop[trt], 
+                standard_eval = TRUE)
 }
 
 # Create report
 rpt <- create_report(o_path, 
                      output_type = "PDF", 
                      font = "Arial") |> 
-  page_header("Sponsor: Company", "Study: ABC") |> 
+  page_header("Sponsor: Acme, Inc.", "Study: ABC") |> 
   set_margins(top = 1, bottom = 1) |>  
   add_content(tbl) |> 
   page_footer("Date Produced: {toupper(fapply(Sys.Date(), '%Y%b%d'))}", 
@@ -755,10 +705,20 @@ log_close()
 # Uncomment to view log
 # file.show(lf)
 
-
 ```
-
+Observe that the generated code is clean and easy to read.  Only the necessary
+lines from the template program are emitted during pre-processing.
 
 ### Result
 
+Here is the output report:
+<img src="../man/images/example2.png"/>
+
+To add more analysis variables, just change the "trt_groups." macro variable
+in the driver program. You can also change the titles, footnotes, and other
+parameters as desired.  The generated code will adjust dynamically to
+all parameter settings.
+
+
+Next: [Disclaimer](macro-disclaimer.html)
 

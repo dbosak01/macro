@@ -333,6 +333,48 @@ test_that("msource11: Vector resolution works as expected.", {
 
 })
 
+test_that("msource11: error on incomplete if block.", {
+
+  fl1 <- file.path(base_path, "programs/test11.R")
+
+  expect_error(msource(fl1))
+
+
+
+})
+
+test_that("msource12: error with extra end.", {
+
+  fl1 <- file.path(base_path, "programs/test12.R")
+
+  expect_error(msource(fl1))
+
+
+})
+
+test_that("msource10: test variable confounding.", {
+
+  fl1 <- file.path(base_path, "programs/test13.R")
+  fl2 <- file.path(base_path, "programs/test13_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, file_out = fl2, e1)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$x, 1)
+  expect_equal(e1$y, 2)
+
+
+})
+
+
+
 
 # test_that("msource8: msource() do loop functionality.", {
 #

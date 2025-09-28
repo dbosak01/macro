@@ -14,4 +14,407 @@ knitr::opts_chunk$set(
 )
 ```
 
-Full dictionary, explanations, and examples for each available macro command...
+Below is a glossary for all macro commands in the **macro** package.
+The glossary contains the syntax, a detailed explanation, and examples for
+each of the available commands. 
+
+## Macro Comments
+
+### Syntax
+
+```
+#% <comment>
+```
+Where "&lt;comment&gt;" is any text string. 
+
+The macro comment is a single line comment.  If you need multiple lines,
+use multiple macro comments.
+
+### Details
+
+A macro comment is like a regular R comment, but with a "#%" prefix. The 
+macro comment can be used to document your macro statements. The macro
+comment will be removed during pre-processing.
+
+### Examples
+
+Here is a macro comment and a regular R comment:
+```{r eval=FALSE, echo=TRUE}
+
+#% Here is a macro comment
+
+# Here is a regular comment
+
+```
+During pre-processing, the macro comment and the blank line before it are removed:
+
+```{r eval=FALSE, echo=TRUE}
+
+# Here is a regular comment
+
+```
+
+## Macro Variables 
+
+### Syntax
+```
+#%let <variable> <- <value>
+#%let <variable> = <value>
+#%let <variable>
+```
+Where "&lt;variable&gt;" is the name of the variable, and "&lt;value&gt;" is some 
+value assigned to the variable.    
+
+Note that R variables must
+begin with an alphabetic character.  They can contain only alphabetic characters,
+numbers, and an underscore ("_"). 
+
+Macro variables should be named without a trailing dot (".").  The trailing
+dot will be appended automatically when the variable is added to the symbol table.
+
+Either the left arrow ("&lt;-") or equals sign ("=") is a valid assignment
+operator for macro variables.
+
+To clear a macro variable, leave it unassigned. This action
+will remove the macro variable from the symbol table.
+
+### Details
+
+Macro variables are variables that have a temporary existence during pre-processing.
+The variables are stored in the pre-processor symbol table, and used as 
+text replacement tokens during pre-processing.  
+
+The assigned value is treated
+as a string, and replaced exactly as assigned.  That means if the value is
+assigned without quotes, it will be replaced without quotes.  If the value
+is quoted, the quotes will be retained during replacement.  
+
+### Examples
+
+#### Basic Assignment
+
+Here is a basic macro assignment of numeric values.  Note that either 
+the left arrow assignment operator or equals sign are valid:
+```{r eval=FALSE, echo=TRUE}
+#% Assignment using left arrow
+#%let a <- 1
+x <- a.
+
+#% Assignment using equals sign
+#%let b = 2
+y <- b.
+
+```
+Here is the resolved output:
+```{r eval=FALSE, echo=TRUE}
+x <- 1
+y <- 2
+
+```
+Both variables `a.` an `b.` have been replaced as assigned.
+
+#### Quoted Assignment
+
+```{r eval=FALSE, echo=TRUE}
+#% Quoted Assignment
+#%let a <- "One"
+x <- a.
+
+#% Unquoted Assignment
+#%let b <- Two
+y <- "b."
+z <- 'b.'
+
+```
+The above code will resolve as follows:
+```{r eval=FALSE, echo=TRUE}
+x <- "One"
+y <- "Two"
+z <- 'Two'
+
+```
+Observe that single or double quotes have no effect on macro variable resolution.
+Both are resolved normally.  This behavior is different from SAS.
+
+If you do not quote the macro variable value, and do not quote the macro variable
+to be replaced, it will result in an error:
+```{r eval=FALSE, echo=TRUE}
+#% Unquoted Assignment
+#%let c <- Three
+
+# Unquoted resolution
+z <- c.
+
+```
+The error is:
+```
+Error in eval(ei, envir) : object 'Three' not found
+```
+The error occurs because the value "Three" is now left unquoted in open code.
+The R parser thinks it is the name of a variable or object, and will try to
+look it up in the environment.  If it can't find the name in the environment,
+the parser generates an error.
+
+#### Variable Removal 
+
+If you want to remove an existing macro variable from the symbol table, 
+leave it unassigned.  Like this:
+```{r eval=FALSE, echo=TRUE}
+#% Clear assignment
+#%let b
+y <- b.
+
+```
+Note that the above code will generate an error, as the `y <- b.` runs
+after the variable has been cleared.  Here is the error that is generated:
+```
+Error in mreplace(ln) : 
+  Macro variable 'b.' not valid for text replacement.
+```
+#### Global Macro Assignment 
+
+Macro variables can also be assigned in regular R code, as long as it is done
+before `msource()` is executed.  In the below code, macro variable `c.` is
+assigned the value of 3, and then the template code file "temp1.R" is executed
+via `msource()`:
+
+```{r eval=FALSE, echo=TRUE}
+# Assignment before msource()
+c. <- 3
+
+# Pre-process
+msource("./temp1.R", "./temp1_mod.R")
+
+```
+
+Here is the file "temp1.R":
+```{r eval=FALSE, echo=TRUE}
+# Print macro variable
+z <- c.
+```
+When the "temp1.R" file is resolved, it will look like this:
+```{r eval=FALSE, echo=TRUE}
+# Print macro variable
+z <- 3
+```
+Note that the macro variable `c.` is replaced normally. The reason is because 
+any variable with a trailing dot (".") in the parent environment will
+be copied to the macro symbol table when the pre-processor begins.
+
+Also note that parent macro assignments do not need to take place in the 
+same code file as `msource()`.  You can assign them in a setup file if desired.
+As long as they exist in the parent environment, the macro assignments will be
+resolved in the pre-processor.
+
+## Macro Conditionals
+
+### Syntax
+```
+#%if <condition>
+#%if (<condition>)
+
+#%ifelse <condition>
+#%ifelse (<condition>)
+
+#%else
+
+#%end
+```
+Where "&lt;condition&gt;" is an expression that evaluates to TRUE or FALSE. 
+
+A macro conditional block must begin with an `#%if` condition and be finalized 
+with a `#%end`.  The `#%ifelse` and `#%else` blocks are optional. 
+Failure to finalize the block with an `#%end` will result in an error or other
+unexpected behavior.
+
+Parenthesis around the conditional expressions are optional but recommended.
+
+### Details
+
+The conditional expressions to be evaluated should be regular R expressions,
+using R syntax. For comparisons, the expression should use the double-equals
+("==") comparison operator, as in a normal R "if" statement.  
+Likewise, all other comparison operators should follow Base R syntax.
+
+The conditional expression may contain macro variables.  These macro variables
+will be resolved before the expression is evaluated.  Reminder that the macro
+variables are text replacements, and will be resolved accordingly.
+
+If an expression in a macro "if" block are TRUE, the code inside that block
+will be emitted during pre-processing.  If the expression evaluates to FALSE,
+code inside that block will be ignored.
+
+Macro conditions may be nested inside one another. There is no limit on the 
+number of nested levels.
+
+### Examples
+
+#### Simple Conditional
+
+Here is a simple condition to construct a path. The source directory can 
+change depending on the environment.  
+```{r eval=FALSE, echo=TRUE}
+#%let dev_path <- ./dev/data
+#%let prod_path <- ./prod/data
+#%let env <- dev
+
+# Path to data
+#%if ("env." == "prod")
+pth <- "prod_path./dm.sas7bdat"
+#%else 
+pth <- "dev_path./dm.sas7bdat"
+#%end
+```
+When run through the macro processor, the above code will generate the following:
+```{r eval=FALSE, echo=TRUE}
+
+# Path to data
+pth <- "./dev/data/dm.sas7bdat"
+```
+The macro selected the "dev" path as indicated, constructed the path appropriately, 
+and removed all macro statements.
+
+#### Nested Conditionals
+
+Macro conditionals may also be nested inside one another.  Nesting allows
+you to construct more complicated logic.  Here is an example:
+```{r eval=FALSE, echo=TRUE}
+#% Data source SAS or RDS
+#%let src <- SAS
+
+#% Select analysis variables
+#%let anal_vars <- c("AGE", "AGEG", "SEX", "RACE", "PULSE", "TEMP")
+
+###################
+# Get data
+###################
+#%if ("src." == "SAS")
+  library(haven)
+
+  # Get adsl dataset
+  adsl <- haven("./data/ADSL.sas7bdat")
+  
+  #%if (any(c("PULSE", "TEMP", "BP") %in% anal_vars.))
+  # Get advs dataset
+  advs <- haven("./data/ADVS.sas7bdat")
+  #%end
+
+#%else 
+  
+  # Get adsl dataset
+  adsl <- readRDS("./data/ADSL.rds")
+  
+  #%if (any(c("PULSE", "TEMP", "BP") %in% anal_vars.))
+  # Get advs dataset
+  advs <- readRDS("./data/ADVS.rds")
+  #%end
+
+#%end
+```
+
+```{r eval=FALSE, echo=TRUE}
+######################
+# Get data
+######################
+  library(haven)
+
+  # Get adsl dataset
+  adsl <- haven("./data/ADSL.sas7bdat")
+
+  # Get advs dataset
+  advs <- haven("./data/ADVS.sas7bdat")
+
+```
+
+## Macro Include
+
+### Syntax
+```
+#%include <path>
+#%include '<path>'
+#%include "<path>"
+```
+Where "&lt;path&gt;" is a path to the file to include. 
+
+The file path may be 
+quoted or unquoted. If the path is quoted, single or double quotes may be used.
+
+### Details
+
+The `#%include()` macro command inserts text from an external file into
+the generated output file. This behavior is different from the Base R
+`source()` function, which only executes the code from the external file.
+The macro include actually copies the code into the generated file.  The 
+included code does not have to be fully functional. It can be a code snippet
+that only works when combined with other included code.
+
+### Examples
+
+The below example includes code from the file "dat01.R".  This file 
+contains a snippet of sample data:
+```{r eval=FALSE, echo=TRUE}
+# Create sample data
+#%include "./templates/dat01.R"
+
+# Print sample data
+print(dat)
+```
+The resolved macro will look like this:
+```{r eval=FALSE, echo=TRUE}
+# Create sample data
+dat <- read.table(header = TRUE, text = '
+  SUBJID  ARM    SEX  RACE    AGE
+  "001"   "ARM A" "F"  "WHITE" 19 
+  "002"   "ARM B" "F"  "WHITE" 21 
+  "003"   "ARM C" "F"  "WHITE" 23 
+  "004"   "ARM D" "F"  "BLACK" 28 
+  "005"   "ARM A" "M"  "WHITE" 37  
+  "006"   "ARM B" "M"  "WHITE" 34 
+  "007"   "ARM C" "M"  "WHITE" 36  
+  "008"   "ARM D" "M"  "WHITE" 30   
+  "009"   "ARM A" "F"  "WHITE" 39  
+  "010"   "ARM B" "F"  "WHITE" 31  
+  "011"   "ARM C" "F"  "BLACK" 33 
+  "012"   "ARM D" "F"  "WHITE" 38 
+  "013"   "ARM A" "M"  "BLACK" 37 
+  "014"   "ARM B" "M"  "WHITE" 34  
+  "015"   "ARM C" "M"  "WHITE" 36
+  "016"   "ARM A" "M"  "WHITE" 40')
+
+# Print sample data
+print(dat)
+```
+Notice that the included code is integrated with the surrounding code
+from the macro-enabled program.  In this way, you can collate a program
+from multiple code snippets into a unified result.
+
+## Macro Functions
+
+### Syntax
+```
+%sysfunc(<expression>, [<format>])
+```
+Where "&lt;expression&gt;" is an R expression that resolves to a numeric value,
+and "&lt;format&ft;" is an optional format code.  The expression may
+contain R functions, operators, hard-coded values, and macro variables.
+If "&lt;format&ft;" is supplied, the function will apply the format after 
+the expression is resolved, and return the formatted value.
+
+```
+%symexist(<name>)
+```
+Where "&lt;name&gt;" is an unquoted name of a macro variable. If the macro
+variable exists, the function will return TRUE.  Otherwise, the function
+will return FALSE.
+
+### Details
+
+
+### Examples
+```{r eval=FALSE, echo=TRUE}
+
+```
+
+```{r eval=FALSE, echo=TRUE}
+
+```
