@@ -223,6 +223,7 @@ test_that("msource7: assignments.", {
   expect_equal(e1$v7, 4)
   expect_equal(e1$v8, 5)
   expect_equal(e1$v9, 4)
+  expect_equal(res$output, fl2)  # Check output path is working
 
 })
 
@@ -352,7 +353,7 @@ test_that("msource12: error with extra end.", {
 
 })
 
-test_that("msource10: test variable confounding.", {
+test_that("msource13: test variable confounding.", {
 
   fl1 <- file.path(base_path, "programs/test13.R")
   fl2 <- file.path(base_path, "programs/test13_mod.R")
@@ -362,7 +363,7 @@ test_that("msource10: test variable confounding.", {
 
   e1 <- new.env()
 
-  res <- msource(fl1, file_out = fl2, e1)
+  res <- msource(fl1, file_out = fl2, e1, debug = TRUE)
 
   eres <- file.exists(fl2)
 

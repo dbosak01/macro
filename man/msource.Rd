@@ -9,6 +9,8 @@ msource(
   file_out = NULL,
   envir = globalenv(),
   exec = TRUE,
+  debug = FALSE,
+  debug_out = NULL,
   ...
 )
 }
@@ -26,11 +28,21 @@ Default is the global environment.}
 \item{exec}{Whether or not to execute the output file after pre-processing.
 Default is TRUE}
 
+\item{debug}{If TRUE, prints lines to the console as they are processed.
+This information case be useful for debugging macro code.
+Default is FALSE.  See the \code{vignette("macro-debug"} for more information
+on debugging.}
+
+\item{debug_out}{A path to a file to be used for debugging.  If a path
+is supplied, debug output will be written to the file instead of the
+console. Default is NULL.}
+
 \item{...}{Follow-on parameters to the \code{source} function. See
 the \code{\link{source}} function for additional information.}
 }
 \value{
-The results of the \code{source()} function, invisibly.
+The results of the \code{source()} function, invisibly.  The path
+of the resolved output file is also included under the "$output" list item.
 }
 \description{
 The \code{msource} function runs the macro pre-processor

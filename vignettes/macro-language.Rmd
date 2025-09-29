@@ -409,12 +409,48 @@ will return FALSE.
 
 ### Details
 
+The `%sysfunc()` and `%symexist()` function are helper functions that are usually
+contained in other macro statements.  Most commonly, they will exist
+as part of "let" or "if" statement.  For this reason, the syntax does not include
+a leading comment symbol ("#").
+
+The purpose of `%sysfunc()` is to evaluate regular R expressions during macro
+processing. The evaluated result can then be assigned to a macro variable, 
+or used in a condition.
+
+The purpose of `%symexist()` is to check for the existence of a macro variable.
+This check is likewise most often performed as part of a macro conditional.
 
 ### Examples
+
+#### %sysfunc()
 ```{r eval=FALSE, echo=TRUE}
 
 ```
 
-```{r eval=FALSE, echo=TRUE}
+#### %symexist()
 
+Below is a simple example checking for the existance of some macro variables
+before using them in a calculation:
+```{r eval=FALSE, echo=TRUE}
+#% Check for existance of a
+#%if (%symexist(a) == FALSE)
+  #%let a <- 2
+#%end
+
+#% Check for existance of b
+#%if (%symexist(b) == FALSE)
+  #%let b <- 3
+#%end
+
+# Calculate a * b
+x <- a. * b.
 ```
+And here is the resolved version:
+```{r eval=FALSE, echo=TRUE}
+# Calculate a * b
+x <- 2 * 3
+```
+
+
+

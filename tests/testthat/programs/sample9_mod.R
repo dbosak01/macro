@@ -1,0 +1,4 @@
+
+# Calculate a * b
+x <- 2 * 3
+

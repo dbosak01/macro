@@ -1,9 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://macro.r-sassy.org/404.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/index.html</loc></url>
+<url><loc>https://macro.r-sassy.org/articles/macro-debug.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/macro-disclaimer.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/macro-example1.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/macro-example2.html</loc></url>
+<url><loc>https://macro.r-sassy.org/articles/macro-example3.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/macro-faq.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/macro-language.html</loc></url>
 <url><loc>https://macro.r-sassy.org/articles/macro.html</loc></url>

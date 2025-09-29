@@ -59,10 +59,16 @@
       <a href="../articles/macro-language.html">Macro Language</a>
     </li>
     <li>
+      <a href="../articles/macro-debug.html">Debugging</a>
+    </li>
+    <li>
       <a href="../articles/macro-example1.html">Example 1: Listing</a>
     </li>
     <li>
-      <a href="../articles/macro-example2.html">Example 2: Table</a>
+      <a href="../articles/macro-example2.html">Example 2: Another Listing</a>
+    </li>
+    <li>
+      <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
       <a href="../articles/macro-disclaimer.html">Disclaimer</a>
@@ -494,10 +500,48 @@ function will return FALSE.</p>
 <div class="section level3">
 <h3 id="details-4">Details<a class="anchor" aria-label="anchor" href="#details-4"></a>
 </h3>
+<p>The <code>%sysfunc()</code> and <code>%symexist()</code> function are
+helper functions that are usually contained in other macro statements.
+Most commonly, they will exist as part of “let” or “if” statement. For
+this reason, the syntax does not include a leading comment symbol
+(“#”).</p>
+<p>The purpose of <code>%sysfunc()</code> is to evaluate regular R
+expressions during macro processing. The evaluated result can then be
+assigned to a macro variable, or used in a condition.</p>
+<p>The purpose of <code>%symexist()</code> is to check for the existence
+of a macro variable. This check is likewise most often performed as part
+of a macro conditional.</p>
 </div>
 <div class="section level3">
 <h3 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a>
 </h3>
+<div class="section level4">
+<h4 id="sysfunc">%sysfunc()<a class="anchor" aria-label="anchor" href="#sysfunc"></a>
+</h4>
+</div>
+<div class="section level4">
+<h4 id="symexist">%symexist()<a class="anchor" aria-label="anchor" href="#symexist"></a>
+</h4>
+<p>Below is a simple example checking for the existance of some macro
+variables before using them in a calculation:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Check for existance of a</span></span>
+<span><span class="co">#%if (%symexist(a) == FALSE)</span></span>
+<span>  <span class="co">#%let a &lt;- 2</span></span>
+<span><span class="co">#%end</span></span>
+<span></span>
+<span><span class="co">#% Check for existance of b</span></span>
+<span><span class="co">#%if (%symexist(b) == FALSE)</span></span>
+<span>  <span class="co">#%let b &lt;- 3</span></span>
+<span><span class="co">#%end</span></span>
+<span></span>
+<span><span class="co"># Calculate a * b</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">a.</span> <span class="op">*</span> <span class="va">b.</span></span></code></pre></div>
+<p>And here is the resolved version:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculate a * b</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span></span></code></pre></div>
+</div>
 </div>
 </div>
   </div>

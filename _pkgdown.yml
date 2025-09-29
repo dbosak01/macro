@@ -7,8 +7,10 @@ articles:
   navbar: ~
   contents:
   - macro-language
+  - macro-debug
   - macro-example1
   - macro-example2
+  - macro-example3
   - macro-disclaimer
   - macro-faq
 

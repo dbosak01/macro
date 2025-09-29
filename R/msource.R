@@ -1,5 +1,9 @@
 
+# Macro symbol table
 e <- new.env()
+
+# Separator for debug output
+strs <- paste0(rep("*", 80), collapse = "")
 
 #' @title Pre-process and Source
 #' @description
@@ -31,13 +35,21 @@ e <- new.env()
 #' Default is the global environment.
 #' @param exec Whether or not to execute the output file after pre-processing.
 #' Default is TRUE
+#' @param debug If TRUE, prints lines to the console as they are processed.
+#' This information case be useful for debugging macro code.
+#' Default is FALSE.  See the \code{vignette("macro-debug"} for more information
+#' on debugging.
+#' @param debug_out A path to a file to be used for debugging.  If a path
+#' is supplied, debug output will be written to the file instead of the
+#' console. Default is NULL.
 #' @param ... Follow-on parameters to the \code{source} function. See
 #' the \code{\link{source}} function for additional information.
 #' @import common
-#' @returns The results of the \code{source()} function, invisibly.
+#' @returns The results of the \code{source()} function, invisibly.  The path
+#' of the resolved output file is also included under the "$output" list item.
 #' @export
 msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
-                    exec = TRUE,
+                    exec = TRUE, debug = FALSE, debug_out = NULL,
                     ...) {
 
   #browser()
@@ -51,27 +63,53 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
   else
     e <- envir
 
+  if (debug) {
+    cat(strs, "\n")
+    cat("**  Pre-Processing\n")
+    cat(strs, "\n")
+    cat("-    File In: ", pth, "\n")
+  }
 
-  ppth <- preprocess(pth, file_out, envir)
+  ppth <- preprocess(pth, file_out, envir, debug)
 
   if (exec) {
-    ret <- source(ppth, local = e, ...)
+    if (debug) {
+      cat(strs, "\n")
+      cat("**  Execution\n")
+      cat(strs, "\n")
+
+      ret <- source(ppth, local = e, echo = TRUE, ...)
+    } else {
+      ret <- source(ppth, local = e, ...)
+    }
   } else {
 
     ret <- list()
     ret$value <- NA
   }
 
-  ret$output <- ppth
+  # Clean up temporary files
+  if (is.null(file_out)) {
+    file.remove(ppth)
+    ret$output <- ""
+  } else {
+    # Add output path to return object
+    ret$output <- ppth
+  }
+
+  if (debug) {
+    cat("\n")
+    cat(strs, "\n")
+    cat("**  End\n")
+    cat(strs, "\n")
+  }
 
   invisible(ret)
 }
 
 # Input macro code and output path to resolved code
 #' @noRd
-preprocess <- function(pth, file_out, envir) {
-
-  # browser()
+preprocess <- function(pth, file_out, envir, debug) {
 
   # Create output file name
   if (is.null(file_out)) {
@@ -82,6 +120,11 @@ preprocess <- function(pth, file_out, envir) {
   }
 
   # print(npth)
+  if (debug) {
+    cat("-   File Out: ", npth, "\n")
+    cat(strs, "\n")
+    cat("[ In#][Out#]:\n")
+  }
 
   # Kill if exists
   if (file.exists(npth))
@@ -92,7 +135,7 @@ preprocess <- function(pth, file_out, envir) {
   lns <- readLines(fl1, warn = FALSE)
   close(fl1)
 
-  # Clear out environment
+  # Clear out macro environment (symbol table)
   enms <- ls(e)
   if (length(enms) > 0) {
     rm(list = enms, envir = e)
@@ -111,7 +154,7 @@ preprocess <- function(pth, file_out, envir) {
   # print(ls(e))
 
   # Process lines
-  nlns <- mprocess(lns)
+  nlns <- mprocess(lns, debug)
 
   # Output program
   fl2 <- file(npth, open = "w", encoding = "native.enc")
@@ -126,7 +169,7 @@ preprocess <- function(pth, file_out, envir) {
 
 # Process macro statements
 #' @noRd
-mprocess <- function(lns) {
+mprocess <- function(lns, debug) {
 
   ret <- c()
 
@@ -138,7 +181,9 @@ mprocess <- function(lns) {
   elseflag <- c()
   elseflag[lvl] <- TRUE
   idx <- 1
+  idxO <- 0
   lncnt <- length(lns)
+  emt <- FALSE
 
   while (idx <= lncnt) {
 
@@ -250,10 +295,29 @@ mprocess <- function(lns) {
         } else {
           # If it makes it to this point,
           # replace any macro variables and emit as code
-          ret <- append(ret, mreplace(ln))
+
+          # Replace macro variables
+          nln <- mreplace(ln)
+
+          # Increment output index
+          idxO <- idxO + 1
+
+          # Print to console if user requests
+          if (debug) {
+            cat(paste0("[", sprintf("%4d", idx), "][", sprintf("%4d", idxO), "]: ", nln, "\n"))
+            emt <- TRUE
+          }
+
+          # Append resolved line to output vector
+          ret <- append(ret, nln)
         }
       }
     }
+
+    if (debug & emt == FALSE) {
+      cat(paste0("[", sprintf("%4d", idx), "][    ]: ", ln, "\n"))
+    }
+    emt <- FALSE
 
     # print(paste0("Line: ", idx, ", Level: ", lvl, ", isopen: ", isopen[lvl], ", elseflag: ", elseflag[lvl]))
     # print(paste0(isopen, collapse = ", "))
@@ -263,7 +327,7 @@ mprocess <- function(lns) {
 
   if (lvl > 1) {
 
-    stop("End of file reached with conditional block unfinalized. Did you forget an '#%end'?")
+    stop("End of file reached with conditional block incomplete. Did you forget an '#%end'?")
   }
 
   return(ret)
@@ -423,6 +487,7 @@ mreplace <- function(ln) {
     # to avoid variable confounding
     nc <- nchar(vrs)
     vrs <- vrs[order(nc, decreasing = TRUE)]
+    # print(vrs)
 
     if (length(vrs) > 0) {
       for (vr in vrs) {

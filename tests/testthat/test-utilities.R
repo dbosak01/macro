@@ -285,7 +285,7 @@ test_that("utils7: sub_funcs() basic functionality.", {
 
 
 
-test_that("utils7: is_include() basic functionality.", {
+test_that("utils8: is_include() basic functionality.", {
 
   ln <- "#%include 'c:/fork/sammy.txt'"
 
@@ -319,7 +319,7 @@ test_that("utils7: is_include() basic functionality.", {
 })
 
 
-test_that("utils7: get_include() basic functionality.", {
+test_that("utils9: get_include() basic functionality.", {
 
   pth <- file.path(base_path, "programs/test0.R")
 

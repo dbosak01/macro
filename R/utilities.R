@@ -1,42 +1,42 @@
 
 
 
-#' @noRd
-is_let_back <- function(ln) {
-
-  ret <- FALSE
-
-  dtct <- grepl("#%let", ln, fixed = TRUE)[[1]]
-  if (dtct) {
-    ret <- TRUE
-
-    nl <- trimws(sub("#%let", "", ln, fixed = TRUE))
-
-    if (grepl("<-", ln, fixed = TRUE)[[1]]) {
-      spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
-    } else {
-      # Replace first = with <- to deal with vectors that contain =
-      nl <- sub("=", "<-", nl, fixed = TRUE)
-      spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
-    }
-
-    if (length(spl) > 1) {
-
-      # vl <- eval(str2expression(trimws(spl[2])), envir = e)
-      # vl <- str2expression(trimws(spl[2]))
-      vl <- trimws(mreplace(spl[2]))
-      assign(paste0(trimws(spl[1]), "."), vl, envir = e)
-
-    } else {
-
-      # Clear out macro variable
-      assign(paste0(trimws(spl), "."), NULL, envir = e)
-    }
-
-  }
-
-  return(ret)
-}
+# @noRd
+# is_let_back <- function(ln) {
+#
+#   ret <- FALSE
+#
+#   dtct <- grepl("#%let", ln, fixed = TRUE)[[1]]
+#   if (dtct) {
+#     ret <- TRUE
+#
+#     nl <- trimws(sub("#%let", "", ln, fixed = TRUE))
+#
+#     if (grepl("<-", ln, fixed = TRUE)[[1]]) {
+#       spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+#     } else {
+#       # Replace first = with <- to deal with vectors that contain =
+#       nl <- sub("=", "<-", nl, fixed = TRUE)
+#       spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+#     }
+#
+#     if (length(spl) > 1) {
+#
+#       # vl <- eval(str2expression(trimws(spl[2])), envir = e)
+#       # vl <- str2expression(trimws(spl[2]))
+#       vl <- trimws(mreplace(spl[2]))
+#       assign(paste0(trimws(spl[1]), "."), vl, envir = e)
+#
+#     } else {
+#
+#       # Clear out macro variable
+#       assign(paste0(trimws(spl), "."), NULL, envir = e)
+#     }
+#
+#   }
+#
+#   return(ret)
+# }
 
 is_let <- function(ln, opn = TRUE) {
 
@@ -171,48 +171,48 @@ sub_funcs <- function(ln) {
 
   return(ret)
 }
-
-sub_sysfunc_back <- function(ln) {
-
-  # browser()
-
-  ret <- ln
-
-  pos <- regexpr("%sysfunc(", ln, fixed = TRUE)[[1]]
-  if (pos > 0) {
-
-    spos <- pos + 8
-    tmp <- substring(ln, spos)
-    epos <- nchar(ln)
-    splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
-    open <- 0
-    sysex <- ""
-    idx <- spos
-    for (chr in splt) {
-      if (chr == "(") {
-        open <- open + 1
-      }
-      if (chr == ")") {
-        open <- open - 1
-      }
-      if (open == 0) {
-        epos <- idx
-        sysex <- substring(ln, spos + 1, epos - 1)
-        break
-      }
-      idx <- idx + 1
-    }
-    if (sysex != "") {
-
-      tres <- eval(str2expression(sysex), envir = e)
-      ret <- paste0(substring(ln, 1, pos -1),
-                   as.character(tres),
-                   substring(ln, epos + 1))
-    }
-  }
-
-  return(ret)
-}
+#
+# sub_sysfunc_back <- function(ln) {
+#
+#   # browser()
+#
+#   ret <- ln
+#
+#   pos <- regexpr("%sysfunc(", ln, fixed = TRUE)[[1]]
+#   if (pos > 0) {
+#
+#     spos <- pos + 8
+#     tmp <- substring(ln, spos)
+#     epos <- nchar(ln)
+#     splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
+#     open <- 0
+#     sysex <- ""
+#     idx <- spos
+#     for (chr in splt) {
+#       if (chr == "(") {
+#         open <- open + 1
+#       }
+#       if (chr == ")") {
+#         open <- open - 1
+#       }
+#       if (open == 0) {
+#         epos <- idx
+#         sysex <- substring(ln, spos + 1, epos - 1)
+#         break
+#       }
+#       idx <- idx + 1
+#     }
+#     if (sysex != "") {
+#
+#       tres <- eval(str2expression(sysex), envir = e)
+#       ret <- paste0(substring(ln, 1, pos -1),
+#                    as.character(tres),
+#                    substring(ln, epos + 1))
+#     }
+#   }
+#
+#   return(ret)
+# }
 
 #' @noRd
 is_if <- function(ln) {
@@ -317,6 +317,7 @@ is_include <- function(ln) {
   return(ret)
 }
 
+#' @noRd
 get_include <- function(pth) {
 
 
@@ -336,8 +337,8 @@ get_include <- function(pth) {
 
 }
 
-
-
+# Currently not used.  Experimental.
+#' @noRd
 is_do <- function(ln) {
 
   ret <- FALSE
@@ -373,6 +374,8 @@ is_do <- function(ln) {
 
 }
 
+# Currently not used.  Experimental.
+#' @noRd
 do_info <- function(lvl, dolvl, var, start, end) {
 
   di <- structure(list(), class = c("do_info", "list"))
@@ -391,6 +394,10 @@ do_info <- function(lvl, dolvl, var, start, end) {
 }
 
 
+#' @noRd
+log_debug <- function(vl) {
 
 
+
+}
 

@@ -1,0 +1,341 @@
+---
+title: "Debugging"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Debugging}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Macro-enabling a program can make it more complicated to debug.  Fortunately, there is 
+a debug feature in the **macro** package that can make debugging easier.
+
+## How to Debug a Macro
+
+To enhance debugging, the `msource()` function contains two parameters: 
+`debug` and `debug_out`.  
+
+The `debug` parameter turns debugging on or off. When set to TRUE, the debug
+parameter will send debugging information to the console. This information
+can be useful in helping debug the program.
+
+Here is a very simple macro program to illustrate the debug feature:
+```{r eval=FALSE, echo=TRUE}
+#%let env <- dev
+#%let dev_path <- ./dev/data
+#%let prod_path <- ./prod/data
+
+# Path to data
+#%if ("env." == "prod")
+pth <- "prod_path./dm.sas7bdat"
+#%else
+pth <- "dev_path./dm.sas7bdat"
+#%end
+
+```
+The above macro program sets the path to a SAS dataset.  The code contains
+a macro condition to choose the "dev" or "prod" path.  Then the path is
+constructed via supplied macro variables.  
+
+The above code is placed into an R script, and run via `msource()` on the 
+command line. The normal output looks like this:
+```{r eval=FALSE, echo=TRUE}
+
+# Path to data
+pth <- "./dev/data/dm.sas7bdat"
+
+```
+
+### Debug Output
+
+Now let's turn debugging on to examine the debug output. To turn debugging on,
+simply set the `debug` parameter to TRUE.  Like this:
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
+```
+Normally, the `msource()` function does not return anything when executed.
+But when the `debug` parameter is TRUE, the following is printed to the console:
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
+******************************************************************************** 
+**  Pre-Processing
+******************************************************************************** 
+-    File In:  ./tests/testthat/examples/Debug1.R 
+-   File Out:  ./tests/testthat/examples/Debug1_mod.R 
+******************************************************************************** 
+[ In#][Out#]:
+[   1][    ]: #%let env <- dev
+[   2][    ]: #%let dev_path <- ./dev/data
+[   3][    ]: #%let prod_path <- ./prod/data
+[   4][   1]: 
+[   5][   2]: # Path to data
+[   6][    ]: #%if ("env." == "prod")
+[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   8][    ]: #%else
+[   9][   3]: pth <- "./dev/data/dm.sas7bdat"
+[  10][    ]: #%end
+[  11][   4]: 
+******************************************************************************** 
+**  Execution
+******************************************************************************** 
+
+> # Path to data
+> pth <- "./dev/data/dm.sas7bdat"
+
+******************************************************************************** 
+**  End
+******************************************************************************** 
+
+```
+Note the following about the above debug information:
+  
+  * The debug info starts with a header that introduces the pre-processing
+  stage.  The header contains the path of the input and output files.
+  * The pre-processor then steps through the input file one line at a time.
+  The pre-processor outputs each input line, and determines whether it
+  should be emitted to the output file.  The line numbers for the input
+  and output file are shown in the left margin of the debug output.  If 
+  the line is not emitted to the output file, the line number is shown as blank.
+  * All emitted lines are resolved as they will appear in the generated code.
+  Lines that are not emitted are not resolved.
+  * After pre-processing, the generated code file will be executed.  A separation
+  header announces the execution phase.
+  * The generated code is source and echoed into the execution section of the
+  debug info.
+  * The debug info is concluded with an ending separator, which signals completion
+  of processing.
+
+### Errors
+
+Now let's intentionally introduce some errors into this program, to see
+how they are handled in the debugger.
+
+#### Error in Macro Syntax
+
+First, we'll introduce a syntax error into a macro statement. On line 6 of the 
+macro program, we'll delete one of the parenthesis.  Like this:
+```{r eval=FALSE, echo=TRUE}
+# Path to data
+#%if ("env." == "prod"   
+```
+Then we'll run `msource()` again.  The debug info will then show the following:
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
+******************************************************************************** 
+**  Pre-Processing
+******************************************************************************** 
+-    File In:  ./tests/testthat/examples/Debug1.R 
+-   File Out:  ./tests/testthat/examples/Debug1_mod.R 
+******************************************************************************** 
+[ In#][Out#]:
+[   1][    ]: #%let env <- dev
+[   2][    ]: #%let dev_path <- ./dev/data
+[   3][    ]: #%let prod_path <- ./prod/data
+[   4][   1]: 
+[   5][   2]: # Path to data
+Error in str2expression(trimws(nr)) : <text>:2:0: unexpected end of input
+1: ("dev" == "prod"
+   ^
+
+```
+Observe that the pre-processor stopped at the moment the syntax error is
+encountered. The error encountered is displayed in the debug info, and the 
+error message indicates that there is an unmatched parenthesis.
+
+#### Missing `#%end`
+
+The next error we will introduce is a missing `#%end` in the macro condition.
+To introduce this error, remove the `#%end` on line 10 from the original script. 
+Then rerun `msource()`.  The debug info will display the following:
+
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
+******************************************************************************** 
+**  Pre-Processing
+******************************************************************************** 
+-    File In:  ./tests/testthat/examples/Debug1.R 
+-   File Out:  ./tests/testthat/examples/Debug1_mod.R 
+******************************************************************************** 
+[ In#][Out#]:
+[   1][    ]: #%let env <- dev
+[   2][    ]: #%let dev_path <- ./dev/data
+[   3][    ]: #%let prod_path <- ./prod/data
+[   4][   1]: 
+[   5][   2]: # Path to data
+[   6][    ]: #%if ("env." == "prod")
+[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   8][    ]: #%else
+[   9][   3]: pth <- "./dev/data/dm.sas7bdat"
+[  10][    ]: 
+[  11][   4]: 
+Error in mprocess(lns, debug) : 
+  End of file reached with conditional block incomplete. Did you forget an '#%end'?
+
+```
+
+#### Extra `#%end`
+
+In the next example, we'll add an extra `#%end` instead of removing it. Like this:
+
+```{r eval=FALSE, echo=TRUE}
+#%let env <- dev
+#%let dev_path <- ./dev/data
+#%let prod_path <- ./prod/data
+
+# Path to data
+#%if ("env." == "prod")
+pth <- "prod_path./dm.sas7bdat"
+#%else
+pth <- "dev_path./dm.sas7bdat"
+#%end
+#%end
+
+```
+Here is the result:
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
+******************************************************************************** 
+**  Pre-Processing
+******************************************************************************** 
+-    File In:  ./tests/testthat/examples/Debug1.R 
+-   File Out:  ./tests/testthat/examples/Debug1_mod.R 
+******************************************************************************** 
+[ In#][Out#]:
+[   1][    ]: #%let env <- dev
+[   2][    ]: #%let dev_path <- ./dev/data
+[   3][    ]: #%let prod_path <- ./prod/data
+[   4][   1]: 
+[   5][   2]: # Path to data
+[   6][    ]: #%if ("env." == "prod")
+[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   8][    ]: #%else
+[   9][   3]: pth <- "./dev/data/dm.sas7bdat"
+[  10][    ]: #%end
+Error in mprocess(lns, debug) : Unexpected '#%end' on line 11.
+
+```
+The debug info shows us that it encountered an unexpected macro command,
+and identifies the line number.  This information is very useful when
+debugging your macro code.
+
+#### Error in Generated Code
+
+What happens when there is an error in the generated code?  Let's introduce
+another error and find out!
+
+For this example, we will put an extra space in the assignment arrow on 
+line 9.  Like this:
+```{r eval=FALSE, echo=TRUE}
+#%let env <- dev
+#%let dev_path <- ./dev/data
+#%let prod_path <- ./prod/data
+
+# Path to data
+#%if ("env." == "prod")
+pth <- "prod_path./dm.sas7bdat"
+#%else
+pth < - "dev_path./dm.sas7bdat"
+#%end
+
+```
+The above extra space should introduce a syntax error in the generated code.
+Let's see what it does:
+
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
+******************************************************************************** 
+**  Pre-Processing
+******************************************************************************** 
+-    File In:  ./tests/testthat/examples/Debug1.R 
+-   File Out:  ./tests/testthat/examples/Debug1_mod.R 
+******************************************************************************** 
+[ In#][Out#]:
+[   1][    ]: #%let env <- dev
+[   2][    ]: #%let dev_path <- ./dev/data
+[   3][    ]: #%let prod_path <- ./prod/data
+[   4][   1]: 
+[   5][   2]: # Path to data
+[   6][    ]: #%if ("env." == "prod")
+[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   8][    ]: #%else
+[   9][   3]: pth < - "./dev/data/dm.sas7bdat"
+[  10][    ]: #%end
+******************************************************************************** 
+**  Execution
+******************************************************************************** 
+
+> # Path to data
+> pth < - "./dev/data/dm.sas7bdat"
+Error in -"./dev/data/dm.sas7bdat" : invalid argument to unary operator
+
+```
+Notice that the pre-processing stage completed as normal, and the execution
+stage began.  However, at the moment the syntax error was encountered in the
+generated code, an error message was produced.  This printout gives
+you a clear indication of which line has a problem and how to fix it.
+
+
+### Debug to File
+
+If desired, the debug information can be sent to a file instead of the console.
+This capability is especially valuable for large programs, where the number
+of lines may exceed the capacity of the console to display the full debug 
+information.
+
+To send the debug information to a file, simply assign a path to the 
+`debug_out` parameter on `msource()`:
+```
+> msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE, debug_out = "./log/Debug1.txt")
+
+```
+The debug information will now be redirected to the debug file instead of 
+the console.  Here is the contents of the debug file:
+```
+******************************************************************************** 
+**  Pre-Processing
+******************************************************************************** 
+-    File In:  ./tests/testthat/examples/Debug1.R 
+-   File Out:  ./tests/testthat/examples/Debug1_mod.R 
+******************************************************************************** 
+[ In#][Out#]:
+[   1][    ]: #%let env <- dev
+[   2][    ]: #%let dev_path <- ./dev/data
+[   3][    ]: #%let prod_path <- ./prod/data
+[   4][   1]: 
+[   5][   2]: # Path to data
+[   6][    ]: #%if ("env." == "prod")
+[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   8][    ]: #%else
+[   9][   3]: pth <- "./dev/data/dm.sas7bdat"
+[  10][    ]: #%end
+******************************************************************************** 
+**  Execution
+******************************************************************************** 
+
+> # Path to data
+> pth <- "./dev/data/dm.sas7bdat"
+
+******************************************************************************** 
+**  End
+******************************************************************************** 
+
+```
+Observe that the information contained in the file is exactly the same
+information shown on the console in the examples above. 
+
+Saving the debug information to a file has some benefits:
+ 
+  * Retains the full debug information output.
+  * Provides a searchable log.  
+  * Preserves a record of a clean run.
+
+Therefore, the debug output file can be advantageous in some scenarios.
+
+Next: [Example 1: Listing](macro-example1.html)

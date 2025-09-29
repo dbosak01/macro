@@ -36,10 +36,16 @@ and then executes the program normally."><meta property="og:image" content="http
       <a href="../articles/macro-language.html">Macro Language</a>
     </li>
     <li>
+      <a href="../articles/macro-debug.html">Debugging</a>
+    </li>
+    <li>
       <a href="../articles/macro-example1.html">Example 1: Listing</a>
     </li>
     <li>
-      <a href="../articles/macro-example2.html">Example 2: Table</a>
+      <a href="../articles/macro-example2.html">Example 2: Another Listing</a>
+    </li>
+    <li>
+      <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
       <a href="../articles/macro-disclaimer.html">Disclaimer</a>
@@ -88,6 +94,8 @@ and then executes the program normally.</p>
 <span>  file_out <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  exec <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  debug_out <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -117,6 +125,19 @@ Default is the global environment.</p></dd>
 Default is TRUE</p></dd>
 
 
+<dt id="arg-debug">debug<a class="anchor" aria-label="anchor" href="#arg-debug"></a></dt>
+<dd><p>If TRUE, prints lines to the console as they are processed.
+This information case be useful for debugging macro code.
+Default is FALSE.  See the <code>vignette("macro-debug"</code> for more information
+on debugging.</p></dd>
+
+
+<dt id="arg-debug-out">debug_out<a class="anchor" aria-label="anchor" href="#arg-debug-out"></a></dt>
+<dd><p>A path to a file to be used for debugging.  If a path
+is supplied, debug output will be written to the file instead of the
+console. Default is NULL.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Follow-on parameters to the <code>source</code> function. See
 the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></code> function for additional information.</p></dd>
@@ -124,7 +145,8 @@ the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">sou
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The results of the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function, invisibly.</p>
+    <p>The results of the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function, invisibly.  The path
+of the resolved output file is also included under the "$output" list item.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
