@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">macro</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
       </span>
     </div>
 
@@ -165,10 +165,12 @@ them in other functions like <code><a href="https://rdrr.io/r/base/paste.html" c
 <code><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path()</a></code>.</li>
 <li>The above approach allows you to execute <code><a href="../reference/msource.html">msource()</a></code>
 directly from the driver script. This approach avoids having to run it
-on the command line, which is somewhat inconvenient.</li>
+on the command line. Instead, you can run in from the “Source” or “Run”
+button in your development environment.</li>
 <li>The above call to <code><a href="../reference/msource.html">msource()</a></code> includes the
 <code>debug = TRUE</code> parameter. This option will generate debug
-information in the console. The debug results will be shown below.</li>
+information in the console. The debug information will be shown
+below.</li>
 </ul>
 <p>Otherwise, the macro driver performs the exact same tasks as the
 previous listing example. It sets the macro variable values and executes

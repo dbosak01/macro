@@ -60,9 +60,10 @@ Note the following in the above example code:
   in other functions like `paste()` or `file.path()`.
   * The above approach allows you to execute `msource()` directly
   from the driver script.  This approach avoids having to run it on the command
-  line, which is somewhat inconvenient.
+  line. Instead, you can run in from the "Source" or "Run" button in your
+  development environment.
   * The above call to `msource()` includes the `debug = TRUE` parameter. This 
-  option will generate debug information in the console.  The debug results 
+  option will generate debug information in the console.  The debug information 
   will be shown below.
 
 Otherwise, the macro driver performs the exact same tasks as the previous

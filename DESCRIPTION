@@ -1,7 +1,7 @@
 Package: macro
 Type: Package
 Title: A Macro Pre-processor for 'R' Programs
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person(
       "David", "Bosak",

@@ -146,7 +146,7 @@ writing a generalized program.
 This technique gives you the best of all worlds: It is easy to build and 
 maintain, allows a high degree of code reuse, provides flexible parameterization,
 and yet still produces simple, readable programs.  These readable
-programs will be greatly appreciated by anyone who needs to review your work.
+programs will be greatly appreciated by anyone who reviews your work.
 
 ### Output Report
 
