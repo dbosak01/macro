@@ -115,8 +115,6 @@ sub_funcs <- function(ln) {
         } else {
           sysex <- substring(ln, spos + 1, cma - 1)
           fmt <- trimws(substring(ln, cma + 1, epos - 1))
-          fmt <- gsub('"', "", fmt, fixed = TRUE)
-          fmt <- gsub("'", "", fmt, fixed = TRUE)
         }
         break
       }
@@ -395,9 +393,30 @@ do_info <- function(lvl, dolvl, var, start, end) {
 
 
 #' @noRd
-log_debug <- function(vl) {
+log_debug <- function(vl, file_path = NULL, appnd = TRUE) {
 
+  if (is.null(file_path)) {
+    pth <- gbl$debug_out
+  } else {
+    pth <- file_path
+  }
 
+  # Write to log or console
+  cat(vl, "\n", file = pth, append = appnd)
+
+}
+
+#' @noRd
+log_error <- function(msg = NULL) {
+
+  # Get error message from system
+  er <- geterrmessage()
+
+  # Write to debug output
+  log_debug(er)
+
+  # Detach error handler
+  options(error = NULL, warning.expression = NULL)
 
 }
 

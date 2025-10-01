@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 Now let's look at a still more complicated example. For this example,
 we want to create a demographics table that can be used across different studies.
-Therefore, we'll need to let the user pass in different parameters like treatment
+Therefore, we'll need to let the user pass in parameters like treatment
 groups, the path to the data, and which variables to include in the analysis.
 The **macro** package makes it easy to create such a parameterized table.
 
@@ -31,13 +31,13 @@ To generate the table, we will need four files:
 
 ### Macro Driver Script
 
-In the listing example, we assigned parameters using the `#%let` macro command.
-In this example, we set them directly in R code.  Here is how it is done:
+In the second listing example, we assigned macro parameters directly in R code.  
+That technique will be used again here:  
 
 ```{r eval=FALSE, echo=TRUE}
 
 # Assign base path
-base_path <- "c:/packages/Testing/macro/code"
+base_path <- "./macro/code"
 
 # Assign relative paths
 log_path. <- file.path(base_path, "log")
@@ -70,30 +70,18 @@ trt_grps. <- c("ARM A" = "Placebo", "ARM B" = "Drug 50mg", "ARM C" = "Drug 100mg
 env. <- "dev" # "prod"
 out_type. <- "PDF"
 
-# Preprocess and Run Example2
-macro::msource("c:/packages/Testing/macro/Example2.R", "c:/packages/Testing/macro/code/t_dm.R")
+# Preprocess and Run Example3
+macro::msource("./macro/Example3.R", "./macro/code/t_dm.R")
 
 ```
-Since these parameters are defined as standard R variables, you have some
-more flexibility in how the parameters are populated. For example, you can 
-populate them dynamically from functions.
-
-These parameters should be sourced and available in the environment 
-before the `msource()` function is run. Any macro variables in the environment
-will be copied to the pre-processor environment at the beginning of execution.
-
-Another advantage of this approach is that you can source the macro driver
-directly from the development environment. You do not need to run `msource()`
-from the command line because it is called in the macro driver.
-
 Observe that there are four possible analysis variables for this demographics
 table: "age", "ageg", "sex", and "race".  The program allows the user
-to pick which variables will end up in the final report.  The template table
+to pick which variables will be added to the final report.  The template table
 program will conditionalize the code on the selected analysis variables.
 
 ### Template Table Program
 
-Here is the macro-enabled template program that the above driver is running:
+Here is the macro-enabled template program that the above driver is calling:
 
 ```{r eval=FALSE, echo=TRUE}
 #####################################################################
@@ -408,7 +396,7 @@ In the above code, notice the following:
   exclude that code from the generated file.
   * Analysis variable blocks are created using functions from the **procs**
   package.
-  * The report code comes from an included code snippet.  
+  * The report code comes from an included template code snippet.  
   
 
 ### Template Code Snippets
@@ -438,7 +426,7 @@ adsl <- read.table(header = TRUE, text = '
 ```
 
 
-Here is the template code for reporting:
+Here is the template code for the report snippet:
 
 ```{r eval=FALSE, echo=TRUE}
 
@@ -487,7 +475,7 @@ In the above reporting code, notice the following:
   * Definitions for the treatment group columns are created dynamically
   from the `trt_grps` variable.
   * Titles, footnotes, etc. are populated from the macro driver.
-  The report functions come from the **reporter** package.
+  * The report functions come from the **reporter** package.
 
 ### Generated Code
 

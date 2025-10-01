@@ -139,7 +139,7 @@ syntax is understood by the SAS syntax checker.</p>
 <p>With R, none of the above applies. R does not have a built-in macro
 language, does not have a built-in pre-processor, and the R syntax
 checker will not expect any sort of macro language syntax.</p>
-<p>Therefore, to build a macro-like functionality in R, we must get a
+<p>Therefore, to build macro-like functionality in R, we must get a
 little creative.</p>
 </div>
 <div class="section level2">
@@ -153,7 +153,7 @@ when parsing the macro functions.</p>
 macro statements are therefore prefixed with a comment symbol (#) and a
 percent sign (%). A simple macro assignment looks like this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#%let x = 1</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#%let x &lt;- 1</span></span></code></pre></div>
 <p>A simple macro conditional looks like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%if (x. == 1)</span></span>
@@ -235,28 +235,28 @@ multi-line comments in R.</p>
 data types:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Assign integer value </span></span>
-<span><span class="co">#%let v1 = 1</span></span>
+<span><span class="co">#%let v1 &lt;- 1</span></span>
 <span></span>
 <span><span class="co">#% Assign double value</span></span>
-<span><span class="co">#%let v2 = 1.2</span></span>
+<span><span class="co">#%let v2 &lt;- 1.2</span></span>
 <span></span>
 <span><span class="co">#% Assign character value</span></span>
-<span><span class="co">#%let v3 = "Hello World!"</span></span>
+<span><span class="co">#%let v3 &lt;- "Hello World!"</span></span>
 <span></span>
 <span><span class="co">#% Assign date value</span></span>
-<span><span class="co">#%let v4 = as.Date("2025-07-15")</span></span>
+<span><span class="co">#%let v4 &lt;- as.Date("2025-07-15")</span></span>
 <span></span>
 <span><span class="co">#% Assign vector</span></span>
-<span><span class="co">#%let v5 = c(1, 2, 3, 4, 5)</span></span>
+<span><span class="co">#%let v5 &lt;- c(1, 2, 3, 4, 5)</span></span>
 <span></span>
 <span><span class="co">#% Assign calculated value</span></span>
-<span><span class="co">#%let v6 = 2 + 2</span></span>
+<span><span class="co">#%let v6 &lt;- 2 + 2</span></span>
 <span></span>
 <span><span class="co">#% Assign using another macro variable</span></span>
-<span><span class="co">#%let v7 = v6.</span></span>
+<span><span class="co">#%let v7 &lt;- v6.</span></span>
 <span></span>
 <span><span class="co">#% Calculate using another macro variable</span></span>
-<span><span class="co">#%let v8 = v7. + 1</span></span></code></pre></div>
+<span><span class="co">#%let v8 &lt;- v7. + 1</span></span></code></pre></div>
 <p>Once a macro variable is assigned, it can be used as a text
 replacement token anywhere in your program.</p>
 <p>Note that R macro variables have no ampersand (“&amp;”) prefix. The
@@ -287,8 +287,9 @@ the following result:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Notice in the above generated code that the macro variables
 <code>v3.</code> and <code>v6.</code> were replaced exactly as they were
-assigned. Macro variable expressions are not resolved unless explicitly
-evaluated.</p>
+assigned. Macro variable expressions are not evaluated unless done so
+explicitly using <code>%sysfunc()</code>. Usage of this macro function
+will be explained below.</p>
 </div>
 <div class="section level4">
 <h4 id="simple-macro-conditionals">Simple Macro Conditionals<a class="anchor" aria-label="anchor" href="#simple-macro-conditionals"></a>
@@ -421,7 +422,7 @@ valid R function or operator. Observe:</p>
 <span><span class="co">#%let c = %sysfunc(sum(a.) / 1.3)</span></span>
 <span></span>
 <span><span class="co">#% Format expression with %sysfunc</span></span>
-<span><span class="co">#%let d = %sysfunc(sum(a.) / 1.3, '%.2f')</span></span>
+<span><span class="co">#%let d = %sysfunc(sum(a.) / 1.3, %.2f)</span></span>
 <span></span>
 <span><span class="co"># Text replacement</span></span>
 <span><span class="va">w</span> <span class="op">&lt;-</span> <span class="va">a.</span></span>
@@ -449,7 +450,8 @@ valid R function or operator. Observe:</p>
 <span><span class="co"># Formatted with %sysfunc()</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">18.46</span></span></code></pre></div>
 <p>Notice how the macro values resolve differently depending on whether
-<code>%sysfunc()</code> is used or not used.</p>
+<code>%sysfunc()</code> is used, and whether the format parameter is
+used or not.</p>
 </div>
 <div class="section level4">
 <h4 id="checking-for-macro-variables-symexist">Checking For Macro Variables: %symexist()<a class="anchor" aria-label="anchor" href="#checking-for-macro-variables-symexist"></a>
@@ -496,11 +498,16 @@ macro variable without quotes and without the “.” suffix.</p>
 <div class="section level2">
 <h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
-<p>Here are the things to look at next:</p>
+<p>Here are some more articles for further exploration of the
+<strong>macro</strong> package:</p>
 <ul>
-<li>Example 1</li>
-<li>Example 2</li>
-<li>Disclaimer</li>
+<li><a href="macro-language.html">Macro Language Glossary</a></li>
+<li><a href="macro-debug.html">Debugging</a></li>
+<li><a href="macro-example1.html">Example 1: Listing</a></li>
+<li><a href="macro-example2.html">Example 2: Another Listing</a></li>
+<li><a href="macro-example3.html">Example 3: Table</a></li>
+<li><a href="macro-disclaimer.html">Disclaimer</a></li>
+<li><a href="macro-faq.html">Frequently Asked Questions</a></li>
 </ul>
 </div>
   </div>

@@ -89,7 +89,7 @@ write_report(rpt)
 
 ```
 Notice in the above code that there are several macro variables.  They end
-with a dot (.).  These macro variables will be replaced with real values
+with a dot (".").  These macro variables will be replaced with real values
 when the macro driver runs.
 
 Also notice that the macro variables can be located anywhere in the program:
@@ -156,4 +156,4 @@ Here is the output report:
 To create a listing for a different dataset, all you need is a new macro 
 driver, with different parameters.  The template code will be the same.
 
-Next: [Example 2: Table](macro-example2.html)
+Next: [Example 2: Another Listing](macro-example2.html)

@@ -1,19 +1,58 @@
 
+# Globals -----------------------------------------------------------------
+
+
 # Macro symbol table
 e <- new.env()
+
+# Global internal variables
+gbl <- new.env()
 
 # Separator for debug output
 strs <- paste0(rep("*", 80), collapse = "")
 
+
+
+# Macro Source Function ---------------------------------------------------
+
+
+
 #' @title Pre-process and Source
 #' @description
-#' The \code{msource} function runs the macro pre-processor
-#' and then executes the program normally.
+#' The \code{msource} function is used to pre-process and source macro-enabled
+#' programs. The function first runs the macro pre-processor to evaluate
+#' any macro commands. During macro evaluation, an output file is created
+#' that contains generated code. After pre-processing, this generated code
+#' is sourced normally.
 #' @details
-#' Additional details...
+#' R does not have a native macro language.  The \strong{macro} package
+#' attempts to make up for that deficiency.  The package devised a set
+#' of macro commands inspired by SAS syntax, which can be added to any R script.
+#' The macro commands are placed in R comments, prefixed by the characters
+#' "#%".
+#'
+#' The macro commands function as pre-processor directives, and the
+#' \code{msource} function is the pre-processor.  These commands operate as
+#' text replacement and branching functions.  They allow you to perform
+#' high-level manipulation of your program before the code is executed.
+#'
+#' @section How to Use:
+#' The \code{msource} function works very much like the Base R \code{source}
+#' function.  You pass the path to the code file as the first parameter, and
+#' \code{msource} will run it.  The difference is that \code{msource} will
+#' first pre-process the file and resolve any macro commands. The resolved
+#' code is placed by default into a temp file and then executed.  If you wish
+#' to save the generated code, supply a local path on the \code{file_out}
+#' parameter.
+#'
+#' The \code{msource} function can be run on the command line or from an R script.
+#' When run from the command line, the function will take the currently active
+#' program in RStudio as the default input.  That means if you are working
+#' interactively in RStudio, you can easily execute your macro code just by
+#' running \code{msource()} on the command line with no parameters.
 #'
 #' @section Macro Commands:
-#' Below is the complete list of available macro commands:
+#' Here is a summary of the available macro commands:
 #' \itemize{
 #'   \item{\strong{#%&lt;comment&gt;}: A macro comment.}
 #'   \item{\strong{#%include '&lt;path&gt;'}: Inserts code from included file as text
@@ -22,29 +61,97 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'   \item{\strong{#%elseif (&lt;condition&gt;)}: Defines a subsequent conditional block.}
 #'   \item{\strong{#%else}: Identifies the default behavior in a condition.}
 #'   \item{\strong{#%end}: Ends a macro condition.}
-#'   \item{\strong{%sysfunc(&lt;expression&gt;)}: Executes an R expression as part of
+#'   \item{\strong{%sysfunc(&lt;expression&gt;)}: Evaluates an R expression as part of
 #'   a macro command.}
+#'   \item{\strong{%symexist(&lt;name&gt;)}: Determines if a macro variable name
+#'   exists in the macro symbol table.}
 #' }
 #'
-#' @param pth The path to the R program to source.
+#' Note that there are no "do" loop commands in the R macro language. This functionality
+#' would be redundant to existing R looping structures, and is therefore unnecessary.
+#'
+#' You can find extensive documentation for the above macro functions in the
+#' the Macro Language vignette. To access the vignette, run
+#' \code{vignette("macro-language")} on the R command line.
+#'
+#' @section Pre-Processor:
+#' There are three main steps to processing a macro-enabled program: pre-process
+#' the input file, generate an output file, and then execute the
+#' output file.
+#'
+#' The pre-processor works by inputting each line of the program line by line.
+#' For each line in the input
+#' script, the function will assign and replace any macro variables. The function
+#' then evaluates any macro conditions.  For any macro conditions that are
+#' TRUE, the pre-processor will output that line to the generated code file.
+#' If a condition evaluates as FALSE, the lines inside that block will
+#' be ignored.
+#'
+#' In short, the pre-processor scans the input program from top to bottom,
+#' spitting out lines or not depending on the macro conditions.  This
+#' logic makes the \strong{macro} package perfect for code generation.
+#'
+#' @section Code Generation:
+#' Code generation in R is most often performed using string concatenation, and
+#' writing out strings to a file.  The \strong{macro} package gives you
+#' a much easier way to do it. Using pre-processor directives, you can
+#' write your code as normal code.  These code lines will be subject to the
+#' syntax checker, and any errors in syntax will be highlighted immediately.
+#'
+#' The \strong{macro} package also makes it easy to construct code from
+#' code snippets.  You can store your snippets in separate files, and
+#' then pull them together using \code{#%include} and macro logic.
+#'
+#' The collation process is further enhanced by the \strong{macro} debugger.
+#' The debugger allows you to solve issues in the macro code much
+#' faster and easier than doing string concatenation.
+#'
+#' @section Debugger:
+#' The \code{msource} function has a built-in debugger.  The debugger can be
+#' very useful when identifying problems in your macro-enabled program.  The
+#' debugger can be activated by setting \code{debug = TRUE} on your call
+#' to \code{msource}.  When activated, the debugger will by default send
+#' debug information to the R console. The debug information can show you
+#' which lines made it into the output file, and how those lines resolved.
+#' It will also echo the source call for the generated code. If an error occurs
+#' at either of these stages, the debug information will help you pinpoint
+#' which line produced the error.
+#'
+#' For a full explanation of the debugger capabilities and several examples,
+#' see the debugging vignette at \code{vignette('macro-debug')}.
+#'
+#' @section Output File Execution:
+#' Once the output file has been generated successfully, the \code{msource}
+#' function will execute it normally using the Base R \code{source} function.
+#' At this point the generated code runs like a normal R program, and any
+#' errors or warnings will be sent to the console by default.
+#'
+#' If you do not wish to execute the generated code, use the \code{exec} parameter
+#' to turn off execution.
+#'
+#' @param pth The path to the R program to process. This parameter is required.
+#' It will default to the currently activated program.
 #' @param file_out If you want to save or view the generated code
 #' from the \code{msource} function, supply a full path and
 #' file name on this parameter. Default is NULL. When NULL,
-#' the function will create a temp file for the generated code.
+#' the function will create a temp file for the generated code. The temp
+#' file will be deleted when processing is complete.
 #' @param envir The environment to be used for program execution.
 #' Default is the global environment.
 #' @param exec Whether or not to execute the output file after pre-processing.
-#' Default is TRUE
+#' Default is TRUE. When FALSE, only the pre-processing step is performed.
+#' If a \code{file_out} parameter is supplied, the generated code file
+#' will still be created.
 #' @param debug If TRUE, prints lines to the console as they are processed.
 #' This information case be useful for debugging macro code.
-#' Default is FALSE.  See the \code{vignette("macro-debug"} for more information
-#' on debugging.
+#' Default is FALSE.
 #' @param debug_out A path to a file to be used for debugging.  If a path
 #' is supplied, debug output will be written to the file instead of the
 #' console. Default is NULL.
 #' @param ... Follow-on parameters to the \code{source} function. See
 #' the \code{\link{source}} function for additional information.
 #' @import common
+#' @importFrom utils capture.output
 #' @returns The results of the \code{source()} function, invisibly.  The path
 #' of the resolved output file is also included under the "$output" list item.
 #' @export
@@ -63,27 +170,61 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
   else
     e <- envir
 
-  if (debug) {
-    cat(strs, "\n")
-    cat("**  Pre-Processing\n")
-    cat(strs, "\n")
-    cat("-    File In: ", pth, "\n")
+  # To write cat() to the console,
+  # requires empty string.
+  # NULL will error.
+  if (is.null(debug_out)) {
+    debug_out <- ""
   }
 
-  ppth <- preprocess(pth, file_out, envir, debug)
+  # Set globally no matter what
+  gbl$debug_out <- debug_out
 
+  if (debug) {
+
+    # If debug_out is requested
+    # Write errors to log
+    if (nchar(debug_out) > 0) {
+      # Attach error event handler
+      options(error = log_error)
+    }
+
+    # Write log header
+    log_debug(strs, appnd = FALSE)
+    log_debug("**  Pre-Processing")
+    log_debug(strs)
+    log_debug(paste0("-    File In: ", pth))
+  }
+
+  # Stage 1: Run pre-process routine
+  ppth <- preprocess(pth, file_out, envir, debug, debug_out)
+
+  # Stage 2: Source pre-process output
   if (exec) {
     if (debug) {
-      cat(strs, "\n")
-      cat("**  Execution\n")
-      cat(strs, "\n")
 
-      ret <- source(ppth, local = e, echo = TRUE, ...)
+      # Write execution header
+      log_debug(strs)
+      log_debug("**  Execution")
+      log_debug(strs)
+
+      if (debug_out == "") {
+        # Execute source with echo
+        ret <- source(ppth, local = e, echo = TRUE, ...)
+      } else {
+        # Write source echo to log
+        capture.output(source(ppth, local = e, echo = TRUE, ...),
+                       file = debug_out, append = TRUE,
+                       type = c("output", "message"))
+        ret <- list(invisible = TRUE, value = NA)
+
+      }
     } else {
+      # Execute source normally
       ret <- source(ppth, local = e, ...)
     }
   } else {
-
+    # If no execution, create list return value
     ret <- list()
     ret$value <- NA
   }
@@ -93,23 +234,32 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
     file.remove(ppth)
     ret$output <- ""
   } else {
+
     # Add output path to return object
     ret$output <- ppth
   }
 
   if (debug) {
-    cat("\n")
-    cat(strs, "\n")
-    cat("**  End\n")
-    cat(strs, "\n")
+    # Write log end indicator
+    log_debug("")
+    log_debug(strs)
+    log_debug("**  End")
+    log_debug(strs)
+
+    # Release error sink
+    if (nchar(debug_out) > 0) {
+      # Attach error event handler
+      options(error = NULL)
+    }
   }
 
+  # Source return value is ugly, so hide it
   invisible(ret)
 }
 
 # Input macro code and output path to resolved code
 #' @noRd
-preprocess <- function(pth, file_out, envir, debug) {
+preprocess <- function(pth, file_out, envir, debug, debug_out) {
 
   # Create output file name
   if (is.null(file_out)) {
@@ -121,9 +271,9 @@ preprocess <- function(pth, file_out, envir, debug) {
 
   # print(npth)
   if (debug) {
-    cat("-   File Out: ", npth, "\n")
-    cat(strs, "\n")
-    cat("[ In#][Out#]:\n")
+    log_debug(paste0("-   File Out: ", npth))
+    log_debug(strs)
+    log_debug("[ In#][Out#]:")
   }
 
   # Kill if exists
@@ -154,7 +304,7 @@ preprocess <- function(pth, file_out, envir, debug) {
   # print(ls(e))
 
   # Process lines
-  nlns <- mprocess(lns, debug)
+  nlns <- mprocess(lns, debug, debug_out)
 
   # Output program
   fl2 <- file(npth, open = "w", encoding = "native.enc")
@@ -169,7 +319,7 @@ preprocess <- function(pth, file_out, envir, debug) {
 
 # Process macro statements
 #' @noRd
-mprocess <- function(lns, debug) {
+mprocess <- function(lns, debug, debug_out) {
 
   ret <- c()
 
@@ -304,7 +454,7 @@ mprocess <- function(lns, debug) {
 
           # Print to console if user requests
           if (debug) {
-            cat(paste0("[", sprintf("%4d", idx), "][", sprintf("%4d", idxO), "]: ", nln, "\n"))
+            log_debug(paste0("[", sprintf("%4d", idx), "][", sprintf("%4d", idxO), "]: ", nln))
             emt <- TRUE
           }
 
@@ -315,7 +465,7 @@ mprocess <- function(lns, debug) {
     }
 
     if (debug & emt == FALSE) {
-      cat(paste0("[", sprintf("%4d", idx), "][    ]: ", ln, "\n"))
+      log_debug(paste0("[", sprintf("%4d", idx), "][    ]: ", ln))
     }
     emt <- FALSE
 
@@ -334,143 +484,8 @@ mprocess <- function(lns, debug) {
 
 }
 
-
-
-# Process macro statements
+# Replace macro variables
 #' @noRd
-mprocess_back <- function(lns) {
-
-  ret <- c()
-
-  # print(ls(e))
-
-  lvl <- 1 # lvl 1 is open code
-  isopen <- list()
-  isopen[[lvl]] <- TRUE
-  elseflag <- list()
-  elseflag[[lvl]] <- TRUE
-  idx <- 1
-  lncnt <- length(lns)
-
-  while (idx <= lncnt) {
-
-    # Initialize line
-    ln <- lns[idx]
-
-    # Resolve sysfuncs
-    ln <- sub_funcs(ln)
-
-    # Identify let statements
-    islet <- is_let(ln, isopen[[lvl]])
-
-    if (!islet) {
-
-      # browser()
-
-      # If flag
-      if (isopen[[lvl]] == TRUE) {
-        isif <-  is_if(ln)
-      } else {
-        isif <- FALSE
-      }
-
-      # Ifelse flag
-      iselseif <- is_elseif(ln)
-
-      # Include flag
-      isinclude <- is_include(ln)
-
-      # Next line macro
-      if (idx < lncnt) {
-        nl <- lns[idx + 1]
-        if (is_comment(nl) | trimws(nl) == "") {
-          ismacro <- TRUE
-        } else {
-          ismacro <- FALSE
-        }
-      } else {
-        ismacro <- FALSE
-      }
-
-      if (as.logical(isif)) {   # Deal with 'if'
-        lvl <- lvl + 1
-        if (isopen[[lvl - 1]]) {
-          if (attr(isif, "value") == TRUE) {
-            isopen[[lvl]] <- TRUE
-            elseflag[[lvl]] <- FALSE
-          } else {
-            isopen[[lvl]]  <- FALSE
-          }
-        }
-      } else if (as.logical(iselseif)) {   # Deal with 'ifelse'
-        if (isopen[[lvl - 1]]) {
-          if (attr(iselseif, "value") == TRUE) {
-            isopen[[lvl]]  <- TRUE
-            elseflag[[lvl]] <- FALSE
-          } else {
-            isopen[[lvl]]  <- FALSE
-          }
-        }
-      } else if (is_else(ln)) {   # Deal with 'else'
-        if (isopen[[lvl - 1]]) {
-          if (length(elseflag) < lvl)
-            elseflag[[lvl]] <- TRUE
-
-          if (elseflag[[lvl]]) {
-            isopen[[lvl]]  <- TRUE
-          } else {
-            isopen[[lvl]]  <- FALSE
-          }
-        }
-      } else if (is_end(ln)) {   # Deal with 'end'
-        isopen[[lvl]]  <- FALSE
-        elseflag[[lvl]] <- TRUE
-        lvl <- lvl - 1
-      } else if (as.logical(isinclude)) {  # Deal with 'include'
-
-        if (isopen[[lvl]] == TRUE) {
-
-          # Resolve any macro variables
-          pth <- mreplace(attr(isinclude, "path"))
-
-          # Get lines from include file
-          nlns <- get_include(pth)
-
-          # Insert into lns vector
-          lns <- c(lns[seq(1, idx - 1)], nlns, lns[seq(idx + 1, lncnt)])
-
-          # Reset line count
-          lncnt <- length(lns)
-
-          # Reset index
-          idx <- idx - 1
-
-        }
-      } else if (is_comment(ln)) {  # Deal with macro comment
-        # Do nothing
-        # Don't emit
-      } else if (isopen[[lvl]] == TRUE) {   # Deal with normal code
-
-        if (nchar(trimws(ln)) == 0 & ismacro) {
-          # Do nothing
-          # Eliminate blank lines before macro statements
-        } else {
-          # If it makes it to this point,
-          # replace any macro variables and emit as code
-          ret <- append(ret, mreplace(ln))
-        }
-      }
-    }
-
-    print(paste0("Line: ", idx, ", Level: ", lvl, ", isopen: ", isopen[[lvl]]))
-    idx <- idx + 1
-  }
-
-
-  return(ret)
-
-}
-
 mreplace <- function(ln) {
 
   ret <- ln
@@ -548,7 +563,3 @@ mreplace <- function(ln) {
   return(ret)
 }
 
-# re1 <- "x."
-# sm1 <- c('one', 'two', 'three')
-# sm2 <- deparse1(sm1)
-# ret <- gsub("x.", sm2, re1, fixed = TRUE)

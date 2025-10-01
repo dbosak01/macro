@@ -127,9 +127,9 @@ commands.</p>
 <h3 id="syntax">Syntax<a class="anchor" aria-label="anchor" href="#syntax"></a>
 </h3>
 <pre><code><span><span class="co">#% &lt;comment&gt;</span></span></code></pre>
-<p>Where “&lt;comment&gt;” is any text string.</p>
-<p>The macro comment is a single line comment. If you need multiple
-lines, use multiple macro comments.</p>
+<p>Where “&lt;comment&gt;” is any text string. The macro comment is a
+single line comment. If you need multiple lines, use multiple macro
+comments.</p>
 </div>
 <div class="section level3">
 <h3 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
@@ -165,9 +165,9 @@ are removed:</p>
 <span><span class="co">#%let &lt;variable&gt;</span></span></code></pre>
 <p>Where “&lt;variable&gt;” is the name of the variable, and
 “&lt;value&gt;” is some value assigned to the variable.</p>
-<p>Note that R variables must begin with an alphabetic character. They
-can contain only alphabetic characters, numbers, and an underscore
-(“_“).</p>
+<p>Note that macro variable names must begin with an alphabetic
+character. They can contain only alphabetic characters, numbers, and an
+underscore (“_“).</p>
 <p>Macro variables should be named without a trailing dot (“.”). The
 trailing dot will be appended automatically when the variable is added
 to the symbol table.</p>
@@ -251,12 +251,16 @@ in the environment, the parser generates an error.</p>
 <p>If you want to remove an existing macro variable from the symbol
 table, leave it unassigned. Like this:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#% Clear assignment</span></span>
+<code class="sourceCode R"><span><span class="co">#% Macro assignment</span></span>
+<span><span class="co">#%let b &lt;- 2</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">b.</span></span>
+<span></span>
+<span><span class="co">#% Clear assignment</span></span>
 <span><span class="co">#%let b</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">b.</span></span></code></pre></div>
-<p>Note that the above code will generate an error, as the
-<code>y &lt;- b.</code> runs after the variable has been cleared. Here
-is the error that is generated:</p>
+<p>The above code will generate an error, as the <code>y &lt;- b.</code>
+runs after the variable has been cleared. Here is the error that is
+generated:</p>
 <pre><code>Error in mreplace(ln) : 
   Macro variable 'b.' not valid for text replacement.</code></pre>
 </div>
@@ -277,18 +281,19 @@ template code file “temp1.R” is executed via <code><a href="../reference/mso
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Print macro variable</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">c.</span></span></code></pre></div>
-<p>When the “temp1.R” file is resolved, it will look like this:</p>
+<p>When the “temp1.R” file is resolved to “temp1_mod.R”, it will look
+like this:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Print macro variable</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></code></pre></div>
-<p>Note that the macro variable <code>c.</code> is replaced normally.
-The reason is because any variable with a trailing dot (“.”) in the
-parent environment will be copied to the macro symbol table when the
-pre-processor begins.</p>
+<p>You can see that the macro variable <code>c.</code> is replaced
+normally. The reason is because any variable with a trailing dot (“.”)
+in the parent environment will be copied to the macro symbol table when
+the pre-processor begins.</p>
 <p>Also note that parent macro assignments do not need to take place in
 the same code file as <code><a href="../reference/msource.html">msource()</a></code>. You can assign them in a
 setup file if desired. As long as they exist in the parent environment,
-the macro assignments will be resolved in the pre-processor.</p>
+the macro variables will be copied to the symbol table.</p>
 </div>
 </div>
 </div>
@@ -323,14 +328,17 @@ recommended.</p>
 <p>The conditional expressions to be evaluated should be regular R
 expressions, using R syntax. For comparisons, the expression should use
 the double-equals (“==”) comparison operator, as in a normal R “if”
-statement.<br>
-Likewise, all other comparison operators should follow Base R
+statement. Likewise, all other comparison operators should follow Base R
 syntax.</p>
 <p>The conditional expression may contain macro variables. These macro
 variables will be resolved before the expression is evaluated. Reminder
 that the macro variables are text replacements, and will be resolved
 accordingly.</p>
-<p>If an expression in a macro “if” block are TRUE, the code inside that
+<p>The conditional expression may also contain R functions like
+<code><a href="https://rdrr.io/r/base/any.html" class="external-link">any()</a></code> and <code><a href="https://rdrr.io/r/base/all.html" class="external-link">all()</a></code>. In most cases, these function
+do not need to be wrapped in <code>%sysfunc()</code>. They will evaluate
+properly as part of the expression.</p>
+<p>If an expression in a macro “if” block is TRUE, the code inside that
 block will be emitted during pre-processing. If the expression evaluates
 to FALSE, code inside that block will be ignored.</p>
 <p>Macro conditions may be nested inside one another. There is no limit
@@ -361,8 +369,8 @@ the following:</p>
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Path to data</span></span>
 <span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="st">"./dev/data/dm.sas7bdat"</span></span></code></pre></div>
-<p>The macro selected the “dev” path as indicated, constructed the path
-appropriately, and removed all macro statements.</p>
+<p>The pre-processor selected the “dev” path as indicated, constructed
+the path appropriately, and removed all macro statements.</p>
 </div>
 <div class="section level4">
 <h4 id="nested-conditionals">Nested Conditionals<a class="anchor" aria-label="anchor" href="#nested-conditionals"></a>
@@ -401,6 +409,7 @@ allows you to construct more complicated logic. Here is an example:</p>
 <span>  <span class="co">#%end</span></span>
 <span></span>
 <span><span class="co">#%end</span></span></code></pre></div>
+<p>When the nested conditionals resolve, they will look like this:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">######################</span></span>
 <span><span class="co"># Get data</span></span>
@@ -412,6 +421,8 @@ allows you to construct more complicated logic. Here is an example:</p>
 <span></span>
 <span>  <span class="co"># Get advs dataset</span></span>
 <span>  <span class="va">advs</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADVS.sas7bdat"</span><span class="op">)</span></span></code></pre></div>
+<p>In this way, you can perform complex logic in the macro
+pre-processor, and still end up with a very simple result.</p>
 </div>
 </div>
 </div>
@@ -424,9 +435,9 @@ allows you to construct more complicated logic. Here is an example:</p>
 <pre><code><span><span class="co">#%include &lt;path&gt;</span></span>
 <span><span class="co">#%include '&lt;path&gt;'</span></span>
 <span><span class="co">#%include "&lt;path&gt;"</span></span></code></pre>
-<p>Where “&lt;path&gt;” is a path to the file to include.</p>
-<p>The file path may be quoted or unquoted. If the path is quoted,
-single or double quotes may be used.</p>
+<p>Where “&lt;path&gt;” is a path to the file to include. The file path
+may be quoted or unquoted. If the path is quoted, single or double
+quotes may be used.</p>
 </div>
 <div class="section level3">
 <h3 id="details-3">Details<a class="anchor" aria-label="anchor" href="#details-3"></a>
@@ -434,7 +445,7 @@ single or double quotes may be used.</p>
 <p>The <code>#%include()</code> macro command inserts text from an
 external file into the generated output file. This behavior is different
 from the Base R <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function, which only executes the
-code from the external file. The macro include actually copies the code
+code from the external file. A macro include actually copies the code
 into the generated file. The included code does not have to be fully
 functional. It can be a code snippet that only works when combined with
 other included code.</p>
@@ -482,14 +493,16 @@ from multiple code snippets into a unified result.</p>
 <div class="section level2">
 <h2 id="macro-functions">Macro Functions<a class="anchor" aria-label="anchor" href="#macro-functions"></a>
 </h2>
+<p>The <strong>macro</strong> package currently supports two macro
+functions: <code>%sysfunc()</code> and <code>%symexist()</code>.</p>
 <div class="section level3">
 <h3 id="syntax-4">Syntax<a class="anchor" aria-label="anchor" href="#syntax-4"></a>
 </h3>
 <pre><code>%sysfunc(&lt;expression&gt;, [&lt;format&gt;])</code></pre>
 <p>Where “&lt;expression&gt;” is an R expression that resolves to a
-numeric value, and “&lt;format&amp;ft;” is an optional format code. The
-expression may contain R functions, operators, hard-coded values, and
-macro variables. If “&lt;format&amp;ft;” is supplied, the function will
+numeric value, and “&lt;format&gt;” is an optional unquoted format code.
+The expression may contain R functions, operators, hard-coded values,
+and macro variables. If “&lt;format&gt;” is supplied, the function will
 apply the format after the expression is resolved, and return the
 formatted value.</p>
 <pre><code>%symexist(&lt;name&gt;)</code></pre>
@@ -507,10 +520,10 @@ this reason, the syntax does not include a leading comment symbol
 (“#”).</p>
 <p>The purpose of <code>%sysfunc()</code> is to evaluate regular R
 expressions during macro processing. The evaluated result can then be
-assigned to a macro variable, or used in a condition.</p>
+assigned to a macro variable, or used in a macro condition.</p>
 <p>The purpose of <code>%symexist()</code> is to check for the existence
 of a macro variable. This check is likewise most often performed as part
-of a macro conditional.</p>
+of a macro conditional expression.</p>
 </div>
 <div class="section level3">
 <h3 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a>
@@ -518,13 +531,58 @@ of a macro conditional.</p>
 <div class="section level4">
 <h4 id="sysfunc">%sysfunc()<a class="anchor" aria-label="anchor" href="#sysfunc"></a>
 </h4>
+<p>Here are some examples illustrating the basic operation of
+<code>%sysfunc()</code>:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Unevaluated assignment</span></span>
+<span><span class="co">#%let a &lt;- 2 + 2</span></span>
+<span><span class="va">w</span> <span class="op">&lt;-</span> <span class="va">a.</span></span>
+<span></span>
+<span><span class="co">#% Evaluated assignment</span></span>
+<span><span class="co">#%let b &lt;- %sysfunc(2 + 2)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">b.</span></span>
+<span></span>
+<span><span class="co">#% Unevaluated replacement </span></span>
+<span><span class="co">#%let c &lt;- a. + b.</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">c.</span></span>
+<span></span>
+<span><span class="co">#% Evaluated replacement</span></span>
+<span><span class="co">#%let d &lt;- %sysfunc(a. + b.)</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">d.</span></span>
+<span>  </span></code></pre></div>
+<p>The above code resolves as follows:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">4</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">8</span></span></code></pre></div>
+<p>Observe the different ways each expression resolves depending on
+whether <code>%sysfunc()</code> is used.</p>
+<p>Here is another example:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%let a &lt;- c(1.205, 4.683, 3.812, 6.281, 9.467)</span></span>
+<span></span>
+<span><span class="co">#%if (%sysfunc(mean(a.)) &gt; 5)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"&gt; 5"</span></span>
+<span><span class="co">#%else </span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"&lt;= 5"</span></span>
+<span><span class="co">#%end</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<p>The above macro function evaluates the mean of <code>a.</code>,
+compares to the hard-coded value 5, and then sets the value of
+<code>x</code>. The <code>%sysfunc()</code> macro function allows for
+immediate evaluation of the Base R <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> function.</p>
+<p>Note that you do not need multiple calls to <code>%sysfunc()</code>
+if you have multiple Base R functions in your expression. Just put your
+entire expression inside one call to <code>%sysfunc()</code> and it will
+evaluate as desired.</p>
 </div>
 <div class="section level4">
 <h4 id="symexist">%symexist()<a class="anchor" aria-label="anchor" href="#symexist"></a>
 </h4>
-<p>Below is a simple example checking for the existance of some macro
+<p>Below is a simple example checking for the existence of some macro
 variables before using them in a calculation:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Check for existance of a</span></span>
 <span><span class="co">#%if (%symexist(a) == FALSE)</span></span>
 <span>  <span class="co">#%let a &lt;- 2</span></span>
@@ -538,9 +596,14 @@ variables before using them in a calculation:</p>
 <span><span class="co"># Calculate a * b</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">a.</span> <span class="op">*</span> <span class="va">b.</span></span></code></pre></div>
 <p>And here is the resolved version:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate a * b</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span></span></code></pre></div>
+<p>Notice that the variable name inside the <code>%symexist()</code>
+function is not quoted. For this function, quoting is not necessary, and
+will in fact prevent the function from finding the specified variable
+name.</p>
+<p>Next: <a href="macro-debug.html">Debugging</a></p>
 </div>
 </div>
 </div>

@@ -374,8 +374,36 @@ test_that("msource13: test variable confounding.", {
 
 })
 
+test_that("msource14: test debug_out.", {
+
+  fl1 <- file.path(base_path, "programs/test13.R")
+  fl2 <- file.path(base_path, "examples/log/test13.txt")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, envir = e1, debug = TRUE,
+                 debug_out = fl2)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$x, 1)
+  expect_equal(e1$y, 2)
 
 
+  fl3 <- file.path(base_path, "programs/test12.R")
+  fl4 <- file.path(base_path, "examples/log/test12.txt")
+
+  if (file.exists(fl4))
+    file.remove(fl4)
+
+  expect_error(msource(fl3, debug = TRUE, debug_out = fl4))
+
+
+})
 
 # test_that("msource8: msource() do loop functionality.", {
 #

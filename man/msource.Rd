@@ -15,23 +15,26 @@ msource(
 )
 }
 \arguments{
-\item{pth}{The path to the R program to source.}
+\item{pth}{The path to the R program to process. This parameter is required.
+It will default to the currently activated program.}
 
 \item{file_out}{If you want to save or view the generated code
 from the \code{msource} function, supply a full path and
 file name on this parameter. Default is NULL. When NULL,
-the function will create a temp file for the generated code.}
+the function will create a temp file for the generated code. The temp
+file will be deleted when processing is complete.}
 
 \item{envir}{The environment to be used for program execution.
 Default is the global environment.}
 
 \item{exec}{Whether or not to execute the output file after pre-processing.
-Default is TRUE}
+Default is TRUE. When FALSE, only the pre-processing step is performed.
+If a \code{file_out} parameter is supplied, the generated code file
+will still be created.}
 
 \item{debug}{If TRUE, prints lines to the console as they are processed.
 This information case be useful for debugging macro code.
-Default is FALSE.  See the \code{vignette("macro-debug"} for more information
-on debugging.}
+Default is FALSE.}
 
 \item{debug_out}{A path to a file to be used for debugging.  If a path
 is supplied, debug output will be written to the file instead of the
@@ -45,15 +48,44 @@ The results of the \code{source()} function, invisibly.  The path
 of the resolved output file is also included under the "$output" list item.
 }
 \description{
-The \code{msource} function runs the macro pre-processor
-and then executes the program normally.
+The \code{msource} function is used to pre-process and source macro-enabled
+programs. The function first runs the macro pre-processor to evaluate
+any macro commands. During macro evaluation, an output file is created
+that contains generated code. After pre-processing, this generated code
+is sourced normally.
 }
 \details{
-Additional details...
+R does not have a native macro language.  The \strong{macro} package
+attempts to make up for that deficiency.  The package devised a set
+of macro commands inspired by SAS syntax, which can be added to any R script.
+The macro commands are placed in R comments, prefixed by the characters
+"#\%".
+
+The macro commands function as pre-processor directives, and the
+\code{msource} function is the pre-processor.  These commands operate as
+text replacement and branching functions.  They allow you to perform
+high-level manipulation of your program before the code is executed.
 }
+\section{How to Use}{
+
+The \code{msource} function works very much like the Base R \code{source}
+function.  You pass the path to the code file as the first parameter, and
+\code{msource} will run it.  The difference is that \code{msource} will
+first pre-process the file and resolve any macro commands. The resolved
+code is placed by default into a temp file and then executed.  If you wish
+to save the generated code, supply a local path on the \code{file_out}
+parameter.
+
+The \code{msource} function can be run on the command line or from an R script.
+When run from the command line, the function will take the currently active
+program in RStudio as the default input.  That means if you are working
+interactively in RStudio, you can easily execute your macro code just by
+running \code{msource()} on the command line with no parameters.
+}
+
 \section{Macro Commands}{
 
-Below is the complete list of available macro commands:
+Here is a summary of the available macro commands:
 \itemize{
 \item{\strong{#\%<comment>}: A macro comment.}
 \item{\strong{#\%include '<path>'}: Inserts code from included file as text
@@ -62,8 +94,80 @@ into current program.}
 \item{\strong{#\%elseif (<condition>)}: Defines a subsequent conditional block.}
 \item{\strong{#\%else}: Identifies the default behavior in a condition.}
 \item{\strong{#\%end}: Ends a macro condition.}
-\item{\strong{\%sysfunc(<expression>)}: Executes an R expression as part of
+\item{\strong{\%sysfunc(<expression>)}: Evaluates an R expression as part of
 a macro command.}
+\item{\strong{\%symexist(<name>)}: Determines if a macro variable name
+exists in the macro symbol table.}
 }
+
+Note that there are no "do" loop commands in the R macro language. This functionality
+would be redundant to existing R looping structures, and is therefore unnecessary.
+
+You can find extensive documentation for the above macro functions in the
+the Macro Language vignette. To access the vignette, run
+\code{vignette("macro-language")} on the R command line.
+}
+
+\section{Pre-Processor}{
+
+There are three main steps to processing a macro-enabled program: pre-process
+the input file, generate an output file, and then execute the
+output file.
+
+The pre-processor works by inputting each line of the program line by line.
+For each line in the input
+script, the function will assign and replace any macro variables. The function
+then evaluates any macro conditions.  For any macro conditions that are
+TRUE, the pre-processor will output that line to the generated code file.
+If a condition evaluates as FALSE, the lines inside that block will
+be ignored.
+
+In short, the pre-processor scans the input program from top to bottom,
+spitting out lines or not depending on the macro conditions.  This
+logic makes the \strong{macro} package perfect for code generation.
+}
+
+\section{Code Generation}{
+
+Code generation in R is most often performed using string concatenation, and
+writing out strings to a file.  The \strong{macro} package gives you
+a much easier way to do it. Using pre-processor directives, you can
+write your code as normal code.  These code lines will be subject to the
+syntax checker, and any errors in syntax will be highlighted immediately.
+
+The \strong{macro} package also makes it easy to construct code from
+code snippets.  You can store your snippets in separate files, and
+then pull them together using \code{#\%include} and macro logic.
+
+The collation process is further enhanced by the \strong{macro} debugger.
+The debugger allows you to solve issues in the macro code much
+faster and easier than doing string concatenation.
+}
+
+\section{Debugger}{
+
+The \code{msource} function has a built-in debugger.  The debugger can be
+very useful when identifying problems in your macro-enabled program.  The
+debugger can be activated by setting \code{debug = TRUE} on your call
+to \code{msource}.  When activated, the debugger will by default send
+debug information to the R console. The debug information can show you
+which lines made it into the output file, and how those lines resolved.
+It will also echo the source call for the generated code. If an error occurs
+at either of these stages, the debug information will help you pinpoint
+which line produced the error.
+
+For a full explanation of the debugger capabilities and several examples,
+see the debugging vignette at \code{vignette('macro-debug')}.
+}
+
+\section{Output File Execution}{
+
+Once the output file has been generated successfully, the \code{msource}
+function will execute it normally using the Base R \code{source} function.
+At this point the generated code runs like a normal R program, and any
+errors or warnings will be sent to the console by default.
+
+If you do not wish to execute the generated code, use the \code{exec} parameter
+to turn off execution.
 }
 

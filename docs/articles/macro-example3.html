@@ -118,10 +118,10 @@
     
 <p>Now let’s look at a still more complicated example. For this example,
 we want to create a demographics table that can be used across different
-studies. Therefore, we’ll need to let the user pass in different
-parameters like treatment groups, the path to the data, and which
-variables to include in the analysis. The <strong>macro</strong> package
-makes it easy to create such a parameterized table.</p>
+studies. Therefore, we’ll need to let the user pass in parameters like
+treatment groups, the path to the data, and which variables to include
+in the analysis. The <strong>macro</strong> package makes it easy to
+create such a parameterized table.</p>
 <div class="section level2">
 <h2 id="generate-a-demographics-table">Generate a Demographics Table<a class="anchor" aria-label="anchor" href="#generate-a-demographics-table"></a>
 </h2>
@@ -135,13 +135,13 @@ makes it easy to create such a parameterized table.</p>
 <div class="section level3">
 <h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
 </h3>
-<p>In the listing example, we assigned parameters using the
-<code>#%let</code> macro command. In this example, we set them directly
-in R code. Here is how it is done:</p>
+<p>In the second listing example, we assigned macro parameters directly
+in R code.<br>
+That technique will be used again here:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Assign base path</span></span>
-<span><span class="va">base_path</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/Testing/macro/code"</span></span>
+<span><span class="va">base_path</span> <span class="op">&lt;-</span> <span class="st">"./macro/code"</span></span>
 <span></span>
 <span><span class="co"># Assign relative paths</span></span>
 <span><span class="va">log_path.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_path</span>, <span class="st">"log"</span><span class="op">)</span></span>
@@ -174,22 +174,11 @@ in R code. Here is how it is done:</p>
 <span><span class="va">env.</span> <span class="op">&lt;-</span> <span class="st">"dev"</span> <span class="co"># "prod"</span></span>
 <span><span class="va">out_type.</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
 <span></span>
-<span><span class="co"># Preprocess and Run Example2</span></span>
-<span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="st">"c:/packages/Testing/macro/Example2.R"</span>, <span class="st">"c:/packages/Testing/macro/code/t_dm.R"</span><span class="op">)</span></span></code></pre></div>
-<p>Since these parameters are defined as standard R variables, you have
-some more flexibility in how the parameters are populated. For example,
-you can populate them dynamically from functions.</p>
-<p>These parameters should be sourced and available in the environment
-before the <code><a href="../reference/msource.html">msource()</a></code> function is run. Any macro variables
-in the environment will be copied to the pre-processor environment at
-the beginning of execution.</p>
-<p>Another advantage of this approach is that you can source the macro
-driver directly from the development environment. You do not need to run
-<code><a href="../reference/msource.html">msource()</a></code> from the command line because it is called in the
-macro driver.</p>
+<span><span class="co"># Preprocess and Run Example3</span></span>
+<span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="st">"./macro/Example3.R"</span>, <span class="st">"./macro/code/t_dm.R"</span><span class="op">)</span></span></code></pre></div>
 <p>Observe that there are four possible analysis variables for this
 demographics table: “age”, “ageg”, “sex”, and “race”. The program allows
-the user to pick which variables will end up in the final report. The
+the user to pick which variables will be added to the final report. The
 template table program will conditionalize the code on the selected
 analysis variables.</p>
 </div>
@@ -197,7 +186,7 @@ analysis variables.</p>
 <h3 id="template-table-program">Template Table Program<a class="anchor" aria-label="anchor" href="#template-table-program"></a>
 </h3>
 <p>Here is the macro-enabled template program that the above driver is
-running:</p>
+calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################################################</span></span>
 <span><span class="co"># Program Name: prog_name.</span></span>
@@ -511,7 +500,7 @@ conditions. These conditions will include or exclude that code from the
 generated file.</li>
 <li>Analysis variable blocks are created using functions from the
 <strong>procs</strong> package.</li>
-<li>The report code comes from an included code snippet.</li>
+<li>The report code comes from an included template code snippet.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -537,7 +526,7 @@ generated file.</li>
 <span><span class="st">  "014"   "ARM B" "M"  "WHITE" 34  </span></span>
 <span><span class="st">  "015"   "ARM C" "M"  "WHITE" 36</span></span>
 <span><span class="st">  "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span></code></pre></div>
-<p>Here is the template code for reporting:</p>
+<p>Here is the template code for the report snippet:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
@@ -582,8 +571,9 @@ generated file.</li>
 <code>%symexist()</code> function to make that determination.</li>
 <li>Definitions for the treatment group columns are created dynamically
 from the <code>trt_grps</code> variable.</li>
-<li>Titles, footnotes, etc. are populated from the macro driver. The
-report functions come from the <strong>reporter</strong> package.</li>
+<li>Titles, footnotes, etc. are populated from the macro driver.</li>
+<li>The report functions come from the <strong>reporter</strong>
+package.</li>
 </ul>
 </div>
 <div class="section level3">

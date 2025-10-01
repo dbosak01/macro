@@ -25,10 +25,8 @@ each of the available commands.
 ```
 #% <comment>
 ```
-Where "&lt;comment&gt;" is any text string. 
-
-The macro comment is a single line comment.  If you need multiple lines,
-use multiple macro comments.
+Where "&lt;comment&gt;" is any text string. The macro comment is a single 
+line comment.  If you need multiple lines, use multiple macro comments.
 
 ### Details
 
@@ -65,7 +63,7 @@ During pre-processing, the macro comment and the blank line before it are remove
 Where "&lt;variable&gt;" is the name of the variable, and "&lt;value&gt;" is some 
 value assigned to the variable.    
 
-Note that R variables must
+Note that macro variable names must
 begin with an alphabetic character.  They can contain only alphabetic characters,
 numbers, and an underscore ("_"). 
 
@@ -160,12 +158,16 @@ the parser generates an error.
 If you want to remove an existing macro variable from the symbol table, 
 leave it unassigned.  Like this:
 ```{r eval=FALSE, echo=TRUE}
+#% Macro assignment
+#%let b <- 2
+x <- b.
+
 #% Clear assignment
 #%let b
 y <- b.
 
 ```
-Note that the above code will generate an error, as the `y <- b.` runs
+The above code will generate an error, as the `y <- b.` runs
 after the variable has been cleared.  Here is the error that is generated:
 ```
 Error in mreplace(ln) : 
@@ -192,19 +194,19 @@ Here is the file "temp1.R":
 # Print macro variable
 z <- c.
 ```
-When the "temp1.R" file is resolved, it will look like this:
+When the "temp1.R" file is resolved to "temp1_mod.R", it will look like this:
 ```{r eval=FALSE, echo=TRUE}
 # Print macro variable
 z <- 3
 ```
-Note that the macro variable `c.` is replaced normally. The reason is because 
+You can see that the macro variable `c.` is replaced normally. The reason is because 
 any variable with a trailing dot (".") in the parent environment will
 be copied to the macro symbol table when the pre-processor begins.
 
 Also note that parent macro assignments do not need to take place in the 
 same code file as `msource()`.  You can assign them in a setup file if desired.
-As long as they exist in the parent environment, the macro assignments will be
-resolved in the pre-processor.
+As long as they exist in the parent environment, the macro variables will be
+copied to the symbol table.
 
 ## Macro Conditionals
 
@@ -233,14 +235,18 @@ Parenthesis around the conditional expressions are optional but recommended.
 
 The conditional expressions to be evaluated should be regular R expressions,
 using R syntax. For comparisons, the expression should use the double-equals
-("==") comparison operator, as in a normal R "if" statement.  
+("==") comparison operator, as in a normal R "if" statement.
 Likewise, all other comparison operators should follow Base R syntax.
 
 The conditional expression may contain macro variables.  These macro variables
 will be resolved before the expression is evaluated.  Reminder that the macro
 variables are text replacements, and will be resolved accordingly.
 
-If an expression in a macro "if" block are TRUE, the code inside that block
+The conditional expression may also contain R functions like `any()` and
+`all()`.  In most cases, these function do not need to be wrapped in 
+`%sysfunc()`.  They will evaluate properly as part of the expression.
+
+If an expression in a macro "if" block is TRUE, the code inside that block
 will be emitted during pre-processing.  If the expression evaluates to FALSE,
 code inside that block will be ignored.
 
@@ -271,8 +277,8 @@ When run through the macro processor, the above code will generate the following
 # Path to data
 pth <- "./dev/data/dm.sas7bdat"
 ```
-The macro selected the "dev" path as indicated, constructed the path appropriately, 
-and removed all macro statements.
+The pre-processor selected the "dev" path as indicated, constructed the path 
+appropriately, and removed all macro statements.
 
 #### Nested Conditionals
 
@@ -311,7 +317,7 @@ you to construct more complicated logic.  Here is an example:
 
 #%end
 ```
-
+When the nested conditionals resolve, they will look like this:
 ```{r eval=FALSE, echo=TRUE}
 ######################
 # Get data
@@ -325,6 +331,8 @@ you to construct more complicated logic.  Here is an example:
   advs <- haven("./data/ADVS.sas7bdat")
 
 ```
+In this way, you can perform complex logic in the macro pre-processor, and 
+still end up with a very simple result.
 
 ## Macro Include
 
@@ -334,9 +342,7 @@ you to construct more complicated logic.  Here is an example:
 #%include '<path>'
 #%include "<path>"
 ```
-Where "&lt;path&gt;" is a path to the file to include. 
-
-The file path may be 
+Where "&lt;path&gt;" is a path to the file to include. The file path may be 
 quoted or unquoted. If the path is quoted, single or double quotes may be used.
 
 ### Details
@@ -344,7 +350,7 @@ quoted or unquoted. If the path is quoted, single or double quotes may be used.
 The `#%include()` macro command inserts text from an external file into
 the generated output file. This behavior is different from the Base R
 `source()` function, which only executes the code from the external file.
-The macro include actually copies the code into the generated file.  The 
+A macro include actually copies the code into the generated file.  The 
 included code does not have to be fully functional. It can be a code snippet
 that only works when combined with other included code.
 
@@ -390,14 +396,17 @@ from multiple code snippets into a unified result.
 
 ## Macro Functions
 
+The **macro** package currently supports two macro functions: `%sysfunc()`
+and `%symexist()`.  
+
 ### Syntax
 ```
 %sysfunc(<expression>, [<format>])
 ```
 Where "&lt;expression&gt;" is an R expression that resolves to a numeric value,
-and "&lt;format&ft;" is an optional format code.  The expression may
+and "&lt;format&gt;" is an optional unquoted format code.  The expression may
 contain R functions, operators, hard-coded values, and macro variables.
-If "&lt;format&ft;" is supplied, the function will apply the format after 
+If "&lt;format&gt;" is supplied, the function will apply the format after 
 the expression is resolved, and return the formatted value.
 
 ```
@@ -416,21 +425,67 @@ a leading comment symbol ("#").
 
 The purpose of `%sysfunc()` is to evaluate regular R expressions during macro
 processing. The evaluated result can then be assigned to a macro variable, 
-or used in a condition.
+or used in a macro condition.
 
 The purpose of `%symexist()` is to check for the existence of a macro variable.
-This check is likewise most often performed as part of a macro conditional.
+This check is likewise most often performed as part of a macro conditional
+expression.
 
 ### Examples
 
 #### %sysfunc()
-```{r eval=FALSE, echo=TRUE}
 
+Here are some examples illustrating the basic operation of `%sysfunc()`:
+```{r eval=FALSE, echo=TRUE}
+#% Unevaluated assignment
+#%let a <- 2 + 2
+w <- a.
+
+#% Evaluated assignment
+#%let b <- %sysfunc(2 + 2)
+x <- b.
+
+#% Unevaluated replacement 
+#%let c <- a. + b.
+y <- c.
+
+#% Evaluated replacement
+#%let d <- %sysfunc(a. + b.)
+z <- d.
+  
 ```
+The above code resolves as follows:
+```{r eval=FALSE, echo=TRUE}
+w <- 2 + 2
+x <- 4
+y <- 2 + 2 + 4
+z <- 8
+```
+Observe the different ways each expression resolves depending on whether
+`%sysfunc()` is used.
+
+Here is another example:
+```{r eval=FALSE, echo=TRUE}
+#%let a <- c(1.205, 4.683, 3.812, 6.281, 9.467)
+
+#%if (%sysfunc(mean(a.)) > 5)
+x <- "> 5"
+#%else 
+x <- "<= 5"
+#%end
+print(x)
+```
+The above macro function evaluates the mean of `a.`, compares to the hard-coded
+value 5, and then sets the value of `x`.  The `%sysfunc()` macro function
+allows for immediate evaluation of the Base R `mean()` function. 
+
+Note that you do not need multiple calls to `%sysfunc()` if you have multiple
+Base R functions in your expression. Just put your entire expression
+inside one call to `%sysfunc()` and it will evaluate as desired.
 
 #### %symexist()
 
-Below is a simple example checking for the existance of some macro variables
+Below is a simple example checking for the existence of some macro variables
 before using them in a calculation:
 ```{r eval=FALSE, echo=TRUE}
 #% Check for existance of a
@@ -451,6 +506,8 @@ And here is the resolved version:
 # Calculate a * b
 x <- 2 * 3
 ```
+Notice that the variable name inside the `%symexist()` function is not 
+quoted. For this function, quoting is not necessary, and will in fact prevent
+the function from finding the specified variable name.
 
-
-
+Next: [Debugging](macro-debug.html)

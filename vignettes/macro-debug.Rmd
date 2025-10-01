@@ -45,7 +45,7 @@ a macro condition to choose the "dev" or "prod" path.  Then the path is
 constructed via supplied macro variables.  
 
 The above code is placed into an R script, and run via `msource()` on the 
-command line. The normal output looks like this:
+command line. The generated output looks like this:
 ```{r eval=FALSE, echo=TRUE}
 
 # Path to data
@@ -55,7 +55,7 @@ pth <- "./dev/data/dm.sas7bdat"
 
 ### Debug Output
 
-Now let's turn debugging on to examine the debug output. To turn debugging on,
+Now let's turn debugging on to examine the debug information. To turn debugging on,
 simply set the `debug` parameter to TRUE.  Like this:
 ```
 > msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
@@ -107,7 +107,7 @@ Note the following about the above debug information:
   Lines that are not emitted are not resolved.
   * After pre-processing, the generated code file will be executed.  A separation
   header announces the execution phase.
-  * The generated code is source and echoed into the execution section of the
+  * The generated code is sourced and echoed into the execution section of the
   debug info.
   * The debug info is concluded with an ending separator, which signals completion
   of processing.
@@ -146,7 +146,7 @@ Error in str2expression(trimws(nr)) : <text>:2:0: unexpected end of input
 
 ```
 Observe that the pre-processor stopped at the moment the syntax error is
-encountered. The error encountered is displayed in the debug info, and the 
+encountered on line 6. The error encountered is displayed in the debug info, and the 
 error message indicates that there is an unmatched parenthesis.
 
 #### Missing `#%end`
@@ -228,7 +228,7 @@ debugging your macro code.
 #### Error in Generated Code
 
 What happens when there is an error in the generated code?  Let's introduce
-another error and find out!
+another error and find out.
 
 For this example, we will put an extra space in the assignment arrow on 
 line 9.  Like this:
@@ -246,7 +246,7 @@ pth < - "dev_path./dm.sas7bdat"
 
 ```
 The above extra space should introduce a syntax error in the generated code.
-Let's see what it does:
+Here is what it does:
 
 ```
 > msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
@@ -278,7 +278,7 @@ Error in -"./dev/data/dm.sas7bdat" : invalid argument to unary operator
 ```
 Notice that the pre-processing stage completed as normal, and the execution
 stage began.  However, at the moment the syntax error was encountered in the
-generated code, an error message was produced.  This printout gives
+generated code, an error message was produced.  This printout should give
 you a clear indication of which line has a problem and how to fix it.
 
 

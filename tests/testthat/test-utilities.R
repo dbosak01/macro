@@ -83,7 +83,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   expect_equal(res, TRUE)
   expect_equal(e$z., "TRUE")
 
-  l6 <- "#%let w = %sysfunc(floor(1 + 2.5) / 1.3, '%.3f')"
+  l6 <- "#%let w = %sysfunc(floor(1 + 2.5) / 1.3, %.3f)"
 
   l7 <- sub_funcs(l6)
   res <- is_let(l7, TRUE)
@@ -330,6 +330,23 @@ test_that("utils9: get_include() basic functionality.", {
 
   expect_equal(length(lns) > 0, TRUE)
   expect_equal(is.character(lns), TRUE)
+
+})
+
+
+test_that("utils10: log_debug() works as expected.", {
+
+  pth <- file.path(base_path, "examples/log/test.txt")
+
+  if (file.exists(pth))
+    file.remove(pth)
+
+
+  log_debug("fork", pth)
+
+  res <- file.exists(pth)
+
+  expect_equal(res, TRUE)
 
 })
 

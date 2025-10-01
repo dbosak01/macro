@@ -27,6 +27,6 @@ The other scenario the **macro** package may be useful is for translation of
 programs from SAS.  The R macro syntax can be translated quite directly from 
 SAS, without having to rethink the logic.
 
-Outside of these two scenarios, using R macros must be carefully considered, 
-as they can introduce unnecessary complexity and make your code harder to debug.
+Outside of these two scenarios, using R macros must be carefully considered. 
+Macros can introduce unnecessary complexity and make your code harder to debug.
 Please do not use the **macro** package as an excuse to avoid learning R.

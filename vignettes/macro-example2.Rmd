@@ -60,7 +60,7 @@ Note the following in the above example code:
   in other functions like `paste()` or `file.path()`.
   * The above approach allows you to execute `msource()` directly
   from the driver script.  This approach avoids having to run it on the command
-  line, which can be cumbersome.
+  line, which is somewhat inconvenient.
   * The above call to `msource()` includes the `debug = TRUE` parameter. This 
   option will generate debug information in the console.  The debug results 
   will be shown below.
@@ -270,6 +270,7 @@ to `write_report()`.
 Here is the output report for the modified listing:
 
 <img src="../man/images/example2.png"/>
+
 
 
 Next: [Example 3: Table](macro-example3.html)

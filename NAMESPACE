@@ -3,3 +3,4 @@
 export(msource)
 import(common)
 import(fmtr)
+importFrom(utils,capture.output)
