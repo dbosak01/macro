@@ -193,8 +193,7 @@ retained during replacement.</p>
 <div class="section level4">
 <h4 id="basic-assignment">Basic Assignment<a class="anchor" aria-label="anchor" href="#basic-assignment"></a>
 </h4>
-<p>Here is a basic macro assignment of numeric values. Note that either
-the left arrow assignment operator or equals sign are valid:</p>
+<p>Here is a basic macro assignment of numeric values:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Assignment using left arrow</span></span>
 <span><span class="co">#%let a &lt;- 1</span></span>
@@ -321,16 +320,24 @@ Failure to finalize the block with an <code>#%end</code> will result in
 an error or other unexpected behavior.</p>
 <p>Parenthesis around the conditional expressions are optional but
 recommended.</p>
+<p>The syntax of R conditionals is somewhat different from SAS. One
+difference is that the <code>%do</code> directive in SAS has been
+entirely eliminated from the <strong>macro</strong> package syntax.
+Another difference is that the <code>#%ifelse</code> command is one word
+instead of two.<br>
+A third difference is that in SAS, each conditional section must be
+concluded with an <code>%end</code>. In R, you only need one
+<code>#%end</code> at the conclusion of the entire conditional. In
+general, the R syntax is simpler.</p>
 </div>
 <div class="section level3">
 <h3 id="details-2">Details<a class="anchor" aria-label="anchor" href="#details-2"></a>
 </h3>
-<p>The conditional expressions to be evaluated should be regular R
-expressions, using R syntax. For comparisons, the expression should use
-the double-equals (“==”) comparison operator, as in a normal R “if”
-statement. Likewise, all other comparison operators should follow Base R
-syntax.</p>
-<p>The conditional expression may contain macro variables. These macro
+<p>Conditional expressions should be regular R expressions, using R
+syntax. For comparisons, the expression should use the double-equals
+(“==”) comparison operator, as in a normal R “if” statement. Likewise,
+all other comparison operators should follow Base R syntax.</p>
+<p>A conditional expression may contain macro variables. These macro
 variables will be resolved before the expression is evaluated. Reminder
 that the macro variables are text replacements, and will be resolved
 accordingly.</p>
@@ -422,7 +429,7 @@ allows you to construct more complicated logic. Here is an example:</p>
 <span>  <span class="co"># Get advs dataset</span></span>
 <span>  <span class="va">advs</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADVS.sas7bdat"</span><span class="op">)</span></span></code></pre></div>
 <p>In this way, you can perform complex logic in the macro
-pre-processor, and still end up with a very simple result.</p>
+pre-processor, and still produce a refined output.</p>
 </div>
 </div>
 </div>
@@ -474,13 +481,13 @@ contains a snippet of sample data:</p>
 <span><span class="st">  "006"   "ARM B" "M"  "WHITE" 34 </span></span>
 <span><span class="st">  "007"   "ARM C" "M"  "WHITE" 36  </span></span>
 <span><span class="st">  "008"   "ARM D" "M"  "WHITE" 30   </span></span>
-<span><span class="st">  "009"   "ARM A" "F"  "WHITE" 39  </span></span>
+<span><span class="st">  "009"   "ARM A" "F"  "ASIAN" 39  </span></span>
 <span><span class="st">  "010"   "ARM B" "F"  "WHITE" 31  </span></span>
 <span><span class="st">  "011"   "ARM C" "F"  "BLACK" 33 </span></span>
 <span><span class="st">  "012"   "ARM D" "F"  "WHITE" 38 </span></span>
 <span><span class="st">  "013"   "ARM A" "M"  "BLACK" 37 </span></span>
 <span><span class="st">  "014"   "ARM B" "M"  "WHITE" 34  </span></span>
-<span><span class="st">  "015"   "ARM C" "M"  "WHITE" 36</span></span>
+<span><span class="st">  "015"   "ARM C" "M"  "ASIAN" 36</span></span>
 <span><span class="st">  "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print sample data</span></span>
@@ -500,11 +507,14 @@ functions: <code>%sysfunc()</code> and <code>%symexist()</code>.</p>
 </h3>
 <pre><code>%sysfunc(&lt;expression&gt;, [&lt;format&gt;])</code></pre>
 <p>Where “&lt;expression&gt;” is an R expression that resolves to a
-numeric value, and “&lt;format&gt;” is an optional unquoted format code.
-The expression may contain R functions, operators, hard-coded values,
-and macro variables. If “&lt;format&gt;” is supplied, the function will
+numeric value, and “&lt;format&gt;” is an optional format code. The
+expression may contain R functions, operators, hard-coded values, and
+macro variables. If “&lt;format&gt;” is supplied, the function will
 apply the format after the expression is resolved, and return the
-formatted value.</p>
+formatted value. The format code does not need to be quoted. If the
+format is unquoted, the output of the <code>%sysfunc()</code> function
+will be unquoted. If the format is quoted, the output of the
+<code>%sysfunc()</code> function will be quoted.</p>
 <pre><code>%symexist(&lt;name&gt;)</code></pre>
 <p>Where “&lt;name&gt;” is an unquoted name of a macro variable. If the
 macro variable exists, the function will return TRUE. Otherwise, the
@@ -513,11 +523,11 @@ function will return FALSE.</p>
 <div class="section level3">
 <h3 id="details-4">Details<a class="anchor" aria-label="anchor" href="#details-4"></a>
 </h3>
-<p>The <code>%sysfunc()</code> and <code>%symexist()</code> function are
-helper functions that are usually contained in other macro statements.
-Most commonly, they will exist as part of “let” or “if” statement. For
-this reason, the syntax does not include a leading comment symbol
-(“#”).</p>
+<p>The <code>%sysfunc()</code> and <code>%symexist()</code> functions
+are helper functions that are usually contained in other macro
+statements. Most commonly, they will exist as part of “let” or “if”
+statement. For this reason, the syntax does not include a leading
+comment symbol (“#”).</p>
 <p>The purpose of <code>%sysfunc()</code> is to evaluate regular R
 expressions during macro processing. The evaluated result can then be
 assigned to a macro variable, or used in a macro condition.</p>
@@ -556,8 +566,8 @@ of a macro conditional expression.</p>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">4</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">8</span></span></code></pre></div>
-<p>Observe the different ways each expression resolves depending on
-whether <code>%sysfunc()</code> is used.</p>
+<p>Observe the different ways each expression resolves depending on the
+usage <code>%sysfunc()</code>.</p>
 <p>Here is another example:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%let a &lt;- c(1.205, 4.683, 3.812, 6.281, 9.467)</span></span>

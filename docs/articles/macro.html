@@ -118,7 +118,7 @@
     
 <p>The <strong>macro</strong> package provides macro commands and a
 pre-processor for R programs. The package can be useful in several ways.
-Before illustrating the functionality, Let’s first discuss the macro
+Before illustrating the functionality, let’s first discuss the macro
 concept at a high level.</p>
 <div class="section level2">
 <h2 id="macro-concept">Macro Concept<a class="anchor" aria-label="anchor" href="#macro-concept"></a>
@@ -193,8 +193,8 @@ TRUE macro conditions is executed.</p>
 <h3 id="how-to-use">How to Use<a class="anchor" aria-label="anchor" href="#how-to-use"></a>
 </h3>
 <p>To use the <strong>macro</strong> package, you will first write your
-macro-enabled R code in a regular “.R” code file. You can use RStudio or
-another code editor. The macro statements are written as special
+macro-enabled R code in a regular “.R” code file. You can use RStudio®
+or another code editor. The macro statements are written as special
 comments, as described above. To execute a macro-enabled program, simply
 call the <code><a href="../reference/msource.html">msource()</a></code> function in the console and pass the
 program path. That’s it!</p>
@@ -209,16 +209,22 @@ parameters.</p>
 <p>The <strong>macro</strong> package supports the most basic
 functionality of a macro system. That includes:</p>
 <ol style="list-style-type: decimal">
-<li>Macro Comments: Like regular R comments, but are not emitted to the
-output file.</li>
-<li>Macro Variables: Allow you to assign a value to a macro variable,
-and use the macro variable as a text replacement token.</li>
-<li>Macro Conditionals: If-Then-Else logic that allows you to
-conditionally execute a chunk of code.</li>
-<li>Macro Include: Inserts the contents of an external file into your
-program.</li>
-<li>Macro Functions: A small number of macro functions to make the
-system more practical.</li>
+<li>
+<strong>Macro Comments</strong>: Like regular R comments, but are
+not emitted to the output file.</li>
+<li>
+<strong>Macro Variables</strong>: Allow you to assign a value to a
+macro variable, and use the macro variable as a text replacement
+token.</li>
+<li>
+<strong>Macro Conditionals</strong>: If-Then-Else logic that allows
+you to conditionally execute a chunk of code.</li>
+<li>
+<strong>Macro Include</strong>: Inserts the contents of an external
+file into your program.</li>
+<li>
+<strong>Macro Functions</strong>: A small number of macro functions
+to make the system more practical.</li>
 </ol>
 <div class="section level4">
 <h4 id="macro-comments-and-variables">Macro Comments and Variables<a class="anchor" aria-label="anchor" href="#macro-comments-and-variables"></a>
@@ -228,7 +234,7 @@ defined with the keyword <code>#%let</code> and then the variable name
 and value.</p>
 <p>We can document those macro assignments with macro comments. Macro
 comments are prefixed with <code>#%</code>. You can type anything after
-the prefix. These comments are not emitted to the generated file.</p>
+the prefix.</p>
 <p>Note that macro comments are a single line comment. There are no
 multi-line comments in R.</p>
 <p>Here are a few macro variable assignments with comments for different
@@ -318,13 +324,14 @@ compact.</p>
 generate the result <code>"Inside the first condition"</code>. If you
 pass a file name to the <code>file_out</code> parameter of the
 <code><a href="../reference/msource.html">msource()</a></code> function, a code file will be generated. That
-code fill will contain the following content:</p>
+code file will contain the following content:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co"># X is one</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Inside the first condition"</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that all spacing and comments from inside the condition are
 preserved. Also notice that all macro code and code from inside other
-conditions has been removed.</p>
+conditions has been removed. Only the code inside TRUE condition has
+been emitted.</p>
 </div>
 <div class="section level4">
 <h4 id="nested-macro-conditionals">Nested Macro Conditionals<a class="anchor" aria-label="anchor" href="#nested-macro-conditionals"></a>
@@ -378,6 +385,8 @@ output file will look like this:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is one and Y is 2"</span><span class="op">)</span></span></code></pre></div>
+<p>In this way, many levels of macro logic can be boiled down to a few
+lines of code.</p>
 </div>
 <div class="section level4">
 <h4 id="macro-include">Macro Include<a class="anchor" aria-label="anchor" href="#macro-include"></a>
@@ -450,8 +459,7 @@ valid R function or operator. Observe:</p>
 <span><span class="co"># Formatted with %sysfunc()</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fl">18.46</span></span></code></pre></div>
 <p>Notice how the macro values resolve differently depending on whether
-<code>%sysfunc()</code> is used, and whether the format parameter is
-used or not.</p>
+and how <code>%sysfunc()</code> is used.</p>
 </div>
 <div class="section level4">
 <h4 id="checking-for-macro-variables-symexist">Checking For Macro Variables: %symexist()<a class="anchor" aria-label="anchor" href="#checking-for-macro-variables-symexist"></a>

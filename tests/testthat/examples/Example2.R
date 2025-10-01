@@ -10,6 +10,7 @@ base_dir. <- "c:/packages/macro/tests/testthat/examples"
 output_dir. <- file.path(base_dir., "output")
 data_dir. <- file.path(base_dir., "data")
 data_file. <- "dm.rda"
+data_name. <- "dm"
 titles. <- c("Listing 1.0", "SDTM Demographics")
 footnotes. <- paste0("'Program: ", prog_name., ".R'")
 output_type. <- "PDF"

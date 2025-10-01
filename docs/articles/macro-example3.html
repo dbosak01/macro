@@ -117,7 +117,7 @@
     
     
 <p>Now let’s look at a still more complicated example. For this example,
-we want to create a demographics table that can be used across different
+we want to create a demographics table that can be used across multiple
 studies. Therefore, we’ll need to let the user pass in parameters like
 treatment groups, the path to the data, and which variables to include
 in the analysis. The <strong>macro</strong> package makes it easy to
@@ -544,8 +544,7 @@ generated file.</li>
 <span>         label_row <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">LABEL</span>, indent <span class="op">=</span> <span class="fl">.25</span>, label <span class="op">=</span> <span class="st">"Demographic Category"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="va">titles.</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Program: "</span>, <span class="va">prog_nm</span>, <span class="st">".R"</span><span class="op">)</span>,</span>
-<span>            <span class="st">"NOTE: Denominator based on number of non-missing responses."</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="va">footnotes.</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># Add treatment groups</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">trt</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>

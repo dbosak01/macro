@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 The **macro** package provides macro commands and a pre-processor for R programs.
 The package can be useful in several ways.  Before illustrating the functionality,
-Let's first discuss the macro concept at a high level.
+let's first discuss the macro concept at a high level.
 
 # Macro Concept
 
@@ -93,7 +93,7 @@ only user-facing function in the **macro** package.
 ## How to Use
 
 To use the **macro** package, you will first write your macro-enabled R code in a regular ".R" code file.  You can use
-RStudio or another code editor.  The macro statements are written as special
+RStudio® or another code editor.  The macro statements are written as special
 comments, as described above.  To execute a macro-enabled program, simply
 call the `msource()` function in the console and pass the program path.  That's it!  
 
@@ -106,13 +106,13 @@ Just call `msource()` in the console with no parameters.
 The **macro** package supports the most basic functionality of a macro system.
 That includes: 
 
-1. Macro Comments: Like regular R comments, but are not emitted to the output file.
-2. Macro Variables:  Allow you to assign a value to a macro variable, and use
+1. **Macro Comments**: Like regular R comments, but are not emitted to the output file.
+2. **Macro Variables**:  Allow you to assign a value to a macro variable, and use
 the macro variable as a text replacement token.
-3. Macro Conditionals: If-Then-Else logic that allows you to conditionally 
+3. **Macro Conditionals**: If-Then-Else logic that allows you to conditionally 
 execute a chunk of code.
-4. Macro Include: Inserts the contents of an external file into your program.
-5. Macro Functions: A small number of macro functions
+4. **Macro Include**: Inserts the contents of an external file into your program.
+5. **Macro Functions**: A small number of macro functions
 to make the system more practical.
 
 ### Macro Comments and Variables
@@ -122,7 +122,6 @@ the keyword `#%let` and then the variable name and value.
 
 We can document those macro assignments with macro comments.  Macro comments
 are prefixed with `#%`.  You can type anything after the prefix.
-These comments are not emitted to the generated file.  
 
 Note that macro comments are a single line comment.  There are no multi-line 
 comments in R.
@@ -218,7 +217,7 @@ Here are some examples of simple macro conditions:
 When executed with `msource()`, the above code will generate the result 
 `"Inside the first condition"`.  If you pass a file name to the `file_out`
 parameter of the `msource()` function, a code file will be generated.  That
-code fill will contain the following content:
+code file will contain the following content:
 ```{r eval=FALSE, echo=TRUE}
   # X is one
   print("Inside the first condition")
@@ -226,7 +225,7 @@ code fill will contain the following content:
 ```
 Notice that all spacing and comments from inside the condition are preserved.
 Also notice that all macro code and code from inside other conditions has 
-been removed.  
+been removed. Only the code inside TRUE condition has been emitted.
 
 ### Nested Macro Conditionals
 
@@ -285,6 +284,8 @@ file will look like this:
 
 
 ```
+In this way, many levels of macro logic can be boiled down to a few lines of 
+code.
 
 ### Macro Include
 
@@ -359,8 +360,8 @@ y <- 18.4615384615385
 z <- 18.46
 
 ```
-Notice how the macro values resolve differently depending on whether
-`%sysfunc()` is used, and whether the format parameter is used or not.
+Notice how the macro values resolve differently depending on whether and how
+`%sysfunc()` is used.
 
 ### Checking For Macro Variables: %symexist()
 

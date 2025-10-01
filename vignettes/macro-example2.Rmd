@@ -38,6 +38,7 @@ base_dir. <- "./examples"
 output_dir. <- file.path(base_dir., "output")
 data_dir. <- file.path(base_dir., "data")
 data_file. <- "dm.rda"
+data_name. <- "dm"
 titles. <- c("Listing 1.0", "SDTM Demographics")
 footnotes. <- paste0("'Program: ", prog_name., ".R'")
 output_type. <- "PDF"
@@ -50,7 +51,7 @@ msource(file.path(base_dir., "templates/lst02.R"),
         file.path(base_dir., "code/l_dm.R"), 
         debug = TRUE)
 ```
-Note the following in the above example code:
+Note the following in the above driver:
 
   * Macro variables can be set in regular R code.  One stipulation is
   that they must be set before `msource()` is called. Also, the variable names
@@ -60,7 +61,7 @@ Note the following in the above example code:
   in other functions like `paste()` or `file.path()`.
   * The above approach allows you to execute `msource()` directly
   from the driver script.  This approach avoids having to run it on the command
-  line. Instead, you can run in from the "Source" or "Run" button in your
+  line. Instead, you can run it from the "Source" or "Run" button in your
   development environment.
   * The above call to `msource()` includes the `debug = TRUE` parameter. This 
   option will generate debug information in the console.  The debug information 
@@ -90,7 +91,7 @@ out_pth <- "output_dir./prog_name."
 load("data_dir./data_file.")
 
 # Create table object
-tbl <- create_table(dm) |>
+tbl <- create_table(data_name.) |>
   define(USUBJID, id_var = TRUE)
 
 #% Assign default output type

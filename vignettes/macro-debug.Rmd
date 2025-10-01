@@ -102,7 +102,7 @@ Note the following about the above debug information:
   The pre-processor outputs each input line, and determines whether it
   should be emitted to the output file.  The line numbers for the input
   and output file are shown in the left margin of the debug output.  If 
-  the line is not emitted to the output file, the line number is shown as blank.
+  the line is not emitted to the output file, the "Out#" line number is shown as blank.
   * All emitted lines are resolved as they will appear in the generated code.
   Lines that are not emitted are not resolved.
   * After pre-processing, the generated code file will be executed.  A separation

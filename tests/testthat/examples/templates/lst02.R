@@ -12,7 +12,7 @@ out_pth <- "output_dir./prog_name."
 load("data_dir./data_file.")
 
 # Create table object
-tbl <- create_table(dm) |>
+tbl <- create_table(data_name.) |>
   define(USUBJID, id_var = TRUE)
 
 #% Assign default output type

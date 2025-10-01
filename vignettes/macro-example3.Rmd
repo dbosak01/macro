@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 Now let's look at a still more complicated example. For this example,
-we want to create a demographics table that can be used across different studies.
+we want to create a demographics table that can be used across multiple studies.
 Therefore, we'll need to let the user pass in parameters like treatment
 groups, the path to the data, and which variables to include in the analysis.
 The **macro** package makes it easy to create such a parameterized table.
@@ -445,8 +445,7 @@ tbl <- create_table(final, first_row_blank = TRUE) |>
          label_row = TRUE) |>  
   define(LABEL, indent = .25, label = "Demographic Category") |> 
   titles(titles., bold = TRUE) |> 
-  footnotes(paste0("Program: ", prog_nm, ".R"),
-            "NOTE: Denominator based on number of non-missing responses.") 
+  footnotes(footnotes.) 
 
 # Add treatment groups
 for (trt in names(trt_grps)) {

@@ -91,8 +91,7 @@ is quoted, the quotes will be retained during replacement.
 
 #### Basic Assignment
 
-Here is a basic macro assignment of numeric values.  Note that either 
-the left arrow assignment operator or equals sign are valid:
+Here is a basic macro assignment of numeric values:
 ```{r eval=FALSE, echo=TRUE}
 #% Assignment using left arrow
 #%let a <- 1
@@ -231,14 +230,23 @@ unexpected behavior.
 
 Parenthesis around the conditional expressions are optional but recommended.
 
+The syntax of R conditionals is somewhat different from SAS. One difference is
+that the `%do` directive in SAS has been entirely eliminated from
+the **macro** package syntax.
+Another difference is that the `#%ifelse` command is one word instead of two.  
+A third difference
+is that in SAS, each conditional section must be concluded with an `%end`.
+In R, you only need one `#%end` at the conclusion of the entire conditional.
+In general, the R syntax is simpler.
+
 ### Details
 
-The conditional expressions to be evaluated should be regular R expressions,
+Conditional expressions should be regular R expressions,
 using R syntax. For comparisons, the expression should use the double-equals
 ("==") comparison operator, as in a normal R "if" statement.
 Likewise, all other comparison operators should follow Base R syntax.
 
-The conditional expression may contain macro variables.  These macro variables
+A conditional expression may contain macro variables.  These macro variables
 will be resolved before the expression is evaluated.  Reminder that the macro
 variables are text replacements, and will be resolved accordingly.
 
@@ -332,7 +340,7 @@ When the nested conditionals resolve, they will look like this:
 
 ```
 In this way, you can perform complex logic in the macro pre-processor, and 
-still end up with a very simple result.
+still produce a refined output.
 
 ## Macro Include
 
@@ -378,13 +386,13 @@ dat <- read.table(header = TRUE, text = '
   "006"   "ARM B" "M"  "WHITE" 34 
   "007"   "ARM C" "M"  "WHITE" 36  
   "008"   "ARM D" "M"  "WHITE" 30   
-  "009"   "ARM A" "F"  "WHITE" 39  
+  "009"   "ARM A" "F"  "ASIAN" 39  
   "010"   "ARM B" "F"  "WHITE" 31  
   "011"   "ARM C" "F"  "BLACK" 33 
   "012"   "ARM D" "F"  "WHITE" 38 
   "013"   "ARM A" "M"  "BLACK" 37 
   "014"   "ARM B" "M"  "WHITE" 34  
-  "015"   "ARM C" "M"  "WHITE" 36
+  "015"   "ARM C" "M"  "ASIAN" 36
   "016"   "ARM A" "M"  "WHITE" 40')
 
 # Print sample data
@@ -404,10 +412,13 @@ and `%symexist()`.
 %sysfunc(<expression>, [<format>])
 ```
 Where "&lt;expression&gt;" is an R expression that resolves to a numeric value,
-and "&lt;format&gt;" is an optional unquoted format code.  The expression may
+and "&lt;format&gt;" is an optional format code.  The expression may
 contain R functions, operators, hard-coded values, and macro variables.
 If "&lt;format&gt;" is supplied, the function will apply the format after 
-the expression is resolved, and return the formatted value.
+the expression is resolved, and return the formatted value.  The format code does 
+not need to be quoted.  If the format is unquoted, the output of the 
+`%sysfunc()` function will be unquoted. If the format is quoted, the output of the 
+`%sysfunc()` function will be quoted.
 
 ```
 %symexist(<name>)
@@ -418,7 +429,7 @@ will return FALSE.
 
 ### Details
 
-The `%sysfunc()` and `%symexist()` function are helper functions that are usually
+The `%sysfunc()` and `%symexist()` functions are helper functions that are usually
 contained in other macro statements.  Most commonly, they will exist
 as part of "let" or "if" statement.  For this reason, the syntax does not include
 a leading comment symbol ("#").
@@ -461,8 +472,8 @@ x <- 4
 y <- 2 + 2 + 4
 z <- 8
 ```
-Observe the different ways each expression resolves depending on whether
-`%sysfunc()` is used.
+Observe the different ways each expression resolves depending on the usage
+`%sysfunc()`.
 
 Here is another example:
 ```{r eval=FALSE, echo=TRUE}

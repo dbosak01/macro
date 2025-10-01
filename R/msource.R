@@ -81,8 +81,8 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'
 #' The pre-processor works by inputting each line of the program line by line.
 #' For each line in the input
-#' script, the function will assign and replace any macro variables. The function
-#' then evaluates any macro conditions.  For any macro conditions that are
+#' script, the function will assign and replace any macro variables. The pre-processor
+#' also evaluates any macro conditions.  For any macro conditions that are
 #' TRUE, the pre-processor will output that line to the generated code file.
 #' If a condition evaluates as FALSE, the lines inside that block will
 #' be ignored.
@@ -130,7 +130,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' to turn off execution.
 #'
 #' @param pth The path to the R program to process. This parameter is required.
-#' It will default to the currently activated program.
+#' It will default to the currently activated program in the development environment.
 #' @param file_out If you want to save or view the generated code
 #' from the \code{msource} function, supply a full path and
 #' file name on this parameter. Default is NULL. When NULL,
@@ -156,7 +156,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' of the resolved output file is also included under the "$output" list item.
 #' @examples
 #'
-#' # Create temp file
+#' # Create temp file names
 #' tmp <- file.path(tempdir(), "test.R")
 #' out <- file.path(tempdir(), "test_mod.R")
 #'
