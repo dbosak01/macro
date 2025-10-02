@@ -28,16 +28,16 @@ supply a path to save this file to a location of your choosing.
 \section{Macro Commands}{
 
 Macro commands are implemented as a special form of R comment. The special
-comments begin with "#\%".  For example, a macro include is written as
-\code{#\%include '\if{html}{\out{<path>}}'}.
+comments begin with "#\%".  For example, a macro assignment is written as
+\code{#\%let a <- 1}.
 
 Here are the macro features supported by the system:
 \itemize{
 \item \strong{Macro Comments}: A comment just for macro statements.
 \item \strong{Macro Variables}: Initialize macro variables to be used as text replacement tokens.
 \item \strong{Macro Conditionals}: Emit code conditionally in pre-processing.
-\item \strong{Macro System Command}: Interact with standard R functions in macro code.
 \item \strong{Macro Include}: Insert code from external files into your program.
+\item \strong{Macro Functions}: A small number of essential built-in macro functions.
 }
 The above features give you a simple yet flexible way to perform meta-programming.
 In this way, the \strong{macro} package can be useful in several situations,

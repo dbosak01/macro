@@ -110,13 +110,13 @@ supply a path to save this file to a location of your choosing.</p>
 
 
 <p>Macro commands are implemented as a special form of R comment. The special
-comments begin with "#%".  For example, a macro include is written as
-<code>#%include '\if{html}{\out{&lt;path&gt;}}'</code>.</p>
+comments begin with "#%".  For example, a macro assignment is written as
+<code>#%let a &lt;- 1</code>.</p>
 <p>Here are the macro features supported by the system:</p><ul><li><p><strong>Macro Comments</strong>: A comment just for macro statements.</p></li>
 <li><p><strong>Macro Variables</strong>: Initialize macro variables to be used as text replacement tokens.</p></li>
 <li><p><strong>Macro Conditionals</strong>: Emit code conditionally in pre-processing.</p></li>
-<li><p><strong>Macro System Command</strong>: Interact with standard R functions in macro code.</p></li>
 <li><p><strong>Macro Include</strong>: Insert code from external files into your program.</p></li>
+<li><p><strong>Macro Functions</strong>: A small number of essential built-in macro functions.</p></li>
 </ul><p>The above features give you a simple yet flexible way to perform meta-programming.
 In this way, the <strong>macro</strong> package can be useful in several situations,
 notably for code generation.</p>
