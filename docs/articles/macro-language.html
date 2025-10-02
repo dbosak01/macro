@@ -577,11 +577,20 @@ usage <code>%sysfunc()</code>.</p>
 <span><span class="co">#%else </span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"&lt;= 5"</span></span>
 <span><span class="co">#%end</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"The mean of 'a' is %sysfunc(mean(a., %.2f))"</span><span class="op">)</span></span></code></pre></div>
 <p>The above macro function evaluates the mean of <code>a.</code>,
 compares to the hard-coded value 5, and then sets the value of
 <code>x</code>. The <code>%sysfunc()</code> macro function allows for
 immediate evaluation of the Base R <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> function.</p>
+<p>Here is the resolved code:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"&gt;5"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"The mean of 'a' is 5.09"</span><span class="op">)</span></span></code></pre></div>
+<p>In the above example, <code>%sysfunc()</code> is used in the
+conditional, and inside a text string. You can see that it is resolved
+in both cases.</p>
 <p>Note that you do not need multiple calls to <code>%sysfunc()</code>
 if you have multiple Base R functions in your expression. Just put your
 entire expression inside one call to <code>%sysfunc()</code> and it will
@@ -592,7 +601,7 @@ evaluate as desired.</p>
 </h4>
 <p>Below is a simple example checking for the existence of some macro
 variables before using them in a calculation:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Check for existance of a</span></span>
 <span><span class="co">#%if (%symexist(a) == FALSE)</span></span>
 <span>  <span class="co">#%let a &lt;- 2</span></span>
@@ -606,7 +615,7 @@ variables before using them in a calculation:</p>
 <span><span class="co"># Calculate a * b</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">a.</span> <span class="op">*</span> <span class="va">b.</span></span></code></pre></div>
 <p>And here is the resolved version:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate a * b</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span></span></code></pre></div>
 <p>Notice that the variable name inside the <code>%symexist()</code>

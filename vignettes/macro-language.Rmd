@@ -485,10 +485,20 @@ x <- "> 5"
 x <- "<= 5"
 #%end
 print(x)
+print("The mean of 'a' is %sysfunc(mean(a., %.2f))")
 ```
 The above macro function evaluates the mean of `a.`, compares to the hard-coded
 value 5, and then sets the value of `x`.  The `%sysfunc()` macro function
 allows for immediate evaluation of the Base R `mean()` function. 
+
+Here is the resolved code:
+```{r eval=FALSE, echo=TRUE}
+x <- ">5"
+print(x)
+print("The mean of 'a' is 5.09")
+```
+In the above example, `%sysfunc()` is used in the conditional, and inside a
+text string.  You can see that it is resolved in both cases.
 
 Note that you do not need multiple calls to `%sysfunc()` if you have multiple
 Base R functions in your expression. Just put your entire expression

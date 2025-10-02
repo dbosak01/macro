@@ -6,3 +6,4 @@ x <- ">5"
 x <- "<=5"
 #%end
 print(x)
+print("The mean of 'a' is %sysfunc(mean(a.), %.2f)")
