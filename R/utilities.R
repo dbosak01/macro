@@ -213,7 +213,7 @@ sub_funcs <- function(ln) {
 # }
 
 #' @noRd
-is_if <- function(ln) {
+is_if <- function(ln, evaluate = TRUE) {
 
   ret <- FALSE
   # browser()
@@ -221,11 +221,17 @@ is_if <- function(ln) {
   if (dtct) {
     ret <- TRUE
 
-    nl <- trimws(sub("#%if", "", ln, fixed = TRUE))
+    if (evaluate) {
+      nl <- trimws(sub("#%if", "", ln, fixed = TRUE))
 
-    nr <- mreplace(nl)
+      nr <- mreplace(nl)
 
-    vl <- eval(str2expression(trimws(nr)), envir = e)
+      vl <- eval(str2expression(trimws(nr)), envir = e)
+
+    } else {
+
+      vl <- NA
+    }
 
     attr(ret, "value") <- vl
   }
@@ -335,7 +341,6 @@ get_include <- function(pth) {
 
 }
 
-# Currently not used.  Experimental.
 #' @noRd
 is_do <- function(ln) {
 
@@ -345,15 +350,24 @@ is_do <- function(ln) {
   if (dtct) {
     ret <- TRUE
 
+    # Resolve any macro variables
+    ln <- mreplace(ln)
+
+    # Remove do token
     nl <- trimws(sub("#%do", "", ln, fixed = TRUE))
+
+    # Split on equals sign
     snl <- strsplit(nl, "=", fixed = TRUE)[[1]]
 
+    # Split on %to
     vr <- trimws(snl[1])
     cnl <- strsplit(snl[2], "%to", fixed = TRUE)[[1]]
 
+    # Get starting number
     strt <- tryCatch({eval(str2expression(trimws(cnl[1])), envir = e)},
                      error = function(cond) {NA})
 
+    # Get ending number
     end <- tryCatch({eval(str2expression(trimws(cnl[2])), envir = e)},
                      error = function(cond) {NA})
 
@@ -372,23 +386,65 @@ is_do <- function(ln) {
 
 }
 
-# Currently not used.  Experimental.
 #' @noRd
-do_info <- function(lvl, dolvl, var, start, end) {
+process_do <- function(lns, idx, lvl, ido) {
 
-  di <- structure(list(), class = c("do_info", "list"))
+  lnstart <- idx + 1
+  lnend <- length(lns)
+  ret <- c()
+  dlvl <- lvl + 1
 
+  # Scan remaining lines for end of do block
+  for (ix in seq(lnstart, lnend)) {
 
-  di$lvl <- lvl
-  di$dolvl <- dolvl
-  di$var <- var
-  di$start <- start
-  di$end <- end
-  di$code <- NULL
-  di$cnt <- NULL
+    ln <- lns[ix]
 
-  return(di)
+    # Look for if
+    if (as.logical(is_if(ln, FALSE))) {
+      dlvl <- dlvl + 1
+    }
 
+    # Look for do
+    if (as.logical(is_do(ln))) {
+      dlvl <- dlvl + 1
+    }
+
+    if (is_end(ln)) {
+      dlvl <- dlvl - 1
+    }
+
+    if (dlvl == lvl) {
+      lnend <- ix - 1
+      break
+    }
+
+  }
+
+  # Throw error if no end
+  if (lnend == length(lns) & dlvl != lvl) {
+    stop(paste0("Macro do loop on line ", idx, " not closed.  Did you forget an '#%end'?"))
+  }
+
+  # Get do lines
+  tmp <- lns[seq(lnstart, lnend)]
+
+  # Create new block
+  for (lp in seq(attr(ido, "start"), attr(ido, "end"))) {
+
+    # Set do macro variable
+    fln <- paste0("#%let ", attr(ido, "variable"), " <- ", lp)
+    ret <- append(ret, fln)
+
+    # Append do lines
+    ret <- append(ret, tmp)
+
+  }
+
+  ret <- append(ret, "#% end do")
+
+  attr(ret, "end") <- lnend + 1
+
+  return(ret)
 }
 
 

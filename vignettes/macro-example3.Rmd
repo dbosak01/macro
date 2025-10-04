@@ -48,7 +48,7 @@ data_path. <- file.path(base_path, "data")
 # Assign global variables
 sponsor_name. <- "Acme, Inc."
 study_name. <- "ABC"
-prog_nm. <- "t_dm"
+prog_name. <- "t_dm"
 
 # Select analysis variables 
 vars. <- c("age", "ageg") # "sex", "race"
@@ -100,7 +100,7 @@ options("logr.autolog" = TRUE,
         "procs.print" = FALSE)
 
 # Assign program name
-prog_nm <- "prog_nm."
+prog_nm <- "prog_name."
 
 # Construct paths
 l_path <- file.path("log_path.", paste0(prog_nm, ".log"))

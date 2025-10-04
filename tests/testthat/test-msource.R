@@ -239,7 +239,7 @@ test_that("msource8: test include.", {
   e1 <- new.env()
   e1$z. <- l1
 
-  res <- msource(fl1, file_out = fl2, e1)
+  res <- msource(fl1, file_out = fl2, e1, debug = TRUE)
 
   eres <- file.exists(fl2)
 
@@ -405,22 +405,88 @@ test_that("msource14: test debug_out.", {
 
 })
 
-# test_that("msource8: msource() do loop functionality.", {
-#
-#   fl1 <- file.path(base_path, "programs/test5.R")
-#   fl2 <- file.path(base_path, "programs/test5_mod.R")
-#
-#   if (file.exists(fl2))
-#     file.remove(fl2)
-#
-#   res <- msource(fl1, file_out = fl2)
-#
-#   eres <- file.exists(fl2)
-#
-#   expect_equal(eres, TRUE)
-#   expect_equal(resx, "one")
-#   expect_equal(resy, 2)
-#
-# })
+
+test_that("msource15: do loop functionality.", {
+
+  fl1 <- file.path(base_path, "programs/test5.R")
+  fl2 <- file.path(base_path, "programs/test5_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  res <- msource(fl1, file_out = fl2, debug = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(a, 4)
+  expect_equal(b, 3)
+
+})
+
+
+
+test_that("msource16: more do loop functionality.", {
+
+  fl1 <- file.path(base_path, "programs/test14.R")
+  fl2 <- file.path(base_path, "programs/test14_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1, debug = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$z, 3)
+  expect_equal(length(e1$y), 3)
+
+
+})
+
+test_that("msource17: advanced do loop functionality.", {
+
+  fl1 <- file.path(base_path, "programs/test15.R")
+  fl2 <- file.path(base_path, "programs/test15_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1, debug = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$y, c("hello1", "hello3"))
+  expect_equal(e1$z, c("hello2"))
+  expect_equal(e1$w, 3)
+
+
+})
+
+test_that("msource18: nested do loops.", {
+
+  fl1 <- file.path(base_path, "programs/test16.R")
+  fl2 <- file.path(base_path, "programs/test16_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1, debug = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(length(e1$w), 6)
+  expect_equal(e1$w, c("hello2", "hello3", "hello4", "hello3", "hello4", "hello5"))
+
+})
 
 

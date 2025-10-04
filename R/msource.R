@@ -379,8 +379,8 @@ mprocess <- function(lns, debug, debug_out) {
   isopen[lvl] <- TRUE
   elseflag <- c()
   elseflag[lvl] <- TRUE
-  idx <- 1
-  idxO <- 0
+  idx <- 1 # Input index
+  idxO <- 0 # Output index
   lncnt <- length(lns)
   emt <- FALSE
 
@@ -407,6 +407,9 @@ mprocess <- function(lns, debug, debug_out) {
 
       # Include flag
       isinclude <- is_include(ln)
+
+      # Do flag
+      isdo <- is_do(ln)
 
       # Next line macro
       if (idx < lncnt) {
@@ -474,13 +477,33 @@ mprocess <- function(lns, debug, debug_out) {
           nlns <- get_include(pth)
 
           # Insert into lns vector
-          lns <- c(lns[seq(1, idx - 1)], nlns, lns[seq(idx + 1, lncnt)])
+          lns <- c(lns[seq(1, idx)], nlns, lns[seq(idx + 1, lncnt)])
 
           # Reset line count
           lncnt <- length(lns)
 
-          # Reset index
-          idx <- idx - 1
+          # Resolve variables for better debug output
+          ln <- mreplace(ln)
+
+        }
+      } else if (as.logical(isdo)) {  # Deal with 'do'
+
+        if (all(isopen)) {
+
+          # Process do and return do_info
+          nlns <- process_do(lns, idx, lvl, isdo)
+
+          # Get ending point of do block
+          doend <- attr(nlns, "end")
+
+          # Insert into lns vector
+          lns <- c(lns[seq(1, idx)], nlns, lns[seq(doend + 1, lncnt)])
+
+          # Reset line count
+          lncnt <- length(lns)
+
+          # Resolve variables for better debug output
+          ln <- mreplace(ln)
 
         }
       } else if (is_comment(ln)) {  # Deal with macro comment
@@ -514,7 +537,7 @@ mprocess <- function(lns, debug, debug_out) {
     }
 
     if (debug & emt == FALSE) {
-      log_debug(paste0("[", sprintf("%4d", idx), "][    ]: ", ln))
+        log_debug(paste0("[", sprintf("%4d", idx), "][    ]: ", ln))
     }
     emt <- FALSE
 
@@ -522,6 +545,7 @@ mprocess <- function(lns, debug, debug_out) {
     # print(paste0(isopen, collapse = ", "))
     # print(paste0(elseflag, collapse = ", "))
     idx <- idx + 1
+
   }
 
   if (lvl > 1) {
