@@ -622,8 +622,66 @@ variables before using them in a calculation:</p>
 function is not quoted. For this function, quoting is not necessary, and
 will in fact prevent the function from finding the specified variable
 name.</p>
-<p>Next: <a href="macro-debug.html">Debugging</a></p>
 </div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="macro-do-loops">Macro Do Loops<a class="anchor" aria-label="anchor" href="#macro-do-loops"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax-5">Syntax<a class="anchor" aria-label="anchor" href="#syntax-5"></a>
+</h3>
+<pre><code><span><span class="co">#%do &lt;variable&gt; = &lt;start&gt; %to &lt;end&gt;</span></span>
+<span><span class="co">#%end</span></span></code></pre>
+<p>Where “&lt;variable&gt;” is a macro variable name to use for the loop
+counter, and “&lt;start&gt;” and “&lt;end&gt;” signify the beginning and
+ending of the loop sequence. The “&lt;start&gt;” and “&lt;end&gt;”
+values can be numbers, macro variables that resolve to numbers, or
+expressions that resolve to numbers.</p>
+<p>The “#%end” command signifies the end of the “do” block. It is
+required.</p>
+</div>
+<div class="section level3">
+<h3 id="details-5">Details<a class="anchor" aria-label="anchor" href="#details-5"></a>
+</h3>
+<p>A macro “do” loop causes the pre-processor to repeat a section of
+code some number of times. The do variable will be incremented for each
+pass. This variable can be used to alter the section of code each time
+around. In the generated output file, the do block code will actually be
+copied for each iteration of the loop.</p>
+</div>
+<div class="section level3">
+<h3 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a>
+</h3>
+<p>Here is a simple example of a macro do loop:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%do x = 1 %to 3</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #x."</span><span class="op">)</span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
+<p>The console output from the above macro do loop is as follows:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">msource</span>()</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #1"</span></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #2"</span></span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #3"</span></span></code></pre></div>
+<p>And the generated code is as follows:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #1"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #2"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #3"</span><span class="op">)</span></span></code></pre></div>
+<p>Observe that the code inside the macro do loop was copied for each
+iteration of the loop.</p>
+<p>Here is another example:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%let vars &lt;- c("mpg", "disp", "hp", "drat")</span></span>
+<span><span class="co">#%let dat &lt;- mtcars</span></span>
+<span></span>
+<span><span class="co">#% Print mean for each variable</span></span>
+<span><span class="co">#%do v = 1 %to length(vars.)</span></span>
+<span>  <span class="co">#%let var &lt;- vrs[v.]</span></span>
+<span>  <span class="va">mn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[[</span><span class="va">var.</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Mean of '"</span><span class="op">)</span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
+<p>Next: <a href="macro-debug.html">Debugging</a></p>
 </div>
 </div>
   </div>

@@ -8,6 +8,9 @@ e <- new.env()
 # Global internal variables
 gbl <- new.env()
 
+# Local execution environment
+lcl <- new.env()
+
 # Separator for debug output
 strs <- paste0(rep("*", 80), collapse = "")
 
@@ -55,22 +58,26 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' Here is a summary of the available macro commands:
 #' \itemize{
 #'   \item{\strong{#%&lt;comment&gt;}: A macro comment.}
+#'   \item{\strong{#%let &lt;variable&gt; <- &lt;value&gt;}: Declares a macro variable
+#'   and assigns it a value.}
 #'   \item{\strong{#%include '&lt;path&gt;'}: Inserts code from included file as text
 #'   into current program.}
 #'   \item{\strong{#%if (&lt;condition&gt;)}: Begins a macro conditional block.}
 #'   \item{\strong{#%elseif (&lt;condition&gt;)}: Defines a subsequent conditional block.}
 #'   \item{\strong{#%else}: Identifies the default behavior in a condition.}
 #'   \item{\strong{#%end}: Ends a macro condition.}
+#'   \item{\strong{#%do &lt;variable&gt; = &lt;start&gt; %to &lt;end&gt;}: Defines a
+#'   macro do loop block.}
 #'   \item{\strong{%sysfunc(&lt;expression&gt;)}: Evaluates an R expression as part of
 #'   a macro command.}
 #'   \item{\strong{%symexist(&lt;name&gt;)}: Determines if a macro variable name
 #'   exists in the macro symbol table.}
 #' }
 #'
-#' Note that there are no "do" loop commands in the R macro language. This functionality
-#' would be redundant to existing R looping structures, and is therefore unnecessary.
+#' Note that there are no user-defined macro functions in the R macro language.
+#' Use regular R function definitions instead.
 #'
-#' You can find extensive documentation for the above macro functions in the
+#' You can find extensive documentation for the above macro commands in the
 #' the Macro Language vignette. To access the vignette, run
 #' \code{vignette("macro-language")} on the R command line.
 #'
@@ -389,6 +396,11 @@ mprocess <- function(lns, debug, debug_out) {
     # Initialize line
     ln <- lns[idx]
 
+    # If gets mismatched
+    if (is.na(ln)) {
+      break
+    }
+
     # Resolve sysfuncs
     ln <- sub_funcs(ln)
 
@@ -414,10 +426,15 @@ mprocess <- function(lns, debug, debug_out) {
       # Next line macro
       if (idx < lncnt) {
         nl <- lns[idx + 1]
-        if (is_comment(nl) | trimws(nl) == "") {
-          ismacro <- TRUE
-        } else {
-          ismacro <- FALSE
+        if (is.na(nl)) {
+            ismacro <- FALSE
+          } else {
+
+          if (is_comment(nl) | trimws(nl) == "") {
+            ismacro <- TRUE
+          } else {
+            ismacro <- FALSE
+          }
         }
       } else {
         ismacro <- FALSE

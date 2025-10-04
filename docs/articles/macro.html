@@ -166,6 +166,29 @@ syntax. The syntax is a blend of SAS and R syntax, all inside a macro
 comment.</p>
 </div>
 <div class="section level2">
+<h2 id="differences-between-sas-macro-and-r-macro">Differences Between SAS Macro and R Macro<a class="anchor" aria-label="anchor" href="#differences-between-sas-macro-and-r-macro"></a>
+</h2>
+<p>Here are some more of the major difference between the SAS macro
+language and the R macro language:</p>
+<ul>
+<li>R macro statements do not end with a semicolon (“;”). They are
+single-line commands, and end with a carriage return.</li>
+<li>R macro variables do not have a leading ampersand (“&amp;”). They do
+have a trailing dot (“.”).</li>
+<li>At present, there are no user-defined macro functions in the
+<strong>macro</strong> package.<br>
+To create a function, use the Base R function syntax.<br>
+</li>
+<li>R macro commands can be used anywhere in the program. They are not
+restricted to functions.<br>
+</li>
+<li>Single-quotes will not prevent macro variable resolution. In the R
+macro language, single and double quotes operate the same. # All
+operators in the R macro language use R syntax, including the comparison
+operator (“==”).</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="the-msource-function">The msource() function<a class="anchor" aria-label="anchor" href="#the-msource-function"></a>
 </h2>
 <p>In the <strong>macro</strong> package, pre-processing of the macro
@@ -225,6 +248,9 @@ file into your program.</li>
 <li>
 <strong>Macro Functions</strong>: A small number of macro functions
 to make the system more practical.</li>
+<li>
+<strong>Macro Do Loops</strong>: Copies code inside the do block for
+each iteration of the loop.</li>
 </ol>
 <div class="section level4">
 <h4 id="macro-comments-and-variables">Macro Comments and Variables<a class="anchor" aria-label="anchor" href="#macro-comments-and-variables"></a>
@@ -500,6 +526,12 @@ macro variable without quotes and without the “.” suffix.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: 1"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="macro-do-loops">Macro Do Loops<a class="anchor" aria-label="anchor" href="#macro-do-loops"></a>
+</h4>
+<p>Macro do loops can be used to easily copy a section of code multiple
+times.</p>
 </div>
 </div>
 </div>

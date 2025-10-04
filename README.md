@@ -25,6 +25,7 @@ The **macro** package offers the most basic "macro" functionality, such as:
 1. Assigning macro variables.
 2. Conditional macro logic.
 3. Including code from external files.
+4. Macro do loops.
 
 The **macro** package will give some consolation to SAS
 programmers transitioning to R who are accustomed to working with the SAS macro language.

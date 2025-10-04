@@ -531,4 +531,65 @@ Notice that the variable name inside the `%symexist()` function is not
 quoted. For this function, quoting is not necessary, and will in fact prevent
 the function from finding the specified variable name.
 
+
+## Macro Do Loops
+
+### Syntax
+```
+#%do <variable> = <start> %to <end>
+#%end
+```
+Where "&lt;variable&gt;" is a macro variable name to use for the loop counter,
+and "&lt;start&gt;" and "&lt;end&gt;" signify the beginning and ending of the 
+loop sequence.  The "&lt;start&gt;" and "&lt;end&gt;" values can be numbers, 
+macro variables that resolve to numbers, or expressions that resolve to numbers.
+
+The "#%end" command signifies the end of the "do" block.  It is required.
+
+### Details
+
+A macro "do" loop causes the pre-processor to repeat a section of code some
+number of times. The do variable will be incremented for each pass.  This 
+variable can be used to alter the section of code each time around.  In the
+generated output file, the do block code will actually be copied for each
+iteration of the loop.
+
+### Examples
+Here is a simple example of a macro do loop:
+```{r eval=FALSE, echo=TRUE}
+#%do x = 1 %to 3
+print("Hello #x.")
+#%end
+```
+The console output from the above macro do loop is as follows:
+```{r eval=FALSE, echo=TRUE}
+> msource()
+[1] "Hello #1"
+[1] "Hello #2"
+[1] "Hello #3"
+```
+And the generated code is as follows:
+```{r eval=FALSE, echo=TRUE}
+print("Hello #1")
+print("Hello #2")
+print("Hello #3")
+```
+Observe that the code inside the macro do loop was copied for each iteration
+of the loop.
+
+Here is another example:
+```{r eval=FALSE, echo=TRUE}
+#%let vars <- c("mpg", "disp", "hp", "drat")
+#%let dat <- mtcars
+
+#% Print mean for each variable
+#%do v = 1 %to length(vars.)
+  #%let var <- vrs[v.]
+  mn <- mean(dat[[var.]])
+  print("Mean of '")
+#%end
+```
+
+
+
 Next: [Debugging](macro-debug.html)

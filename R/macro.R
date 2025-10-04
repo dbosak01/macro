@@ -31,6 +31,7 @@
 #'   \item \strong{Macro Conditionals}: Emit code conditionally in pre-processing.
 #'   \item \strong{Macro Include}: Insert code from external files into your program.
 #'   \item \strong{Macro Functions}: A small number of essential built-in macro functions.
+#'   \item \strong{Macro Do Loops}: Emits a block of code repeatedly.
 #' }
 #' The above features give you a simple yet flexible way to perform meta-programming.
 #' In this way, the \strong{macro} package can be useful in several situations,

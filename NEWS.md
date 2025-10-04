@@ -1,6 +1,7 @@
 # macro 0.1.2
 
-* Submit to CRAN.
+* Add do loop
+* Add `symput()` and `symget()`
 
 # macro 0.1.1
 

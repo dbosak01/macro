@@ -91,16 +91,15 @@ macro statements, and then execute the resolved code.
 
 ******
 
-### Can I create macro functions and do loops? {#function}
+### Can I create macro functions? {#function}
 
 **Q:** I want to create a macro function.  Does the
-**macro** package support it?  What about macro do loops?
+**macro** package support it?  
 
 
 **A:** No.  Base R provides true function capabilities, and nothing
-would be gained by replicating that capability with macro functions.  Likewise
-with do loops, there are already extensive features in Base R and Tidyverse
-for looping.  It is recommended to use those existing features.
+would be gained by replicating that capability with macro functions. 
+It is recommended to use those existing features.
 
 [top](#top) 
 

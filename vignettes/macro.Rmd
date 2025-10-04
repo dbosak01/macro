@@ -65,7 +65,25 @@ A simple macro conditional looks like this:
 ```
 
 Note that the above R macro syntax is not identical to the SAS syntax. The syntax
-is a blend of SAS and R syntax, all inside a macro comment.
+is a blend of SAS and R syntax, all inside a macro comment. 
+
+# Differences Between SAS Macro and R Macro 
+
+Here are some more of the major difference between the SAS macro language and the 
+R macro language:
+
+  * R macro statements do not end with a semicolon (";").  They are single-line
+  commands, and end with a carriage return.
+  * R macro variables do not have a leading ampersand ("&").  They do have a trailing
+  dot (".").
+  * At present, there are no user-defined macro functions in the **macro** package.  
+  To create a function, use the Base R function syntax.  
+  * R macro commands can be used anywhere in the program.  They are not restricted to 
+  functions.  
+  * Single-quotes will not prevent macro variable resolution.  In the R macro
+  language, single and double quotes operate the same.
+  # All operators in the R macro language use R syntax, including the 
+  comparison operator ("==").
 
 # The msource() function
 
@@ -114,6 +132,7 @@ execute a chunk of code.
 4. **Macro Include**: Inserts the contents of an external file into your program.
 5. **Macro Functions**: A small number of macro functions
 to make the system more practical.
+6. **Macro Do Loops**: Copies code inside the do block for each iteration of the loop.
 
 ### Macro Comments and Variables
 
@@ -407,6 +426,9 @@ And the resulting code looks like this:
   print("Macro variable 'b' does not exist!")
 
 ```
+### Macro Do Loops
+
+Macro do loops can be used to easily copy a section of code multiple times.
 
 
 # Next Steps

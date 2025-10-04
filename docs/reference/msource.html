@@ -191,19 +191,23 @@ running <code>msource()</code> on the command line with no parameters.</p>
 
 
 <p>Here is a summary of the available macro commands:</p><ul><li><p><strong>#%&lt;comment&gt;</strong>: A macro comment.</p></li>
+<li><p><strong>#%let &lt;variable&gt; &lt;- &lt;value&gt;</strong>: Declares a macro variable
+and assigns it a value.</p></li>
 <li><p><strong>#%include '&lt;path&gt;'</strong>: Inserts code from included file as text
 into current program.</p></li>
 <li><p><strong>#%if (&lt;condition&gt;)</strong>: Begins a macro conditional block.</p></li>
 <li><p><strong>#%elseif (&lt;condition&gt;)</strong>: Defines a subsequent conditional block.</p></li>
 <li><p><strong>#%else</strong>: Identifies the default behavior in a condition.</p></li>
 <li><p><strong>#%end</strong>: Ends a macro condition.</p></li>
+<li><p><strong>#%do &lt;variable&gt; = &lt;start&gt; %to &lt;end&gt;</strong>: Defines a
+macro do loop block.</p></li>
 <li><p><strong>%sysfunc(&lt;expression&gt;)</strong>: Evaluates an R expression as part of
 a macro command.</p></li>
 <li><p><strong>%symexist(&lt;name&gt;)</strong>: Determines if a macro variable name
 exists in the macro symbol table.</p></li>
-</ul><p>Note that there are no "do" loop commands in the R macro language. This functionality
-would be redundant to existing R looping structures, and is therefore unnecessary.</p>
-<p>You can find extensive documentation for the above macro functions in the
+</ul><p>Note that there are no user-defined macro functions in the R macro language.
+Use regular R function definitions instead.</p>
+<p>You can find extensive documentation for the above macro commands in the
 the Macro Language vignette. To access the vignette, run
 <code><a href="../articles/macro-language.html">vignette("macro-language")</a></code> on the R command line.</p>
     </div>

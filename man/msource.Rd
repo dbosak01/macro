@@ -88,22 +88,26 @@ running \code{msource()} on the command line with no parameters.
 Here is a summary of the available macro commands:
 \itemize{
 \item{\strong{#\%<comment>}: A macro comment.}
+\item{\strong{#\%let <variable> <- <value>}: Declares a macro variable
+and assigns it a value.}
 \item{\strong{#\%include '<path>'}: Inserts code from included file as text
 into current program.}
 \item{\strong{#\%if (<condition>)}: Begins a macro conditional block.}
 \item{\strong{#\%elseif (<condition>)}: Defines a subsequent conditional block.}
 \item{\strong{#\%else}: Identifies the default behavior in a condition.}
 \item{\strong{#\%end}: Ends a macro condition.}
+\item{\strong{#\%do <variable> = <start> \%to <end>}: Defines a
+macro do loop block.}
 \item{\strong{\%sysfunc(<expression>)}: Evaluates an R expression as part of
 a macro command.}
 \item{\strong{\%symexist(<name>)}: Determines if a macro variable name
 exists in the macro symbol table.}
 }
 
-Note that there are no "do" loop commands in the R macro language. This functionality
-would be redundant to existing R looping structures, and is therefore unnecessary.
+Note that there are no user-defined macro functions in the R macro language.
+Use regular R function definitions instead.
 
-You can find extensive documentation for the above macro functions in the
+You can find extensive documentation for the above macro commands in the
 the Macro Language vignette. To access the vignette, run
 \code{vignette("macro-language")} on the R command line.
 }
