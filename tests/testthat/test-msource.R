@@ -489,4 +489,26 @@ test_that("msource18: nested do loops.", {
 
 })
 
+test_that("msource19: test %symput()", {
+
+  fl1 <- file.path(base_path, "programs/test17.R")
+  fl2 <- file.path(base_path, "programs/test17_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1, debug = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$a, 14)
+  expect_equal(e1$b, 3)
+  expect_equal(e1$c, "mvar")
+  expect_equal(e1$d, c("fork", "bork", "sammy"))
+
+})
+
 

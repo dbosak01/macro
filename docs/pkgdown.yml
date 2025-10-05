@@ -8,9 +8,10 @@ articles:
   macro-example2: macro-example2.html
   macro-example3: macro-example3.html
   macro-faq: macro-faq.html
+  macro-generated: macro-generated.html
   macro-language: macro-language.html
   macro: macro.html
-last_built: 2025-10-04T20:55Z
+last_built: 2025-10-05T23:11Z
 urls:
   reference: https://macro.r-sassy.org/reference
   article: https://macro.r-sassy.org/articles

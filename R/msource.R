@@ -72,6 +72,8 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'   a macro command.}
 #'   \item{\strong{%symexist(&lt;name&gt;)}: Determines if a macro variable name
 #'   exists in the macro symbol table.}
+#'   \item{\strong{%symput(&lt;expression&gt;)}: Assigns the result of
+#'   an expression in the execution environment to a macro variable.}
 #' }
 #'
 #' Note that there are no user-defined macro functions in the R macro language.
@@ -144,7 +146,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' the function will create a temp file for the generated code. The temp
 #' file will be deleted when processing is complete.
 #' @param envir The environment to be used for program execution.
-#' Default is the global environment.
+#' Default is the parent frame.
 #' @param exec Whether or not to execute the output file after pre-processing.
 #' Default is TRUE. When FALSE, only the pre-processing step is performed.
 #' If a \code{file_out} parameter is supplied, the generated code file
@@ -211,7 +213,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' # ********************************************************************************
 #'
 #' @export
-msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
+msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
                     exec = TRUE, debug = FALSE, debug_out = NULL,
                     ...) {
 
@@ -221,10 +223,11 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = globalenv(),
     stop(paste0("File '", pth, "' not found."))
   }
 
-  if (is.null(envir))
+  if (is.null(envir)) {
     stop("Environment cannot be null.")
-  else
+  } else {
     e <- envir
+  }
 
   # To write cat() to the console,
   # requires empty string.
@@ -357,7 +360,11 @@ preprocess <- function(pth, file_out, envir, debug, debug_out) {
     assign(nm, envir[[nm]], envir = e)
   }
 
-  # print(ls(e))
+  # Clear out local environment
+  lnms <- ls(lcl)
+  if (length(lnms) > 0) {
+    rm(list = lnms, envir = lcl)
+  }
 
   # Process lines
   nlns <- mprocess(lns, debug, debug_out)
@@ -390,6 +397,7 @@ mprocess <- function(lns, debug, debug_out) {
   idxO <- 0 # Output index
   lncnt <- length(lns)
   emt <- FALSE
+  gbl$buffer <- c()  # execution buffer
 
   while (idx <= lncnt) {
 
@@ -547,6 +555,9 @@ mprocess <- function(lns, debug, debug_out) {
             emt <- TRUE
           }
 
+          # Append to buffer for %symput
+          gbl$buffer <- append(gbl$buffer, nln)
+
           # Append resolved line to output vector
           ret <- append(ret, nln)
         }
@@ -652,4 +663,33 @@ mreplace <- function(ln) {
 
   return(ret)
 }
+
+
+
+# Symput and Symget -------------------------------------------------------
+
+# @title Assigns a Value to a Macro Variable
+# @param var_name The quoted name of a macro variable to assign. Do not include
+# the trailing dot (".").
+# @param var_value The value of the variable to assign.
+# @export
+# symput <- function(var_name, var_value) {
+#
+#   assign(paste0(varname, "."), var_value, envir = e)
+#
+# }
+
+
+# @title Retrieves the Value of a Macro Variable
+# @param var_name The quoted name of a macro variable to retrieve. Do not include
+# the trailing dot (".").
+# @export
+# symget <- function(var_name) {
+#
+#   ret <- get(paste0(varname, "."), envir = e)
+#
+#   return(ret)
+# }
+
+
 

@@ -29,3 +29,17 @@ for (idx in seq(1, v6.)) {
 }
 
 
+# Resolve inside a comment
+# The value of 'v1' is v1.
+
+# Resolve in a text string
+a <- "The value of 'v2' is v2."
+print(a)
+
+# Resolve in open code
+b <- v3.
+print(b)
+
+# Resolve in a function
+c <- mean(v5.)
+print(c)

@@ -7,7 +7,7 @@
 msource(
   pth = Sys.path(),
   file_out = NULL,
-  envir = globalenv(),
+  envir = parent.frame(),
   exec = TRUE,
   debug = FALSE,
   debug_out = NULL,
@@ -25,7 +25,7 @@ the function will create a temp file for the generated code. The temp
 file will be deleted when processing is complete.}
 
 \item{envir}{The environment to be used for program execution.
-Default is the global environment.}
+Default is the parent frame.}
 
 \item{exec}{Whether or not to execute the output file after pre-processing.
 Default is TRUE. When FALSE, only the pre-processing step is performed.
@@ -102,6 +102,8 @@ macro do loop block.}
 a macro command.}
 \item{\strong{\%symexist(<name>)}: Determines if a macro variable name
 exists in the macro symbol table.}
+\item{\strong{\%symput(<expression>)}: Assigns the result of
+an expression in the execution environment to a macro variable.}
 }
 
 Note that there are no user-defined macro functions in the R macro language.

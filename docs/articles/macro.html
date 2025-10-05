@@ -71,6 +71,9 @@
       <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
+      <a href="../articles/macro-generated.html">Generalized vs. Generated</a>
+    </li>
+    <li>
       <a href="../articles/macro-disclaimer.html">Disclaimer</a>
     </li>
     <li>
@@ -125,7 +128,8 @@ concept at a high level.</p>
 </h2>
 <p>A macro language is like a meta-language for code. The meta-language
 runs first, generates the regular code, and then the regular code is
-executed to produce some sort of output.</p>
+executed to produce some sort of output. It is, at heart, a text
+replacement/generation system.</p>
 <p>The SAS® macro language is commonly used in SAS programs. The R
 <strong>macro</strong> package was inspired by SAS.</p>
 </div>
@@ -162,30 +166,30 @@ percent sign (%). A simple macro assignment looks like this:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"x is something else!"</span><span class="op">)</span></span>
 <span><span class="co">#%end</span></span></code></pre></div>
 <p>Note that the above R macro syntax is not identical to the SAS
-syntax. The syntax is a blend of SAS and R syntax, all inside a macro
-comment.</p>
+syntax. The syntax devised for the <strong>macro</strong> package is a
+blend of SAS and R syntax.</p>
 </div>
 <div class="section level2">
 <h2 id="differences-between-sas-macro-and-r-macro">Differences Between SAS Macro and R Macro<a class="anchor" aria-label="anchor" href="#differences-between-sas-macro-and-r-macro"></a>
 </h2>
-<p>Here are some more of the major difference between the SAS macro
-language and the R macro language:</p>
+<p>Here are some of the major difference between the SAS macro language
+and the R macro language:</p>
 <ul>
 <li>R macro statements do not end with a semicolon (“;”). They are
 single-line commands, and end with a carriage return.</li>
 <li>R macro variables do not have a leading ampersand (“&amp;”). They do
 have a trailing dot (“.”).</li>
 <li>At present, there are no user-defined macro functions in the
-<strong>macro</strong> package.<br>
-To create a function, use the Base R function syntax.<br>
+<strong>macro</strong> package. To create a function, use the Base R
+function syntax.<br>
 </li>
 <li>R macro commands can be used anywhere in the program. They are not
 restricted to functions.<br>
 </li>
 <li>Single-quotes will not prevent macro variable resolution. In the R
-macro language, single and double quotes operate the same. # All
-operators in the R macro language use R syntax, including the comparison
-operator (“==”).</li>
+macro language, single and double quotes operate the same.</li>
+<li>All operators in the R macro language use R syntax, including the
+comparison operator (“==”).</li>
 </ul>
 </div>
 <div class="section level2">
@@ -298,30 +302,45 @@ suffix.</p>
 <p>For example, we can use some of the above macro assignments like
 this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Print inside loop</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">idx</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">v6.</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">v3.</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Resolve inside a comment</span></span>
+<span><span class="co"># The value of 'v1' is v1.</span></span>
+<span></span>
+<span><span class="co"># Resolve in a text string</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="st">"The value of 'v2' is v2."</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Resolve in open code</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">v3.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Resolve in a function</span></span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">v5.</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span></code></pre></div>
 <p>If we execute the above code using <code><a href="../reference/msource.html">msource()</a></code>, we’ll get
 the following result:</p>
 <pre><code>&gt; msource()
+[1] "The value of 'v2' is 1.2"
 [1] "Hello World!"
-[1] "Hello World!"
-[1] "Hello World!"
-[1] "Hello World!"</code></pre>
+[1] 3</code></pre>
 <p>And the generated code would look like this:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Print inside loop</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">idx</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="co"># Resolve inside a comment</span></span>
+<span><span class="co"># The value of 'v1' is 1</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello World!"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>Notice in the above generated code that the macro variables
-<code>v3.</code> and <code>v6.</code> were replaced exactly as they were
-assigned. Macro variable expressions are not evaluated unless done so
-explicitly using <code>%sysfunc()</code>. Usage of this macro function
-will be explained below.</p>
+<span><span class="co"># Resolve in a text string</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="st">"The value of 'v2' is 1.2"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Resolve in open code</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="st">"Hello World!"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Resolve in a function</span></span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span></code></pre></div>
+<p>Notice in the above generated code that the macro variables ‘v3.’ and
+‘v5.’ were replaced exactly as they were assigned. All macro variable
+resolution is text replacement.</p>
 </div>
 <div class="section level4">
 <h4 id="simple-macro-conditionals">Simple Macro Conditionals<a class="anchor" aria-label="anchor" href="#simple-macro-conditionals"></a>
@@ -356,7 +375,7 @@ code file will contain the following content:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Inside the first condition"</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that all spacing and comments from inside the condition are
 preserved. Also notice that all macro code and code from inside other
-conditions has been removed. Only the code inside TRUE condition has
+conditions has been removed. Only the code inside the TRUE condition has
 been emitted.</p>
 </div>
 <div class="section level4">
@@ -412,7 +431,7 @@ output file will look like this:</p>
 <code class="sourceCode R"><span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is one and Y is 2"</span><span class="op">)</span></span></code></pre></div>
 <p>In this way, many levels of macro logic can be boiled down to a few
-lines of code.</p>
+lines of generated code.</p>
 </div>
 <div class="section level4">
 <h4 id="macro-include">Macro Include<a class="anchor" aria-label="anchor" href="#macro-include"></a>
@@ -435,9 +454,10 @@ be a fully integrated program with all macro commands resolved.</p>
 <div class="section level4">
 <h4 id="macro-functions">Macro Functions<a class="anchor" aria-label="anchor" href="#macro-functions"></a>
 </h4>
-<p>There are a couple macro functions that are considered necessary for
-proper operation of the system. The essential functions are
-<code>%sysfunc()</code> and <code>%symexist()</code>.</p>
+<p>There are a some built-in macro functions that are considered
+necessary for proper operation of the system. The essential functions
+are <code>%sysfunc()</code>, <code>%symexist()</code>, and
+<code>%symput()</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="evaluating-and-formatting-expressions-sysfunc">Evaluating and Formatting Expressions: %sysfunc()<a class="anchor" aria-label="anchor" href="#evaluating-and-formatting-expressions-sysfunc"></a>
@@ -528,10 +548,78 @@ macro variable without quotes and without the “.” suffix.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
+<h4 id="assigning-macro-variables-from-execution-environment-symput">Assigning Macro Variables from Execution Environment: %symput()<a class="anchor" aria-label="anchor" href="#assigning-macro-variables-from-execution-environment-symput"></a>
+</h4>
+<p>The <code>%symput()</code> function allows you examine values in the
+runtime environment during pre-processing. Notice below that you can
+assign macro variable values based on regular R variables and
+expressions:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Assign vector</span></span>
+<span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#% Get length of vector</span></span>
+<span><span class="co">#%let x &lt;- %symput(length(v1))</span></span>
+<span></span>
+<span><span class="co">#% Get vector values</span></span>
+<span><span class="co">#%let y &lt;- %symput(v1)</span></span>
+<span></span>
+<span><span class="co"># Assign length with macro variable</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">x.</span></span>
+<span></span>
+<span><span class="co"># Assign vector values with macro variable</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">y.</span></span></code></pre></div>
+<p>The generated code looks like this:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Assign vector</span></span>
+<span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Assign length with macro variable</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span></span>
+<span><span class="co"># Assign vector values with macro variable</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'one'</span>, <span class="st">'two'</span>, <span class="st">'three'</span><span class="op">)</span></span></code></pre></div>
+<p>This feature gives you the capability to make decisions in
+pre-processing based on what is happening during execution.</p>
+</div>
+<div class="section level4">
 <h4 id="macro-do-loops">Macro Do Loops<a class="anchor" aria-label="anchor" href="#macro-do-loops"></a>
 </h4>
 <p>Macro do loops can be used to easily copy a section of code multiple
-times.</p>
+times. Here is a modified version of the above <code>%symput()</code>
+example that demonstrates a macro loop:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Assign vector</span></span>
+<span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#% Get length of vector</span></span>
+<span><span class="co">#%let x &lt;- %symput(length(v1))</span></span>
+<span></span>
+<span><span class="co">#% Get vector values</span></span>
+<span><span class="co">#%let y &lt;- %symput(v1)</span></span>
+<span></span>
+<span><span class="co"># Print each value of vector y.</span></span>
+<span><span class="co">#%do idx = 1 %to x.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Vector value %sysfunc(y.[idx.])"</span><span class="op">)</span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
+<p>The above macro will produce the following console output:</p>
+<pre><code>&gt; msource()
+[1] "Vector value one"
+[1] "Vector value two"
+[1] "Vector value three"</code></pre>
+<p>And here is the generated code:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Assign vector</span></span>
+<span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print each value of vector c('one', 'two', 'three')</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Vector value one"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Vector value two"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Vector value three"</span><span class="op">)</span></span></code></pre></div>
+<p>Note that you can have any number of statements inside the do loop.
+This macro feature is useful when you are performing repetitive
+operations, want to avoid copying the code, but still want a resolved
+and transparent output file.</p>
 </div>
 </div>
 </div>
@@ -546,6 +634,7 @@ times.</p>
 <li><a href="macro-example1.html">Example 1: Listing</a></li>
 <li><a href="macro-example2.html">Example 2: Another Listing</a></li>
 <li><a href="macro-example3.html">Example 3: Table</a></li>
+<li><a href="macro-generated.html">Generalized vs. Generated</a></li>
 <li><a href="macro-disclaimer.html">Disclaimer</a></li>
 <li><a href="macro-faq.html">Frequently Asked Questions</a></li>
 </ul>

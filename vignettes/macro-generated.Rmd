@@ -1,0 +1,18 @@
+---
+title: "Generalized vs. Generated"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Generalized vs. Generated}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Explain the difference between a generalized program and a generated program.
+What the benefits of a generated program are. 

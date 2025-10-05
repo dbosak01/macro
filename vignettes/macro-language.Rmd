@@ -231,7 +231,7 @@ unexpected behavior.
 Parenthesis around the conditional expressions are optional but recommended.
 
 The syntax of R conditionals is somewhat different from SAS. One difference is
-that the `%do` directive in SAS has been entirely eliminated from
+that the `%then %do` directives in SAS has been entirely eliminated from
 the **macro** package syntax.
 Another difference is that the `#%ifelse` command is one word instead of two.  
 A third difference
@@ -241,8 +241,8 @@ In general, the R syntax is simpler.
 
 ### Details
 
-Conditional expressions should be regular R expressions,
-using R syntax. For comparisons, the expression should use the double-equals
+Conditional expressions should be standard R expressions,
+using standard R syntax. For comparisons, the expression should use the double-equals
 ("==") comparison operator, as in a normal R "if" statement.
 Likewise, all other comparison operators should follow Base R syntax.
 
@@ -340,7 +340,7 @@ When the nested conditionals resolve, they will look like this:
 
 ```
 In this way, you can perform complex logic in the macro pre-processor, and 
-still produce a refined output.
+still produce a concise output.
 
 ## Macro Include
 
@@ -404,14 +404,14 @@ from multiple code snippets into a unified result.
 
 ## Macro Functions
 
-The **macro** package currently supports two macro functions: `%sysfunc()`
-and `%symexist()`.  
+The **macro** package currently supports three built-in macro functions: 
+`%sysfunc()`, `%symexist()`, and `%symput()`.  
 
 ### Syntax
 ```
 %sysfunc(<expression>, [<format>])
 ```
-Where "&lt;expression&gt;" is an R expression that resolves to a numeric value,
+Where "&lt;expression&gt;" is an R expression,
 and "&lt;format&gt;" is an optional format code.  The expression may
 contain R functions, operators, hard-coded values, and macro variables.
 If "&lt;format&gt;" is supplied, the function will apply the format after 
@@ -420,6 +420,9 @@ not need to be quoted.  If the format is unquoted, the output of the
 `%sysfunc()` function will be unquoted. If the format is quoted, the output of the 
 `%sysfunc()` function will be quoted.
 
+Note that the R `%sysfunc()` is a general evaluation function.  It can evaluate
+any R expression, even those that do not resolve to a numeric value.  
+
 ```
 %symexist(<name>)
 ```
@@ -427,10 +430,20 @@ Where "&lt;name&gt;" is an unquoted name of a macro variable. If the macro
 variable exists, the function will return TRUE.  Otherwise, the function
 will return FALSE.
 
+```
+%symput(<expression>)
+```
+Where "&lt;expression&gt;" is an R expression that references the execution
+environment. The expression can contain macro variables. The return value
+from `%symput()` is assigned to a macro variable using a `#%let`
+command.  The `%symput()` function must exist as part of a `#%let` statement.
+It cannot be used with any other R macro command.
+
+
 ### Details
 
-The `%sysfunc()` and `%symexist()` functions are helper functions that are usually
-contained in other macro statements.  Most commonly, they will exist
+The `%sysfunc()`, `%symexist()`, and `%symput()` functions are helper functions 
+that are usually contained in other macro statements.  Most commonly, they will exist
 as part of "let" or "if" statement.  For this reason, the syntax does not include
 a leading comment symbol ("#").
 
@@ -441,6 +454,23 @@ or used in a macro condition.
 The purpose of `%symexist()` is to check for the existence of a macro variable.
 This check is likewise most often performed as part of a macro conditional
 expression.
+
+The purpose of `%symput()` is to evaluate an expression in the execution
+environment and assign it to a macro variable in the macro environment.
+
+Normally, the macro commands in a program are resolved first, and then
+the remaining R code is executed.  Sometimes, however, you want to make 
+decisions in the macro code depending on what is going on in the regular 
+R code.  For example, if your input dataset has no rows, you may decide do 
+something differently in the macro logic. It is for this type of 
+situation that `symput()` was designed for.
+
+When the macro pre-processor encounters a `%symput()` function, it will 
+first evaluate all emitted code. Then it will evaluate and return the expression
+inside the `%symput()`.  
+
+SAS programmers will notice that the R `%symput()` function is quite different
+from the SAS version. But they have the same goal.  
 
 ### Examples
 
@@ -531,6 +561,47 @@ Notice that the variable name inside the `%symexist()` function is not
 quoted. For this function, quoting is not necessary, and will in fact prevent
 the function from finding the specified variable name.
 
+#### %symput()
+
+Examine the following code.  In this code, we are trying to get the length
+of a vector into a macro variable:
+```{r eval=FALSE, echo=TRUE}
+# Assign vector
+v1 <- c("one", "two", "three")
+
+#% Get length of vector
+#%let x <- %symput(length(v1))
+
+#% Get vector values
+#%let y <- %symput(v1)
+
+# Use macro variables
+a <- x.
+b <- y.
+
+```
+If you run the above code in `msource()`, you will get the following output:
+```
+> msource()
+[1] 3
+[1] "one"   "two"   "three"
+```
+And the generated code looks like this:
+```{r eval=FALSE, echo=TRUE}
+# Assign vector
+v1 <- c("one", "two", "three")
+
+# Use macro variables
+a <- 3
+b <- c('one', 'two', 'three')
+
+# Print to console
+print(a)
+print(b)
+```
+You can see the length and value of vector 'v1' has been pulled from the normal
+R code into macro variables.  These macro variables can then be used with
+other macro commands to control what happens during pre-processing.
 
 ## Macro Do Loops
 
@@ -577,19 +648,62 @@ print("Hello #3")
 Observe that the code inside the macro do loop was copied for each iteration
 of the loop.
 
-Here is another example:
+Here is a more interesting example:
 ```{r eval=FALSE, echo=TRUE}
 #%let vars <- c("mpg", "disp", "hp", "drat")
-#%let dat <- mtcars
+# Get data
+dat <- mtcars
+
 
 #% Print mean for each variable
 #%do v = 1 %to length(vars.)
-  #%let var <- vrs[v.]
-  mn <- mean(dat[[var.]])
-  print("Mean of '")
-#%end
-```
+#%let var <- %sysfunc(vars.[v.])
 
+# Calculate mean for var.
+mnv. <- sprintf("%.2f", mean(dat$var.))
+print(paste0("Mean of 'var.' is ", mnv.))
+
+#%end
+
+```
+This example calculates the mean for several variables in the "mtcars" sample
+data frame.  The macro loops through a vector of variables and constructs
+a code block for each variable. 
+
+Here is the console output from the generated code:
+```
+> msource()
+[1] "Mean of 'mpg' is 20.09"
+[1] "Mean of 'disp' is 230.72"
+[1] "Mean of 'hp' is 146.69"
+[1] "Mean of 'drat' is 3.60"
+```
+And here is the generated code:
+```{r eval=FALSE, echo=TRUE}
+# Get data
+dat <- mtcars
+
+# Calculate mean for mpg
+mn1 <- sprintf("%.2f", mean(dat$mpg))
+print(paste0("Mean of 'mpg' is ", mn1))
+
+# Calculate mean for disp
+mn2 <- sprintf("%.2f", mean(dat$disp))
+print(paste0("Mean of 'disp' is ", mn2))
+
+# Calculate mean for hp
+mn3 <- sprintf("%.2f", mean(dat$hp))
+print(paste0("Mean of 'hp' is ", mn3))
+
+# Calculate mean for drat
+mn4 <- sprintf("%.2f", mean(dat$drat))
+print(paste0("Mean of 'drat' is ", mn4))
+
+```
+Notice that the macro functionality can be used to create variable names dynamically.
+The macro system can also produce comments and other statements dynamically.
+Because the macro language is a text replacement language, any part of the code
+is available for manipulation.
 
 
 Next: [Debugging](macro-debug.html)
