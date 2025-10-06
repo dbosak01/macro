@@ -606,57 +606,78 @@ mreplace <- function(ln) {
     # print(vrs)
 
     if (length(vrs) > 0) {
-      for (vr in vrs) {
 
-        # vl <- deparse1(e[[vr]])
-        # Get value
-        vl <- e[[vr]]
+      # Iterate up to 10 times for possible nested replacements
+      for (itr in seq(1, 10)) {
 
-        # Ensure value is suitable for replacement
-        if (length(vl) > 1) {
-
-          if (is.vector(vl)) {
-            # Deal with vectors
-            # Need to be converted to a string suitable for replacement
-            if (length(names(vl)) > 0) {
-              # browser()
-              nms <- names(vl)
-              nmstr <- paste0("'", nms, "'")
-
-              if (is.character(vl)) {
-                vlstr <- paste0("'", vl, "'")
-
-              } else {
-                vlstr <- vl
-              }
-              vl <- paste0("c(", paste0(nmstr, " = ", vlstr, collapse = ", "), ")")
-            } else {
-              if (is.character(vl)) {
-                vl <- paste0("c('", paste0(vl, collapse = "', '"), "')")
-              } else {
-                vl <- paste0("c(", paste0(vl, collapse = ', '), ")")
-              }
-            }
-          } else {
-            vl <- as.character(vl)
-
+        # Get vector of variables to replace
+        fvrs <- c()
+        for (vr in vrs) {
+          if (grepl(vr, ln, fixed = TRUE)[1]) {
+            fvrs <- append(fvrs, vr)
           }
-        } else if ("Date" %in% class(vl)) {
-          vl <- paste0("as.Date('", vl, "')")
-        } else if ("POSIXct" %in% class(vl)) {
-          vl <- paste0("as.POSIXct('", vl, "')")
-        } else if ("POSIXlt" %in% class(vl)) {
-          vl <- paste0("as.POSIXlt('", vl, "')")
-        } else if (is.character(vl) == FALSE) {
-          vl <- as.character(vl)
         }
 
-        # Perform replacement if valid character value
-        if (length(vl) == 1 & is.character(vl) == TRUE) {
-          ret <- gsub(vr, vl, ret, fixed = TRUE)
+        if (length(fvrs) == 0) {
+          # Bail if nothing found
+          break
         } else {
-          stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
+
+          # Do replacements for found variables
+          for (vr in fvrs) {
+
+            # Get value
+            vl <- e[[vr]]
+
+            # Ensure value is suitable for replacement
+            if (length(vl) > 1) {
+
+              if (is.vector(vl)) {
+                # Deal with vectors
+                # Need to be converted to a string suitable for replacement
+                if (length(names(vl)) > 0) {
+                  # browser()
+                  nms <- names(vl)
+                  nmstr <- paste0("'", nms, "'")
+
+                  if (is.character(vl)) {
+                    vlstr <- paste0("'", vl, "'")
+
+                  } else {
+                    vlstr <- vl
+                  }
+                  vl <- paste0("c(", paste0(nmstr, " = ", vlstr, collapse = ", "), ")")
+                } else {
+                  if (is.character(vl)) {
+                    vl <- paste0("c('", paste0(vl, collapse = "', '"), "')")
+                  } else {
+                    vl <- paste0("c(", paste0(vl, collapse = ', '), ")")
+                  }
+                }
+              } else {
+                vl <- as.character(vl)
+
+              }
+            } else if ("Date" %in% class(vl)) {
+              vl <- paste0("as.Date('", vl, "')")
+            } else if ("POSIXct" %in% class(vl)) {
+              vl <- paste0("as.POSIXct('", vl, "')")
+            } else if ("POSIXlt" %in% class(vl)) {
+              vl <- paste0("as.POSIXlt('", vl, "')")
+            } else if (is.character(vl) == FALSE) {
+              vl <- as.character(vl)
+            }
+
+            # Perform replacement if valid character value
+            if (length(vl) == 1 & is.character(vl) == TRUE) {
+              ret <- gsub(vr, vl, ret, fixed = TRUE)
+            } else {
+              stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
+            }
+          }
         }
+        # Update ln for next iteration
+        ln <- ret
       }
     }
   }
@@ -664,32 +685,6 @@ mreplace <- function(ln) {
   return(ret)
 }
 
-
-
-# Symput and Symget -------------------------------------------------------
-
-# @title Assigns a Value to a Macro Variable
-# @param var_name The quoted name of a macro variable to assign. Do not include
-# the trailing dot (".").
-# @param var_value The value of the variable to assign.
-# @export
-# symput <- function(var_name, var_value) {
-#
-#   assign(paste0(varname, "."), var_value, envir = e)
-#
-# }
-
-
-# @title Retrieves the Value of a Macro Variable
-# @param var_name The quoted name of a macro variable to retrieve. Do not include
-# the trailing dot (".").
-# @export
-# symget <- function(var_name) {
-#
-#   ret <- get(paste0(varname, "."), envir = e)
-#
-#   return(ret)
-# }
 
 
 

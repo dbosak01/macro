@@ -511,4 +511,17 @@ test_that("msource19: test %symput()", {
 
 })
 
+test_that("msource20: mreplace() nested replacements.", {
+
+  is_let("#%let x = 1", TRUE)
+  is_let("#%let mvar1 = fork", TRUE)
+
+  ln <- "mvar1 is mvarx.."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "mvar1 is fork")
+
+})
+
 
