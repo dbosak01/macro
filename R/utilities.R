@@ -10,18 +10,26 @@ is_let <- function(ln, opn = TRUE) {
     ret <- TRUE
 
     if (opn) {
+      # Remove %let keyword
       nl <- trimws(sub("#%let", "", ln, fixed = TRUE))
 
-      if (grepl("<-", ln, fixed = TRUE)[[1]]) {
-        spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
-      } else {
+      spl <- c()
+      if (grepl("<-", nl, fixed = TRUE)[[1]]) {
+        # Split on first <- found
+        pos <- regexpr("<-", nl, fixed = TRUE)[[1]]
+        spl[1] <- substring(nl, 1, pos - 1)
+        spl[2] <- substring(nl, pos + 2)
+      } else if (grepl("=", nl, fixed = TRUE)[[1]]) {
         # Replace first = with <- to deal with vectors that contain =
         nl <- sub("=", "<-", nl, fixed = TRUE)
-        spl <- strsplit(nl, "<-", fixed = TRUE)[[1]]
+        pos <- regexpr("<-", nl, fixed = TRUE)[[1]]
+        spl[1] <- substring(nl, 1, pos - 1)
+        spl[2] <- substring(nl, pos + 2)
       }
 
       if (length(spl) > 1) {
 
+        # Deal with %symput
         has_symput <- grepl("%symput", spl[2], fixed = TRUE)[1]
         if (has_symput) {
 
@@ -50,8 +58,7 @@ is_let <- function(ln, opn = TRUE) {
 
         } else {
 
-          # vl <- eval(str2expression(trimws(spl[2])), envir = e)
-          # vl <- str2expression(trimws(spl[2]))
+          # Assign value to macro variable
           vl <- trimws(mreplace(spl[2]))
           assign(paste0(trimws(spl[1]), "."), vl, envir = e)
         }

@@ -48,6 +48,29 @@ test_that("utils1: is_let() basic functionality.", {
   expect_equal(res, TRUE)
   expect_equal(e[["x."]], "'hello'")
 
+  # Special case
+  l5 <- "#%let x <- a <- 1"
+
+  res <- is_let(l5, TRUE)
+
+  res
+  e[["x."]]
+
+  expect_equal(res, TRUE)
+  expect_equal(e[["x."]], "a <- 1")
+
+  # Another Special case
+  l6 <- "#%let x <- "
+
+  res <- is_let(l6, TRUE)
+
+  res
+  e[["x."]]
+
+  expect_equal(res, TRUE)
+  expect_equal(e[["x."]], "")
+
+
 })
 
 test_that("utils2: is_let() sub_func functionality.", {

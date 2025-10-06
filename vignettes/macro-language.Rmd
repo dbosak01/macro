@@ -64,8 +64,8 @@ Where "&lt;variable&gt;" is the name of the variable, and "&lt;value&gt;" is som
 value assigned to the variable.    
 
 Note that macro variable names must
-begin with an alphabetic character.  They can contain only alphabetic characters,
-numbers, and an underscore ("_"). 
+begin with an alphabetic character or dot (".").  They can contain only alphabetic 
+characters, numbers, dots, and underscores ("_"). 
 
 Macro variables should be named without a trailing dot (".").  The trailing
 dot will be appended automatically when the variable is added to the symbol table.
@@ -206,6 +206,62 @@ Also note that parent macro assignments do not need to take place in the
 same code file as `msource()`.  You can assign them in a setup file if desired.
 As long as they exist in the parent environment, the macro variables will be
 copied to the symbol table.
+
+#### Nested Assignment
+
+Macro variables can be nested inside one another. Nesting means that 
+a macro variable name can be constructed from other macro variables.
+This feature allows for more dynamic assignments.  Here is a simple demonstration:
+
+```{r eval=FALSE, echo=TRUE}
+#%let x <- 1
+#%let mvar1 <- Hello!
+
+print("mvarx..")
+```
+The above code outputs the string "Hello!".  Why?  The reason is because the
+macro processor first found the variable "x." and replaced it with the value
+"1". The macro processor continued to scan for variables, found that
+"mvar1." was also a macro variable, and made the replacement. The system
+allows up to 10 levels of nesting.  This feature can be useful in some situations.
+
+#### Advanced Assignment
+
+The examples above use R macro variables much like regular variables. However,
+it is important to realize that macro variables can be used anywhere, to 
+manipulate any piece of code.  Here is a taste of some advanced assignments:
+```{r eval=FALSE, echo=TRUE}
+#%let a <- # Subset mtcars
+#%let b <- mtcars
+#%let c <- , mpg > 25
+#%let d <- dat <- subset(b.c.)
+#%let e <- (dat)
+a.
+d.
+printe.
+```
+Here is the generated code:
+```{r eval=FALSE, echo=TRUE}
+# Subset mtcars
+dat <- subset(mtcars, mpg > 25)
+print(dat)
+```
+And here is the console output:
+```
+>msource()
+                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Fiat 128       32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic    30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+
+```
+Obviously, the above demonstration makes no sense. The point is to illustrate
+that the R macro language views all code as text.  You can construct
+comments, lines of code, variable names, function calls, parameters, or 
+anything else using the macro language. 
 
 ## Macro Conditionals
 

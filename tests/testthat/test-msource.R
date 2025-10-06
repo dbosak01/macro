@@ -525,3 +525,17 @@ test_that("msource20: mreplace() nested replacements.", {
 })
 
 
+test_that("msource21: SAS style variable names.", {
+
+  is_let("#%let &x = 1", TRUE)
+
+  ln <- "&x is &x."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "&x is 1")
+
+})
+
+
+
