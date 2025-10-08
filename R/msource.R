@@ -673,9 +673,11 @@ mreplace <- function(ln) {
 
             # Perform replacement if valid character value
             if (length(vl) == 1 & is.character(vl) == TRUE) {
-              if (gbl$symbolgen) {
+              if (!is.null(gbl$symbolgen)) {
+                if (gbl$symbolgen) {
 
-                log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
+                  log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
+                }
               }
               ret <- gsub(vr, vl, ret, fixed = TRUE)
             } else {
