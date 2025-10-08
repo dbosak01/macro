@@ -169,8 +169,8 @@ are removed:</p>
 <p>Where “&lt;variable&gt;” is the name of the variable, and
 “&lt;value&gt;” is some value assigned to the variable.</p>
 <p>Note that macro variable names must begin with an alphabetic
-character. They can contain only alphabetic characters, numbers, and an
-underscore (“_“).</p>
+character or dot (“.”). They can contain only alphabetic characters,
+numbers, dots, and underscores (“_“).</p>
 <p>Macro variables should be named without a trailing dot (“.”). The
 trailing dot will be appended automatically when the variable is added
 to the symbol table.</p>
@@ -301,12 +301,11 @@ the macro variables will be copied to the symbol table.</p>
 <h4 id="nested-assignment">Nested Assignment<a class="anchor" aria-label="anchor" href="#nested-assignment"></a>
 </h4>
 <p>Macro variables can be nested inside one another. Nesting means that
-a macro variable name can be constructed from other macro
-variables.<br>
+a macro variable name can be constructed from other macro variables.
 This feature allows for more dynamic assignments. Here is a simple
 demonstration:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#%let x &lt;- 1;</span></span>
+<code class="sourceCode R"><span><span class="co">#%let x &lt;- 1</span></span>
 <span><span class="co">#%let mvar1 &lt;- Hello!</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"mvarx.."</span><span class="op">)</span></span></code></pre></div>

@@ -151,7 +151,7 @@ programs will be greatly appreciated by anyone who reviews your work.
 ### Output Report
 
 Here is the output report:
-<img src="../man/images/example1.png"/>
+<img src="../man/images/example1.png" alt="Listing example output"/>
 
 To create a listing for a different dataset, all you need is a new macro 
 driver, with different parameters.  The template code will be the same.

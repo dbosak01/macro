@@ -105,6 +105,7 @@ is sourced normally.</p>
 <span>  exec <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  debug_out <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  symbolgen <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -148,6 +149,11 @@ Default is FALSE.</p></dd>
 <dd><p>A path to a file to be used for debugging.  If a path
 is supplied, debug output will be written to the file instead of the
 console. Default is NULL.</p></dd>
+
+
+<dt id="arg-symbolgen">symbolgen<a class="anchor" aria-label="anchor" href="#arg-symbolgen"></a></dt>
+<dd><p>If debugger is on, will display the name and value
+of any macro variables encountered during resolution. Default is FALSE.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -280,80 +286,54 @@ to turn off execution.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create temp file names</span></span></span>
-<span class="r-in"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"test.R"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"test_mod.R"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Write macro code to temp file</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%let a &lt;- 1\n"</span>, file <span class="op">=</span> <span class="va">tmp</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%if (a. == 1)\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"print('a is one!')\n"</span>, file <span class="op">=</span><span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%else\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"print('a is something else!')\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%end"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Process temp file</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">msource</span><span class="op">(</span><span class="va">tmp</span>, <span class="va">out</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "a is one!"</span>
-<span class="r-in"><span><span class="co"># [1] "a is one!"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Read output file</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">output</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "print('a is one!')"</span>
-<span class="r-in"><span><span class="co"># [1] "print('a is one!')"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Rerun in debugger</span></span></span>
-<span class="r-in"><span><span class="fu">msource</span><span class="op">(</span><span class="va">tmp</span>, <span class="va">out</span>, debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> **  Pre-Processing </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -    File In: C:\Users\dbosa\AppData\Local\Temp\RtmpA7fjOt/test.R </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpA7fjOt/test_mod.R </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [ In#][Out#]: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [   1][    ]: #%let a &lt;- 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [   2][    ]: #%if (a. == 1) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [   3][   1]: print('a is one!') </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [   4][    ]: #%else </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [   5][    ]: print('a is something else!') </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [   6][    ]: #%end </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> **  Execution </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; print("a is one!")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "a is one!"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> **  End </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ******************************************************************************** </span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span><span class="co"># **  Pre-Processing</span></span></span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span><span class="co"># -    File In: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test.R</span></span></span>
-<span class="r-in"><span><span class="co"># -   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test_mod.R</span></span></span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span><span class="co"># [ In#][Out#]:</span></span></span>
-<span class="r-in"><span><span class="co"># [   1][    ]: #%let a &lt;- 1</span></span></span>
-<span class="r-in"><span><span class="co"># [   2][    ]: #%if (a. == 1)</span></span></span>
-<span class="r-in"><span><span class="co"># [   3][   1]: print('a is one!')</span></span></span>
-<span class="r-in"><span><span class="co"># [   4][    ]: #%else</span></span></span>
-<span class="r-in"><span><span class="co"># [   5][    ]: print('a is something else!')</span></span></span>
-<span class="r-in"><span><span class="co"># [   6][    ]: #%end</span></span></span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span><span class="co"># **  Execution</span></span></span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># &gt; print('a is one!')</span></span></span>
-<span class="r-in"><span><span class="co"># [1] "a is one!"</span></span></span>
-<span class="r-in"><span><span class="co">#</span></span></span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span><span class="co"># **  End</span></span></span>
-<span class="r-in"><span><span class="co"># ********************************************************************************</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co"># Create temp file names</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"test.R"</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"test_mod.R"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Write macro code to temp file</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%let a &lt;- 1\n"</span>, file <span class="op">=</span> <span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%if (a. == 1)\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"print('a is one!')\n"</span>, file <span class="op">=</span><span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%else\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"print('a is something else!')\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%end"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Process temp file</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">msource</span><span class="op">(</span><span class="va">tmp</span>, <span class="va">out</span><span class="op">)</span></span>
+<span><span class="co"># [1] "a is one!"</span></span>
+<span></span>
+<span><span class="co"># Read output file</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">output</span><span class="op">)</span></span>
+<span><span class="co"># [1] "print('a is one!')"</span></span>
+<span></span>
+<span><span class="co"># Rerun in debugger</span></span>
+<span><span class="fu">msource</span><span class="op">(</span><span class="va">tmp</span>, <span class="va">out</span>, debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co"># **  Pre-Processing</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co"># -    File In: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test.R</span></span>
+<span><span class="co"># -   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test_mod.R</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co"># [ In#][Out#]:</span></span>
+<span><span class="co"># [   1][    ]: #%let a &lt;- 1</span></span>
+<span><span class="co"># [   2][    ]: #%if (a. == 1)</span></span>
+<span><span class="co"># [   3][   1]: print('a is one!')</span></span>
+<span><span class="co"># [   4][    ]: #%else</span></span>
+<span><span class="co"># [   5][    ]: print('a is something else!')</span></span>
+<span><span class="co"># [   6][    ]: #%end</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co"># **  Execution</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># &gt; print('a is one!')</span></span>
+<span><span class="co"># [1] "a is one!"</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co"># **  End</span></span>
+<span><span class="co"># ********************************************************************************</span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

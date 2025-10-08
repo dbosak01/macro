@@ -24,7 +24,9 @@ generates the regular code, and then the regular code is executed to produce
 some sort of output. It is, at heart, a text replacement/generation system.
 
 The SAS® macro language is commonly used in SAS programs. The R **macro** package 
-was inspired by SAS.
+was inspired by SAS. Specifically, the **macro** package aims to replicate
+the SAS macro language with "mprint" and "mfile" options, which generate 
+a resolved code file.
 
 # An R Macro Language
 

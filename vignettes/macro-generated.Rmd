@@ -13,6 +13,17 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+Having looked at the documentation and examples for the **macro** package, 
+you may still be wondering:  Why should I use this?  Can't I do all these things
+with generalized R code?
 
-Explain the difference between a generalized program and a generated program.
-What the benefits of a generated program are. 
+The answer is: Yes, you can. You can do anything with generalized R code
+that you can do with a macro language.  The difference is in how the task
+is accomplished, and what kind of code is produced.
+
+## Generalized vs. Generated
+
+Let's pretend you want to create a reporting system. You want to create
+report modules that can produce reports for multiple studies/projects.
+The data for each study will be different.  The 
+

@@ -147,7 +147,8 @@ test_that("msource4: if/then/else functionality.", {
   fl1 <- file.path(base_path, "programs/test2.R")
   fl2 <- file.path(base_path, "programs/test2_mod.R")
 
-  res <- msource(fl1, file_out = fl2)
+  res <- msource(fl1, file_out = fl2, debug = TRUE,
+                 symbolgen = TRUE)
 
   eres <- file.exists(fl2)
 
@@ -499,7 +500,8 @@ test_that("msource19: test %symput()", {
 
   e1 <- new.env()
 
-  res <- msource(fl1, fl2, envir = e1, debug = TRUE)
+  res <- msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE)
 
   eres <- file.exists(fl2)
 

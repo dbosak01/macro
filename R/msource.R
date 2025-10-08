@@ -157,6 +157,8 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' @param debug_out A path to a file to be used for debugging.  If a path
 #' is supplied, debug output will be written to the file instead of the
 #' console. Default is NULL.
+#' @param symbolgen If debugger is on, will display the name and value
+#' of any macro variables encountered during resolution. Default is FALSE.
 #' @param ... Follow-on parameters to the \code{source} function. See
 #' the \code{\link{source}} function for additional information.
 #' @import common
@@ -214,7 +216,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'
 #' @export
 msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
-                    exec = TRUE, debug = FALSE, debug_out = NULL,
+                    exec = TRUE, debug = FALSE, debug_out = NULL, symbolgen = FALSE,
                     ...) {
 
   #browser()
@@ -238,6 +240,7 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
 
   # Set globally no matter what
   gbl$debug_out <- debug_out
+  gbl$symbolgen <- symbolgen
 
   if (debug) {
 
@@ -670,6 +673,10 @@ mreplace <- function(ln) {
 
             # Perform replacement if valid character value
             if (length(vl) == 1 & is.character(vl) == TRUE) {
+              if (gbl$symbolgen) {
+
+                log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
+              }
               ret <- gsub(vr, vl, ret, fixed = TRUE)
             } else {
               stop(paste0("Macro variable '", vr, "' not valid for text replacement."))

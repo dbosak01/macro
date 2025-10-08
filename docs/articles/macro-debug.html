@@ -430,6 +430,54 @@ same information shown on the console in the examples above.</p>
 </ul>
 <p>Therefore, the debug output file can be advantageous in some
 scenarios.</p>
+</div>
+<div class="section level3">
+<h3 id="symbolgen-option">Symbolgen Option<a class="anchor" aria-label="anchor" href="#symbolgen-option"></a>
+</h3>
+<p>In SAS, the “symbolgen” option prints the value of macro variables to
+the log. This information can be useful when debugging.</p>
+<p>In the <strong>macro</strong> package, the “symbolgen” parameter on
+the <code><a href="../reference/msource.html">msource()</a></code> function performs a similar task. If you set
+<code>symbolgen = TRUE</code> on your call to <code><a href="../reference/msource.html">msource()</a></code>,
+the debugger will print the name and value for each macro variable
+encountered. Observe:</p>
+<pre><code>&gt; msource(debug = TRUE, symbolgen = TRUE)
+******************************************************************************** 
+**  Pre-Processing 
+******************************************************************************** 
+-    File In: C:/packages/macro/tests/testthat/examples/Debug1.R 
+-   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpMHp382/Debug1.R 
+******************************************************************************** 
+[ In#][Out#]: 
+[   1][    ]: #%let env &lt;- dev 
+[   2][    ]: #%let dev_path &lt;- ./dev/data 
+[   3][    ]: #%let prod_path &lt;- ./prod/data 
+[   4][   1]:  
+[   5][   2]: # Path to data 
+SYMBOLGEN: env. = dev 
+[   6][    ]: #%if ("env." == "prod") 
+[   7][    ]: pth &lt;- "prod_path./dm.sas7bdat" 
+[   8][    ]: #%else 
+SYMBOLGEN: dev_path. = ./dev/data 
+[   9][   3]: pth &lt;- "./dev/data/dm.sas7bdat" 
+[  10][    ]: #%end 
+******************************************************************************** 
+**  Execution 
+******************************************************************************** 
+
+&gt; # Path to data
+&gt; pth &lt;- "./dev/data/dm.sas7bdat"
+ 
+******************************************************************************** 
+**  End 
+******************************************************************************** </code></pre>
+<p>The value of the “symbolgen” parameter is that it will print out
+every macro variable value, even if the line is not emitted. Notice that
+the “if” block on line 6 above was not sent to the output file. The
+reason, as indicated by the symbolgen line above, was that the value of
+the <code>env.</code> macro variable was “dev” instead of “prod”. This
+option can help you detect if the value of a macro variable is not what
+you expect.</p>
 <p>Next: <a href="macro-example1.html">Example 1: Listing</a></p>
 </div>
 </div>

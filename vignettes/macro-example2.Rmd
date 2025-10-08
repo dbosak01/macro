@@ -131,7 +131,6 @@ Since the call to `msource()` is included directly in the macro driver script,
 you can source the script normally in RStudio or another editor.  When executed,
 the script will write the following to the console:
 ```
-> source("./examples/Example2.R")
 ******************************************************************************** 
 **  Pre-Processing
 ******************************************************************************** 
@@ -271,7 +270,7 @@ to `write_report()`.
 
 Here is the output report for the modified listing:
 
-<img src="../man/images/example2.png"/>
+<img src="../man/images/example2.png" alt="Second listing example output"/>
 
 
 

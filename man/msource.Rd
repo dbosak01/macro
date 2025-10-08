@@ -11,6 +11,7 @@ msource(
   exec = TRUE,
   debug = FALSE,
   debug_out = NULL,
+  symbolgen = FALSE,
   ...
 )
 }
@@ -39,6 +40,9 @@ Default is FALSE.}
 \item{debug_out}{A path to a file to be used for debugging.  If a path
 is supplied, debug output will be written to the file instead of the
 console. Default is NULL.}
+
+\item{symbolgen}{If debugger is on, will display the name and value
+of any macro variables encountered during resolution. Default is FALSE.}
 
 \item{...}{Follow-on parameters to the \code{source} function. See
 the \code{\link{source}} function for additional information.}

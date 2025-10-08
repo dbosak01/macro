@@ -338,4 +338,53 @@ Saving the debug information to a file has some benefits:
 
 Therefore, the debug output file can be advantageous in some scenarios.
 
+
+### Symbolgen Option
+
+In SAS, the "symbolgen" option prints the value of macro variables to the log.
+This information can be useful when debugging.
+
+In the **macro** package, the "symbolgen" parameter on the `msource()` function
+performs a similar task.  If you set `symbolgen = TRUE` on your call to
+`msource()`, the debugger will print the name and value for each macro
+variable encountered.  Observe:
+```
+> msource(debug = TRUE, symbolgen = TRUE)
+******************************************************************************** 
+**  Pre-Processing 
+******************************************************************************** 
+-    File In: C:/packages/macro/tests/testthat/examples/Debug1.R 
+-   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpMHp382/Debug1.R 
+******************************************************************************** 
+[ In#][Out#]: 
+[   1][    ]: #%let env <- dev 
+[   2][    ]: #%let dev_path <- ./dev/data 
+[   3][    ]: #%let prod_path <- ./prod/data 
+[   4][   1]:  
+[   5][   2]: # Path to data 
+SYMBOLGEN: env. = dev 
+[   6][    ]: #%if ("env." == "prod") 
+[   7][    ]: pth <- "prod_path./dm.sas7bdat" 
+[   8][    ]: #%else 
+SYMBOLGEN: dev_path. = ./dev/data 
+[   9][   3]: pth <- "./dev/data/dm.sas7bdat" 
+[  10][    ]: #%end 
+******************************************************************************** 
+**  Execution 
+******************************************************************************** 
+
+> # Path to data
+> pth <- "./dev/data/dm.sas7bdat"
+ 
+******************************************************************************** 
+**  End 
+******************************************************************************** 
+```
+The value of the "symbolgen" parameter is that it will print out every macro
+variable value, even if the line is not emitted.  Notice that the "if" block
+on line 6 above was not sent to the output file.  The reason, as indicated by
+the symbolgen line above, was that the value of the `env.` macro variable 
+was "dev" instead of "prod".  This option can help you detect if the value
+of a macro variable is not what you expect.
+
 Next: [Example 1: Listing](macro-example1.html)
