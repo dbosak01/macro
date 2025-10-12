@@ -61,6 +61,7 @@ Useful links:
 
 Other contributors:
 \itemize{
+  \item Bill Huang \email{Bill.Huang@Toastmasters.org.tw} [contributor]
   \item Duong Tran \email{trand000@aol.com} [contributor]
 }
 

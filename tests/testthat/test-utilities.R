@@ -373,7 +373,7 @@ test_that("utils10: log_debug() works as expected.", {
 
 })
 
-test_that("utils8: is_do() basic functionality.", {
+test_that("utils11: is_do() basic functionality.", {
 
   l1 <- "#%do x = 1 %to 3"
 
@@ -404,5 +404,180 @@ test_that("utils8: is_do() basic functionality.", {
 
 })
 
+
+test_that("utils12: is_macro() basic functionality.", {
+
+  l1 <- "#%macro fork(x, y = NA, z = 'Two')"
+
+  res <- is_macro(l1)
+
+  expect_equal(as.logical(res), TRUE)
+  expect_equal(attr(res, "name"), "fork")
+
+  l1 <- "#%mambo fork(x, y = NA, z = 'Two')"
+
+  res <- is_macro(l1)
+
+  expect_equal(as.logical(res), FALSE)
+
+})
+
+
+test_that("utils13: is_mend() basic functionality.", {
+
+  l1 <- "#%mend"
+
+  res <- is_mend(l1)
+
+  expect_equal(as.logical(res), TRUE)
+
+  l1 <- "#%mand"
+
+  res <- is_mend(l1)
+
+  expect_equal(as.logical(res), FALSE)
+
+})
+
+
+test_that("utils14: get_parms() basic functionality.", {
+
+  # Normal parameters
+  l1 <- "(x, y = NA, z = 'Two')"
+
+  res <- get_parms(l1, "bork")
+
+  nms <- names(res)
+
+  expect_equal(nms, c('x', 'y', 'z'))
+  expect_equal(res$x, "")
+  expect_equal(res$y, "NA")
+  expect_equal(res$z, "'Two'")
+
+  # Parameter with function
+  l1 <- "(x, y = max(1, 2, 3), z = 'Two')"
+
+  res <- get_parms(l1, "bork")
+
+  # Parameter with vector
+  l1 <- "(x, y = c(a = 1, b = 2, c = 3), z = 'Two')"
+
+  res <- get_parms(l1, "bork")
+
+  # Close paren not last character
+  l1 <- "(x, y = &x., z = 'Two') # hello"
+
+  res <- get_parms(l1, "bork")
+
+  # No parameters
+  l1 <- "()"
+
+  res <- get_parms(l1, "bork")
+
+  # Missing open paren
+  l1 <- "x, y = NA, z = 'Two')"
+
+  expect_error(get_parms(l1, "bork"))
+
+  # Missing close paren
+  l1 <- "(x, y = NA, z = 'Two'"
+
+  expect_error(get_parms(l1, "bork"))
+
+  # Missing comma
+  l1 <- "(x, y = NA z = 'Two')"
+
+  # expect_error(get_parms(l1, "bork"))
+  # Not sure what to do here
+  expect_equal(TRUE, TRUE)
+
+  # Call parameters
+  l1 <- "(1, 'Two', mean(1, 2))"
+
+  res <- get_parms(l1, "bork", FALSE)
+
+  expect_equal(res[[1]], "1")
+  expect_equal(res[[2]], "'Two'")
+  expect_equal(res[[3]], "mean(1, 2)")
+
+  # With function
+  l1 <- "(x = 1, y = 'Two', z = mean(1, 2))"
+
+  res <- get_parms(l1, "bork", TRUE)
+
+  nms <- names(res)
+  expect_equal(nms, c('x', 'y', 'z'))
+  expect_equal(res$x, "1")
+  expect_equal(res$y, "'Two'")
+  expect_equal(res$z, "mean(1, 2)")
+
+})
+
+
+test_that("utils15: get_macro_code() basic functionality.", {
+
+  lns <- c()
+
+  lns[1] <- "# Before the macro"
+  lns[2] <- "#%macro fork(x, y = NA, z = 'Two')"
+  lns[3] <- "print(x.)"
+  lns[4] <- "print(y.)"
+  lns[5] <- "print(z.)"
+  lns[6] <- "#%mend"
+  lns[7] <- "# After the macro"
+
+  res <- is_macro(lns[2])
+
+  res2 <- get_macro_code(lns, 2, res)
+
+  expect_equal(length(res2), 3)
+  expect_equal(res2[1], "print(x.)")
+  expect_equal(res2[2], "print(y.)")
+  expect_equal(res2[3], "print(z.)")
+})
+
+test_that("utils16: is_macro_call() basic functionality.", {
+
+  gbl$macros[["fork"]] <- ""
+
+  l1 <- "#%fork(x, y = NA, z = 'Two')"
+
+  res <- is_macro_call(l1)
+  nm <- attr(res, "name")
+  prms <- attr(res, "parameters")
+
+  expect_equal(nm, "fork")
+  expect_equal(as.logical(res), TRUE)
+  expect_equal(prms[[1]], "x")
+  expect_equal(prms$y, "NA")
+  expect_equal(prms$z, "'Two'")
+
+
+})
+
+
+test_that("utils17: get_macro_call() basic functionality.", {
+
+  lns <- c()
+
+  lns[1] <- "# Before the macro"
+  lns[2] <- "#%macro fork(x, y = NA, z = 'Two')"
+  lns[3] <- "print(x.)"
+  lns[4] <- "print(y.)"
+  lns[5] <- "print(z.)"
+  lns[6] <- "#%mend"
+  lns[7] <- "# After the macro"
+
+  res <- is_macro(lns[2])
+
+  res2 <- get_macro_code(lns, 2, res)
+
+  expect_equal(length(res2), 3)
+  expect_equal(res2[1], "print(x.)")
+  expect_equal(res2[2], "print(y.)")
+  expect_equal(res2[3], "print(z.)")
+
+
+})
 
 

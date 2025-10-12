@@ -5,15 +5,17 @@
 # Macro symbol table
 e <- new.env()
 
-# Global internal variables
-gbl <- new.env()
-
 # Local execution environment
 lcl <- new.env()
 
+# Global internal variables
+gbl <- new.env()
+
+# Initialize Macro List
+gbl$macros <- list()
+
 # Separator for debug output
 strs <- paste0(rep("*", 80), collapse = "")
-
 
 
 # Macro Source Function ---------------------------------------------------
@@ -369,6 +371,9 @@ preprocess <- function(pth, file_out, envir, debug, debug_out) {
     rm(list = lnms, envir = lcl)
   }
 
+  # Assign current environment
+  gbl$env <- e
+
   # Process lines
   nlns <- mprocess(lns, debug, debug_out)
 
@@ -387,10 +392,12 @@ preprocess <- function(pth, file_out, envir, debug, debug_out) {
 #' @noRd
 mprocess <- function(lns, debug, debug_out) {
 
+  # Processed lines
   ret <- c()
 
   # print(ls(e))
 
+  # Persistant local variables
   lvl <- 1 # lvl 1 is open code
   isopen <- c()
   isopen[lvl] <- TRUE
@@ -399,9 +406,15 @@ mprocess <- function(lns, debug, debug_out) {
   idx <- 1 # Input index
   idxO <- 0 # Output index
   lncnt <- length(lns)
-  emt <- FALSE
+  emt <- FALSE       # emit flat
   gbl$buffer <- c()  # execution buffer
 
+  # Set up scope tracking
+  scope <- list()  # set base environment
+  scopelvl <- 1
+  scope[[scopelvl]] <- gbl$env
+
+  # Iterate input lines
   while (idx <= lncnt) {
 
     # Initialize line
@@ -434,22 +447,20 @@ mprocess <- function(lns, debug, debug_out) {
       # Do flag
       isdo <- is_do(ln)
 
-      # Next line macro
-      if (idx < lncnt) {
-        nl <- lns[idx + 1]
-        if (is.na(nl)) {
-            ismacro <- FALSE
-          } else {
+      # Macro flag
+      ismacrofunc <- is_macro(ln)
 
-          if (is_comment(nl) | trimws(nl) == "") {
-            ismacro <- TRUE
-          } else {
-            ismacro <- FALSE
-          }
-        }
-      } else {
-        ismacro <- FALSE
-      }
+      # Macro call flag
+      ismacrocall <- is_macro_call(ln)
+
+      # Macro end
+      ismend <- is_mend(ln)
+
+      # Had idea about eliminating blank spaces
+      # before or after macro lines.
+      # Not happy with it.
+      # Kill for now.
+      ismacroln <- FALSE
 
       if (as.logical(isif)) {   # Deal with 'if'
         lvl <- lvl + 1
@@ -534,14 +545,88 @@ mprocess <- function(lns, debug, debug_out) {
           ln <- mreplace(ln)
 
         }
+      } else if (as.logical(ismacrofunc)) {  # Deal with macro function definition
+
+        if (all(isopen)) {
+
+          # Prepare macro info
+          mnm <- attr(ismacrofunc, "name")
+          mpn <- attr(ismacrofunc, "parameters")
+          mcd <- get_macro_code(lns, idx, ismacrofunc)
+
+          # Populate global macro list
+          gbl$macros[[mnm]] <- list(parameters = mpn,
+                                    code = mcd)
+
+          # Emit macro line
+          if (debug) {
+            log_debug(paste0("[", sprintf("%4d", idx), "][    ]: ", ln))
+            if (gbl$symbolgen) {
+              log_debug(paste0("SYMBOLGEN: Macro '", mnm, "' of ", length(mcd), " lines stored."))
+            }
+            emt <- TRUE
+          }
+
+          # Reset index
+          idx <- attr(mcd, "end") + 1
+
+        }
+      } else if (as.logical(ismacrocall)) {   # Deal with macro function call
+
+        # Pull off attributes
+        mnm <- attr(ismacrocall, "name")
+        mpm <- attr(ismacrocall, "parameters")
+
+        if (!mnm %in% names(gbl$macros)) {
+          stop(paste0("Definition for macro '", mnm, "' not found."))
+        }
+
+        if (debug & gbl$symbolgen) {
+          log_debug(paste0("SYMBOLGEN: Executing macro '", mnm, "'."))
+        }
+
+        # Set up scope
+        ne <- new.env(parent = scope[[scopelvl]])
+        scopelvl <- scopelvl + 1
+        scope[[scopelvl]] <- ne
+        gbl$env <- scope[[scopelvl]]
+
+        # Get stored macro definition
+        mfnc <- gbl$macros[[mnm]]
+
+        # Get prepared macro call lines
+        mlns <- get_macro_call(mnm, mfnc, mpm)
+
+        # Insert into lns vector
+        lns <- c(lns[seq(1, idx)], mlns, lns[seq(idx + 1, lncnt)])
+
+        # Reset line count
+        lncnt <- length(lns)
+
+      } else if (as.logical(ismend)) {     # Deal with macro call mend
+
+        if (scopelvl - 1 < 1) {
+          stop(paste0("'#%mend' encountered without matching macro start."))
+        }
+
+        # Reset scope
+        scope[[scopelvl]] <- NULL
+        scopelvl <- scopelvl - 1
+        gbl$env <- scope[[scopelvl]]
+
+        if (debug & gbl$symbolgen) {
+          mnm <- attr(ismend, "name")
+          log_debug(paste0("SYMBOLGEN: Macro '", mnm, "' complete."))
+        }
+
       } else if (is_comment(ln)) {  # Deal with macro comment
         # Do nothing
         # Don't emit
-      } else if (all(isopen)) {   # Deal with normal code
+      } else if (all(isopen)) {     # Deal with normal code
 
-        if (nchar(trimws(ln)) == 0 & ismacro) {
+        if (nchar(trimws(ln)) == 0 & ismacroln) {
           # Do nothing
-          # Eliminate blank lines before macro statements
+          # Eliminate blank lines after macro statements
         } else {
           # If it makes it to this point,
           # replace any macro variables and emit as code
@@ -600,22 +685,26 @@ mreplace <- function(ln) {
     # print(ls(e))
 
     # Get variables
-    vrs <- ls(e)  # ls(envir = e)
+    vrs <- ls(gbl$env)
+
+    # Filter macro variables
+    mv <- grepl("\\.$", vrs)
+    mvrs <- vrs[mv]
 
     # Sort by number of characters
     # to avoid variable confounding
-    nc <- nchar(vrs)
-    vrs <- vrs[order(nc, decreasing = TRUE)]
+    nc <- nchar(mvrs)
+    mvrs <- mvrs[order(nc, decreasing = TRUE)]
     # print(vrs)
 
-    if (length(vrs) > 0) {
+    if (length(mvrs) > 0) {
 
       # Iterate up to 10 times for possible nested replacements
       for (itr in seq(1, 10)) {
 
         # Get vector of variables to replace
         fvrs <- c()
-        for (vr in vrs) {
+        for (vr in mvrs) {
           if (grepl(vr, ln, fixed = TRUE)[1]) {
             fvrs <- append(fvrs, vr)
           }
@@ -630,7 +719,11 @@ mreplace <- function(ln) {
           for (vr in fvrs) {
 
             # Get value
-            vl <- e[[vr]]
+            if (is.null(gbl$env)) {
+              vl <- e[[vr]]
+            } else {
+              vl <- gbl$env[[vr]]
+            }
 
             # Ensure value is suitable for replacement
             if (length(vl) > 1) {

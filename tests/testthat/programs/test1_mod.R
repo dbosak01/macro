@@ -1,7 +1,9 @@
 
 # Here is a normal comment
 
+
 print("z is 6")
+
 
 # Comment something
 print("X is 3")

@@ -2,8 +2,10 @@
 # Initial comment
 print("Starting program")
 
+
 print("X is two")
 print("another one")
+
 
 # Resolved assignment
 a <- floor(1 + 2.5)

@@ -9,6 +9,8 @@ dev <- FALSE
 
 test_that("msource1: mreplace() basic functionality.", {
 
+  gbl$env <- e
+
   is_let("#%let x = 3", TRUE)
   is_let("#%let y = 2", TRUE)
 
@@ -536,6 +538,78 @@ test_that("msource21: SAS style variable names.", {
   res <- mreplace(ln)
 
   expect_equal(res, "&x is 1")
+
+})
+
+test_that("msource22: test macro definition and call", {
+
+  fl1 <- file.path(base_path, "programs/test18.R")
+  fl2 <- file.path(base_path, "programs/test18_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$a, 1)
+  expect_equal(e1$b, 2)
+  expect_equal(e1$v1, 3)
+  expect_equal(e1$v2, "fork")
+  expect_equal(e1$v3, FALSE)
+
+})
+
+test_that("msource23: test macro scope", {
+
+  fl1 <- file.path(base_path, "programs/test19.R")
+  fl2 <- file.path(base_path, "programs/test19_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$x1, 1)
+  expect_equal(e1$x2, 2)
+  expect_equal(e1$x3, 1)
+
+})
+
+
+
+test_that("msource23: test nested macro scope", {
+
+  fl1 <- file.path(base_path, "programs/test20.R")
+  fl2 <- file.path(base_path, "programs/test20_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$x1, 1)
+  expect_equal(e1$x2, 2)
+  expect_equal(e1$x3, 3)
+  expect_equal(e1$x4, 2)
+  expect_equal(e1$x5, 1)
 
 })
 
