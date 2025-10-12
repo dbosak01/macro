@@ -13,6 +13,7 @@ gbl <- new.env()
 
 # Initialize Macro List
 gbl$macros <- list()
+gbl$env <- e
 
 # Separator for debug output
 strs <- paste0(rep("*", 80), collapse = "")
@@ -705,7 +706,7 @@ mreplace <- function(ln) {
         # Get vector of variables to replace
         fvrs <- c()
         for (vr in mvrs) {
-          if (grepl(vr, ln, fixed = TRUE)[1]) {
+          if (grepl(vr, ret, fixed = TRUE)[1]) {
             fvrs <- append(fvrs, vr)
           }
         }
@@ -772,14 +773,13 @@ mreplace <- function(ln) {
                   log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
                 }
               }
-              ret <- gsub(vr, vl, ret, fixed = TRUE)
+              # ret <- gsub(vr, vl, ret, fixed = TRUE)
+              ret <- sub_mvar(ret, vr, vl)
             } else {
               stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
             }
           }
         }
-        # Update ln for next iteration
-        ln <- ret
       }
     }
   }

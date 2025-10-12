@@ -515,7 +515,7 @@ test_that("msource19: test %symput()", {
 
 })
 
-test_that("msource20: mreplace() nested replacements.", {
+test_that("msource20: mreplace() nested and double replacements.", {
 
   is_let("#%let x = 1", TRUE)
   is_let("#%let mvar1 = fork", TRUE)
@@ -525,6 +525,12 @@ test_that("msource20: mreplace() nested replacements.", {
   res <- mreplace(ln)
 
   expect_equal(res, "mvar1 is fork")
+
+  ln <- "mvar1 is mvarx.. and mvarx.."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "mvar1 is fork and fork")
 
 })
 
@@ -589,7 +595,7 @@ test_that("msource23: test macro scope", {
 
 
 
-test_that("msource23: test nested macro scope", {
+test_that("msource24: test nested macro scope", {
 
   fl1 <- file.path(base_path, "programs/test20.R")
   fl2 <- file.path(base_path, "programs/test20_mod.R")

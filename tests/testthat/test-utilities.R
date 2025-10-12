@@ -580,4 +580,31 @@ test_that("utils17: get_macro_call() basic functionality.", {
 
 })
 
+test_that("utils18: find_mvar() basic functionality.", {
+
+  res <- sub_mvar("my &a", "&a", "1")
+
+  expect_equal(res, "my 1")
+
+  res <- sub_mvar("my &a.", "&a", "1")
+
+  expect_equal(res, "my 1")
+
+  res <- sub_mvar("my `&a`", "&a", "1")
+
+  expect_equal(res, "my 1")
+
+  res <- sub_mvar("&a.", "&a", "1")
+
+  expect_equal(res, "1")
+
+  res <- sub_mvar("`&a`", "&a", "1")
+
+  expect_equal(res, "1")
+
+  res <- sub_mvar("my `&a.` and more stuff", "&a", "1")
+
+  expect_equal(res, "my 1 and more stuff")
+
+})
 

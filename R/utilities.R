@@ -407,6 +407,47 @@ process_do <- function(lns, idx, lvl, ido) {
   return(ret)
 }
 
+#' @noRd
+sub_mvar <- function(ln, varnm, varvl) {
+
+  rvl <- varnm
+  pos <- regexpr(rvl, ln, fixed = TRUE)
+  epos <- pos + nchar(rvl) - 1
+  ftick <- FALSE
+
+  if (pos > 1) {
+    if (substring(ln, pos - 1, pos - 1) == "`") {
+      ftick <- TRUE
+    }
+  }
+
+  if (epos < nchar(ln)) {
+    if (substring(ln, epos, epos) != ".") {
+      if (substring(ln, epos + 1, epos + 1) == ".") {
+        rvl <- paste0(rvl, ".")
+      }
+    }
+
+    if (substring(ln, epos + 1, epos + 1) == "`") {
+      if (ftick) {
+        rvl <- paste0("`", rvl, "`")
+      }
+    }
+  }
+
+  if (epos + 1 < nchar(ln)) {
+    if (substring(ln, epos + 2, epos + 2) == "`") {
+      if (ftick) {
+        rvl <- paste0("`", rvl, "`")
+      }
+    }
+  }
+
+  ret <- sub(rvl, varvl, ln, fixed = TRUE)
+
+  return(ret)
+
+}
 
 # Macro Utilities ---------------------------------------------------------
 
