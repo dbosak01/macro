@@ -5,9 +5,9 @@
 
 y <- c()
 
-#%do x = 1 %to a.
-print(b.)
-y <- append(y, b.)
+#%do x = 1 %to &a.
+print(`&b.`)
+y <- append(y, `&b.`)
 #%end
 
-z <- x.
+z <- `&x.`

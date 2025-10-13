@@ -4,11 +4,11 @@ dat <- mtcars
 
 
 #% Print mean for each variable
-#%do v = 1 %to length(vars.)
-#%let var <- %sysfunc(vars.[v.])
+#%do v = 1 %to %sysfunc(length(&vars))
+#%let var <- %sysfunc(&vars[&v])
 
 # Calculate mean for var.
-mnv. <- sprintf("%.2f", mean(dat$var.))
-print(paste0("Mean of 'var.' is ", mnv.))
+mn&v. <- sprintf("%.2f", mean(dat$`&var.`))
+print(paste0("Mean of '&var.' is ", mn&v.))
 
 #%end

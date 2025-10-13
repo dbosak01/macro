@@ -17,29 +17,29 @@
 #%let v6 = 2 + 2
 
 #% Assign using another macro variable
-#%let v7 = v6.
+#%let v7 = &v6.
 
 #% Calculate using another macro variable
-#%let v8 = v7. + 1
+#%let v8 = &v7. + 1
 
 # Print inside loop
-for (idx in seq(1, v6.)) {
+for (idx in seq(1, `&v6.`)) {
 
-  print(v3.)
+  print(`&v3.`)
 }
 
 
 # Resolve inside a comment
-# The value of 'v1' is v1.
+# The value of 'v1' is &v1.
 
 # Resolve in a text string
-a <- "The value of 'v2' is v2."
+a <- "The value of 'v2' is &v2."
 print(a)
 
 # Resolve in open code
-b <- v3.
+b <- `&v3.`
 print(b)
 
 # Resolve in a function
-c <- mean(v5.)
+c <- mean(`&v5.`)
 print(c)

@@ -5,11 +5,11 @@ a <- 1
 
 #% Here is a macro function
 #%macro sammy(varx, vary, varz = TRUE)
-x <- varx.
+x <- `&varx.`
 print(x)
-y <- vary.
+y <- `&vary.`
 print(y)
-z <- varz.
+z <- `&varz.`
 print(z)
 #%mend
 

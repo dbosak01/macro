@@ -14,28 +14,28 @@ test_that("msource1: mreplace() basic functionality.", {
   is_let("#%let x = 3", TRUE)
   is_let("#%let y = 2", TRUE)
 
-  ln <- "Y is y."
+  ln <- "Y is &y."
 
   res <- mreplace(ln)
 
   expect_equal(res, "Y is 2")
 
   is_let("#%let y = 3", TRUE)
-  ln <- "Y is y."
+  ln <- "Y is &y."
 
   res <- mreplace(ln)
 
   expect_equal(res, "Y is 3")
 
 
-  ln <- "Y is z."
+  ln <- "Y is &z."
 
   res <- mreplace(ln)
 
-  expect_equal(res, "Y is z.")
+  expect_equal(res, "Y is &z.")
 
 
-  ln <- "X is x."
+  ln <- "X is &x."
 
   res <- mreplace(ln)
 
@@ -44,7 +44,7 @@ test_that("msource1: mreplace() basic functionality.", {
   # Numeric vector
   is_let("#%let z = c(1, 2, 3)", TRUE)
 
-  ln <- "Z is z."
+  ln <- "Z is &z."
 
   res <- mreplace(ln)
 
@@ -53,7 +53,7 @@ test_that("msource1: mreplace() basic functionality.", {
   # Character vector
   is_let("#%let z = c('A', 'B', 'C')", TRUE)
 
-  ln <- "Z is z."
+  ln <- "Z is &z."
 
   res <- mreplace(ln)
 
@@ -62,7 +62,7 @@ test_that("msource1: mreplace() basic functionality.", {
   # Numeric vector with names
   is_let("#%let z <- c(A = 1, B = 2, C = 3)", TRUE)
 
-  ln <- "Z is z."
+  ln <- "Z is &z."
 
   res <- mreplace(ln)
 
@@ -71,7 +71,7 @@ test_that("msource1: mreplace() basic functionality.", {
   # Character vector with names
   is_let("#%let z <- c('A' = 'One', 'B' = 'Two', 'C' = 'Three')", TRUE)
 
-  ln <- "Z is z."
+  ln <- "Z is &z."
 
   res <- mreplace(ln)
 
@@ -80,7 +80,7 @@ test_that("msource1: mreplace() basic functionality.", {
   # Numeric vector with names and =
   is_let("#%let z = c(A = 1, B = 2, C = 3)", TRUE)
 
-  ln <- "Z is z."
+  ln <- "Z is &z."
 
   res <- mreplace(ln)
 
@@ -89,7 +89,7 @@ test_that("msource1: mreplace() basic functionality.", {
   # Character vector with names and =
   is_let("#%let z = c('A' = 'One', 'B' = 'Two', 'C' = 'Three')", TRUE)
 
-  ln <- "Z is z."
+  ln <- "Z is &z."
 
   res <- mreplace(ln)
 
@@ -109,7 +109,7 @@ test_that("msource2: basic functionality.", {
   ne <- new.env()
 
   # No environment passed
-  res <- msource(fl, file_out = fl2, envir = ne)
+  res <- msource(fl, file_out = fl2, envir = ne, debug = TRUE, symbolgen = TRUE)
 
   eres <- file.exists(fl2)
   hasa <- exists("a")
@@ -209,7 +209,7 @@ test_that("msource7: assignments.", {
     file.remove(fl2)
 
   e1 <- new.env()
-  e1$z. <- 4
+  e1$`&z.` <- 4
 
   res <- msource(fl1, file_out = fl2, e1)
 
@@ -240,7 +240,7 @@ test_that("msource8: test include.", {
     file.remove(fl2)
 
   e1 <- new.env()
-  e1$z. <- l1
+  e1$`&z.` <- l1
 
   res <- msource(fl1, file_out = fl2, e1, debug = TRUE)
 
@@ -262,11 +262,11 @@ test_that("msource9: test vector in if condition.", {
     file.remove(fl2)
 
   e1 <- new.env()
-  e1$vars. <- c("age", "ageg")
-  e1$v1. <- 2
-  e1$v2. <- as.Date("2025-01-01")
-  e1$v3. <- as.POSIXct("2025-09-17 15:25:18 EDT")
-  e1$v4. <- as.POSIXlt("2025-09-17 15:25:18 EDT")
+  e1$`&vars.` <- c("age", "ageg")
+  e1$`&v1.` <- 2
+  e1$`&v2.` <- as.Date("2025-01-01")
+  e1$`&v3.` <- as.POSIXct("2025-09-17 15:25:18 EDT")
+  e1$`&v4.` <- as.POSIXlt("2025-09-17 15:25:18 EDT")
 
   res <- msource(fl1, file_out = fl2, e1)
 
@@ -291,7 +291,7 @@ test_that("msource10: let in if condition.", {
     file.remove(fl2)
 
   e1 <- new.env()
-  e1$a. <- 1
+  e1$`&a.` <- 1
 
   res <- msource(fl1, file_out = fl2, e1)
 
@@ -315,12 +315,12 @@ test_that("msource11: Vector resolution works as expected.", {
 
   e1 <- new.env()
 
-  e1$x. <- 3
-  e1$y. <- 2
-  e1$z1. <- c(1, 2, 3)
-  e1$z2. <- c("A", "B", "C")
-  e1$z3. <- c(A = 1, B = 2, C = 3)
-  e1$z4. <- c(A = "One", B = "Two", C = "Three")
+  e1$`&x.` <- 3
+  e1$`&y.` <- 2
+  e1$`&z1.` <- c(1, 2, 3)
+  e1$`&z2.` <- c("A", "B", "C")
+  e1$`&z3.` <- c(A = 1, B = 2, C = 3)
+  e1$`&z4.` <- c(A = "One", B = "Two", C = "Three")
 
 
   res <- msource(fl1, file_out = fl2, e1)
@@ -520,13 +520,13 @@ test_that("msource20: mreplace() nested and double replacements.", {
   is_let("#%let x = 1", TRUE)
   is_let("#%let mvar1 = fork", TRUE)
 
-  ln <- "mvar1 is mvarx.."
+  ln <- "mvar1 is &mvar&x.."
 
   res <- mreplace(ln)
 
   expect_equal(res, "mvar1 is fork")
 
-  ln <- "mvar1 is mvarx.. and mvarx.."
+  ln <- "mvar1 is &mvar&x.. and &mvar&x.."
 
   res <- mreplace(ln)
 
@@ -535,19 +535,7 @@ test_that("msource20: mreplace() nested and double replacements.", {
 })
 
 
-test_that("msource21: SAS style variable names.", {
-
-  is_let("#%let &x = 1", TRUE)
-
-  ln <- "&x is &x."
-
-  res <- mreplace(ln)
-
-  expect_equal(res, "&x is 1")
-
-})
-
-test_that("msource22: test macro definition and call", {
+test_that("msource21: test macro definition and call", {
 
   fl1 <- file.path(base_path, "programs/test18.R")
   fl2 <- file.path(base_path, "programs/test18_mod.R")
@@ -571,7 +559,7 @@ test_that("msource22: test macro definition and call", {
 
 })
 
-test_that("msource23: test macro scope", {
+test_that("msource22: test macro scope", {
 
   fl1 <- file.path(base_path, "programs/test19.R")
   fl2 <- file.path(base_path, "programs/test19_mod.R")
@@ -595,7 +583,7 @@ test_that("msource23: test macro scope", {
 
 
 
-test_that("msource24: test nested macro scope", {
+test_that("msource23: test nested macro scope", {
 
   fl1 <- file.path(base_path, "programs/test20.R")
   fl2 <- file.path(base_path, "programs/test20_mod.R")

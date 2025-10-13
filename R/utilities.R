@@ -52,7 +52,8 @@ is_let <- function(ln, opn = TRUE) {
 
           # Evaluate expression
           vl <- eval(str2expression(nvl), envir = lcl)
-          assign(paste0(trimws(spl[1]), "."), vl, envir = gbl$env)
+          # assign(paste0(trimws(spl[1]), "."), vl, envir = gbl$env)
+          assign(paste0("&", trimws(spl[1])), vl, envir = gbl$env)
 
           # Clear out buffer if execution was successful
           if (!is.null(res)) {
@@ -63,13 +64,15 @@ is_let <- function(ln, opn = TRUE) {
 
           # Assign value to macro variable
           vl <- trimws(mreplace(spl[2]))
-          assign(paste0(trimws(spl[1]), "."), vl, envir = gbl$env)
+          # assign(paste0(trimws(spl[1]), "."), vl, envir = gbl$env)
+          assign(paste0("&", trimws(spl[1])), vl, envir = gbl$env)
         }
 
       } else {
 
         # Clear out macro variable
-        assign(paste0(trimws(spl), "."), NULL, envir = gbl$env)
+        # assign(paste0(trimws(spl), "."), NULL, envir = gbl$env)
+        assign(paste0("&", trimws(spl)), NULL, envir = gbl$env)
       }
     }
   }
@@ -161,8 +164,8 @@ sub_funcs <- function(ln) {
       idx <- idx + 1
     }
     if (sysex != "") {
-
-      tres <- exists(paste0(sysex, "."), envir = gbl$env)
+      # tres <- exists(paste0(sysex, "."), envir = gbl$env)
+      tres <- exists(paste0("&", sysex), envir = gbl$env)
       ret <- paste0(substring(ret, 1, pos2 -1),
                     as.character(tres),
                     substring(ret, epos + 1))

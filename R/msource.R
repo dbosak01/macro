@@ -176,7 +176,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'
 #' # Write macro code to temp file
 #' cat("#%let a <- 1\n", file = tmp)
-#' cat("#%if (a. == 1)\n", file = tmp, append = TRUE)
+#' cat("#%if (&a. == 1)\n", file = tmp, append = TRUE)
 #' cat("print('a is one!')\n", file =tmp, append = TRUE)
 #' cat("#%else\n", file = tmp, append = TRUE)
 #' cat("print('a is something else!')\n", file = tmp, append = TRUE)
@@ -201,7 +201,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' # ********************************************************************************
 #' # [ In#][Out#]:
 #' # [   1][    ]: #%let a <- 1
-#' # [   2][    ]: #%if (a. == 1)
+#' # [   2][    ]: #%if (&a. == 1)
 #' # [   3][   1]: print('a is one!')
 #' # [   4][    ]: #%else
 #' # [   5][    ]: print('a is something else!')
@@ -358,7 +358,8 @@ preprocess <- function(pth, file_out, envir, debug, debug_out) {
 
   # Copy any macro variables to new environment
   vrs <- ls(envir)
-  mvrs <- grepl("\\.$", vrs)
+  # mvrs <- grepl("\\.$", vrs)
+  mvrs <- grepl("^&", vrs)
   vrs <- vrs[mvrs]
 
   for (nm in vrs) {
@@ -689,7 +690,8 @@ mreplace <- function(ln) {
     vrs <- ls(gbl$env)
 
     # Filter macro variables
-    mv <- grepl("\\.$", vrs)
+    # mv <- grepl("\\.$", vrs)
+    mv <- grepl("^&", vrs)
     mvrs <- vrs[mv]
 
     # Sort by number of characters

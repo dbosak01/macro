@@ -3,7 +3,7 @@
 
 
 
-    print("X is one and Y is 2")
+    print("X is one and Y is y.")
     resx <- "one"
     resy <- 2
 

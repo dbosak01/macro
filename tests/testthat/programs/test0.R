@@ -8,27 +8,27 @@
 # Initial comment
 print("Starting program")
 
-#%if (x. == 1)
+#%if (&x == 1)
 
 print("X is one")
 print("another one")
 
 #%end
-#%if (x. == 2)
+#%if (&x == 2)
 
 print("X is two")
 print("another one")
 
 #%end
-#%if (x. > 2)
+#%if (&x. > 2)
 
-print("X is x.")
+print("X is &x.")
 print("another one")
 
 #%end
 
 # Resolved assignment
-a <- y.
+a <- `&y`
 
 # Results
 print(paste("a is", a))

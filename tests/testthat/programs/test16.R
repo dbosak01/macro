@@ -6,11 +6,11 @@
 
 w <- c()
 
-#%do x = 1 %to a.
+#%do x = 1 %to &a.
 
-#%do y = 1 %to b.
+#%do y = 1 %to &b.
 
-w <- append(w, "hello%sysfunc(x. + y.)")
+w <- append(w, "&c.%sysfunc(&x. + &y.)")
 
 #%end
 

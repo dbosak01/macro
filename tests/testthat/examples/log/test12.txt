@@ -2,14 +2,14 @@
 **  Pre-Processing 
 ******************************************************************************** 
 -    File In: .//programs/test12.R 
--   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpG03Vwg/test12.R 
+-   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpYJSBR6/test12.R 
 ******************************************************************************** 
 [ In#][Out#]: 
 [   1][   1]:  
 [   2][   2]:  
 [   3][    ]: #%let a <- 1 
 [   4][   3]:  
-[   5][    ]: #%if (a. == 1) 
+[   5][    ]: #%if (&a. == 1) 
 [   6][   4]:  
 [   7][   5]: print("do something") 
 [   8][   6]:  

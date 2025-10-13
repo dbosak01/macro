@@ -189,7 +189,7 @@ out <- file.path(tempdir(), "test_mod.R")
 
 # Write macro code to temp file
 cat("#\%let a <- 1\n", file = tmp)
-cat("#\%if (a. == 1)\n", file = tmp, append = TRUE)
+cat("#\%if (&a. == 1)\n", file = tmp, append = TRUE)
 cat("print('a is one!')\n", file =tmp, append = TRUE)
 cat("#\%else\n", file = tmp, append = TRUE)
 cat("print('a is something else!')\n", file = tmp, append = TRUE)
@@ -214,7 +214,7 @@ msource(tmp, out, debug = TRUE)
 # ********************************************************************************
 # [ In#][Out#]:
 # [   1][    ]: #\%let a <- 1
-# [   2][    ]: #\%if (a. == 1)
+# [   2][    ]: #\%if (&a. == 1)
 # [   3][   1]: print('a is one!')
 # [   4][    ]: #\%else
 # [   5][    ]: print('a is something else!')

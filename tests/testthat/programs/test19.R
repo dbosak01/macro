@@ -2,14 +2,14 @@
 
 # Here is a comment
 #%let a <- 1
-x1 <- a.
+x1 <- `&a.`
 print(x1)
 
 
 # Here is a macro function
 #%macro sammy()
 #%let a <- 2
-x2 <- a.
+x2 <- `&a.`
 print(x2)
 #%mend
 
@@ -17,5 +17,5 @@ print(x2)
 #%sammy()
 
 # After macro
-x3 <- a.
+x3 <- `&a.`
 print(x3)

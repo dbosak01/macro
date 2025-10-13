@@ -21,10 +21,10 @@ test_that("utils1: is_let() basic functionality.", {
   res <- is_let(l2, TRUE)
 
   res
-  e[["x."]]
+  e[["&x"]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], '1')
+  expect_equal(e[["&x"]], '1')
 
 
   l3 <- "#%let x = 2"
@@ -32,10 +32,10 @@ test_that("utils1: is_let() basic functionality.", {
   res <- is_let(l3, TRUE)
 
   res
-  e[["x."]]
+  e[["&x"]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], '2')
+  expect_equal(e[["&x"]], '2')
 
 
   l4 <- "#%let x = 'hello'"
@@ -43,10 +43,10 @@ test_that("utils1: is_let() basic functionality.", {
   res <- is_let(l4, TRUE)
 
   res
-  e[["x."]]
+  e[["&x"]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], "'hello'")
+  expect_equal(e[["&x"]], "'hello'")
 
   # Special case
   l5 <- "#%let x <- a <- 1"
@@ -54,10 +54,10 @@ test_that("utils1: is_let() basic functionality.", {
   res <- is_let(l5, TRUE)
 
   res
-  e[["x."]]
+  e[["&x"]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], "a <- 1")
+  expect_equal(e[["&x"]], "a <- 1")
 
   # Another Special case
   l6 <- "#%let x <- "
@@ -65,10 +65,10 @@ test_that("utils1: is_let() basic functionality.", {
   res <- is_let(l6, TRUE)
 
   res
-  e[["x."]]
+  e[["&x"]]
 
   expect_equal(res, TRUE)
-  expect_equal(e[["x."]], "")
+  expect_equal(e[["&x"]], "")
 
 
 })
@@ -83,7 +83,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   res
 
   expect_equal(res, TRUE)
-  expect_equal(e$x., 'floor(1 + 2.5)')
+  expect_equal(e$`&x`, 'floor(1 + 2.5)')
 
 
   l2 <- "#%let y = %sysfunc(floor(1 + 2.5))"
@@ -94,7 +94,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   res
 
   expect_equal(res, TRUE)
-  expect_equal(e$y., "3")
+  expect_equal(e$`&y`, "3")
 
   l4 <- "#%let z = %symexist(y)"
 
@@ -104,7 +104,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   res
 
   expect_equal(res, TRUE)
-  expect_equal(e$z., "TRUE")
+  expect_equal(e$`&z`, "TRUE")
 
   l6 <- "#%let w = %sysfunc(floor(1 + 2.5) / 1.3, %.3f)"
 
@@ -114,7 +114,7 @@ test_that("utils2: is_let() sub_func functionality.", {
   res
 
   expect_equal(res, TRUE)
-  expect_equal(e$w., "2.308")
+  expect_equal(e$`&w`, "2.308")
 
 
 })
@@ -520,9 +520,9 @@ test_that("utils15: get_macro_code() basic functionality.", {
 
   lns[1] <- "# Before the macro"
   lns[2] <- "#%macro fork(x, y = NA, z = 'Two')"
-  lns[3] <- "print(x.)"
-  lns[4] <- "print(y.)"
-  lns[5] <- "print(z.)"
+  lns[3] <- "print(&x.)"
+  lns[4] <- "print(&y.)"
+  lns[5] <- "print(&z.)"
   lns[6] <- "#%mend"
   lns[7] <- "# After the macro"
 
@@ -531,9 +531,9 @@ test_that("utils15: get_macro_code() basic functionality.", {
   res2 <- get_macro_code(lns, 2, res)
 
   expect_equal(length(res2), 3)
-  expect_equal(res2[1], "print(x.)")
-  expect_equal(res2[2], "print(y.)")
-  expect_equal(res2[3], "print(z.)")
+  expect_equal(res2[1], "print(&x.)")
+  expect_equal(res2[2], "print(&y.)")
+  expect_equal(res2[3], "print(&z.)")
 })
 
 test_that("utils16: is_macro_call() basic functionality.", {
@@ -562,9 +562,9 @@ test_that("utils17: get_macro_call() basic functionality.", {
 
   lns[1] <- "# Before the macro"
   lns[2] <- "#%macro fork(x, y = NA, z = 'Two')"
-  lns[3] <- "print(x.)"
-  lns[4] <- "print(y.)"
-  lns[5] <- "print(z.)"
+  lns[3] <- "print(&x.)"
+  lns[4] <- "print(&y.)"
+  lns[5] <- "print(&z.)"
   lns[6] <- "#%mend"
   lns[7] <- "# After the macro"
 
@@ -573,9 +573,9 @@ test_that("utils17: get_macro_call() basic functionality.", {
   res2 <- get_macro_code(lns, 2, res)
 
   expect_equal(length(res2), 3)
-  expect_equal(res2[1], "print(x.)")
-  expect_equal(res2[2], "print(y.)")
-  expect_equal(res2[3], "print(z.)")
+  expect_equal(res2[1], "print(&x.)")
+  expect_equal(res2[2], "print(&y.)")
+  expect_equal(res2[3], "print(&z.)")
 
 
 })

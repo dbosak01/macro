@@ -12,5 +12,5 @@ a <- floor(1 + 2.5)
 
 # Results
 print(paste("a is", a))
-print("y is floor(1 + 2.5)")
-print("z is 3")
+print("y is y.")
+print("z is z.")

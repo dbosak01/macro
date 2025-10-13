@@ -710,14 +710,13 @@ Here is a more interesting example:
 # Get data
 dat <- mtcars
 
-
 #% Print mean for each variable
-#%do v = 1 %to length(vars.)
-#%let var <- %sysfunc(vars.[v.])
+#%do v = 1 %to %sysfunc(length(&vars.))
+#%let var <- %sysfunc(&vars[&v])
 
-# Calculate mean for var.
-mnv. <- sprintf("%.2f", mean(dat$var.))
-print(paste0("Mean of 'var.' is ", mnv.))
+# Calculate mean for &var
+mn&v. <- sprintf("%.2f", mean(dat$`&var`))
+print(paste0("Mean of '&var' is ", mn&v.))
 
 #%end
 
@@ -760,6 +759,12 @@ Notice that the macro functionality can be used to create variable names dynamic
 The macro system can also produce comments and other statements dynamically.
 Because the macro language is a text replacement language, any part of the code
 is available for manipulation.
+
+
+## Macro User-Defined Functions
+
+Put stuff here...
+
 
 
 Next: [Debugging](macro-debug.html)

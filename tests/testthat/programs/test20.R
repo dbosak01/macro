@@ -1,23 +1,23 @@
 
 # Here is a comment
 #%let a <- 1
-x1 <- a.
+x1 <- `&a.`
 print(x1)
 
 
 # Here is a macro function
 #%macro sammy()
 #%let a <- 2
-x2 <- a.
+x2 <- `&a.`
 print(x2)
 
 #%macro fork()
 #%let a <- 3
-x3 <- a.
+x3 <- `&a.`
 print(x3)
 #%mend
 #%fork()
-x4 <- a.
+x4 <- `&a.`
 print(x4)
 #%mend
 
@@ -25,5 +25,5 @@ print(x4)
 #%sammy()
 
 # After macro
-x5 <- a.
+x5 <- `&a.`
 print(x5)
