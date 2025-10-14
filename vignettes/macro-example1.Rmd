@@ -37,19 +37,17 @@ Here is the macro driver script:
 #%let sponsor_name <- Acme
 #%let study_name <- ABC
 #%let prog_name <- l_dm
-#%let base_dir <- c:/packages/Testing/macro/code
-#%let output_dir <- base_dir./output
-#%let data_dir <- base_dir./data
+#%let base_dir <- ./macro/tests/testthat/examples
+#%let output_dir <- &base_dir./output
+#%let data_dir <- &base_dir./data
 #%let data_file <- dm.rda
-#%let data_name <- dm
 #%let titles <- c("Listing 1.0", "SDTM Demographics")
-#%let footnotes <- c("Program: prog_name..R")
+#%let footnotes <- c("Program: &prog_name..R")
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 #% Pull in listing template code
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-#%include 'base_dir./templates/lst01.R'
-
+#%include '&base_dir./templates/lst01.R'
 ```
 As you can see, the macro driver is very simple.  All it does is assign the 
 necessary macro variables, and include the listing template.  
@@ -60,35 +58,36 @@ Here is the template listing program:
 
 ```{r eval=FALSE, echo=TRUE}
 #####################################################################
-# Program Name: prog_name.
-# Study: study_name.
+# Program Name: &prog_name.
+# Study: &study_name.
 #####################################################################
 
 library(reporter)
 
 # Output path
-out_pth <- "output_dir./prog_name."
+out_pth <- "&output_dir./&prog_name."
 
 # Get listing data
-load("data_dir./data_file.")
+load("&data_dir./&data_file.")
 
 # Create table object
-tbl <- create_table(data_name.) |> 
+tbl <- create_table(dm) |>
   define(USUBJID, id_var = TRUE)
 
 # Create report object
-rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |> 
-  page_header("Sponsor: sponsor_name.", "Study: study_name.") |> 
-  titles(titles.) |> 
-  add_content(tbl, align = "left") |> 
-  footnotes(footnotes.) |> 
+rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |>
+  page_header("Sponsor: &sponsor_name.", "Study: &study_name.") |>
+  titles(`&titles.`) |>
+  add_content(tbl, align = "left") |>
+  footnotes(`&footnotes.`) |>
   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
 
 # Write report to file
 write_report(rpt)
 
 ```
-Notice in the above code that there are several macro variables.  They end
+Notice in the above code that there are several macro variables.  They start 
+with an ampersand ("&") and sometimes end
 with a dot (".").  These macro variables will be replaced with real values
 when the macro driver runs.
 
@@ -102,7 +101,7 @@ To run the macro, we will simply call `msource()` from the command line.
 We will pass the name of the program to run and the 
 generated code file to output. Like this:
 ```{r eval=FALSE, echo=TRUE}
-msource("./macro/Example1.R", "./macro/code/l_dm.R")
+msource("./macro/Example1.R", "./macro/code/l_dm1.R")
 ```
 
 ### Generated Code
@@ -117,21 +116,21 @@ Upon execution, the generated code file will look like this:
 library(reporter)
 
 # Output path
-out_pth <- "c:/packages/Testing/macro/code/output/l_dm"
+out_pth <- "./macro/tests/testthat/examples/output/l_dm"
 
 # Get listing data
-load("c:/packages/Testing/macro/code/data/dm.rda")
+load("./macro/tests/testthat/examples/data/dm.rda")
 
 # Create table object
-tbl <- create_table(dm) |> 
+tbl <- create_table(dm) |>
   define(USUBJID, id_var = TRUE)
 
 # Create report object
-rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |> 
-  page_header("Sponsor: Acme", "Study: ABC") |> 
-  titles(c("Listing 1.0", "SDTM Demographics")) |> 
-  add_content(tbl, align = "left") |> 
-  footnotes(c("Program: l_dm.R")) |> 
+rpt <- create_report(out_pth, font = "Courier", output_type = "RTF") |>
+  page_header("Sponsor: Acme", "Study: ABC") |>
+  titles(c("Listing 1.0", "SDTM Demographics")) |>
+  add_content(tbl, align = "left") |>
+  footnotes(c("Program: l_dm.R")) |>
   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
 
 # Write report to file

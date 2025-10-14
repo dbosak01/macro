@@ -269,12 +269,12 @@ is_include <- function(ln) {
 
   ret <- FALSE
 
-  dtct <- grepl("#%include", ln, fixed = TRUE)[[1]]
+  dtct <- grepl("#%include ", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
 
     # Isolate path
-    nl <- trimws(sub("#%include", "", ln, fixed = TRUE))
+    nl <- trimws(sub("#%include ", "", ln, fixed = TRUE))
     nl <- gsub('^"|"$', '', nl)
     nl <- gsub("^'|'$", "", nl)
 
@@ -309,7 +309,7 @@ is_do <- function(ln) {
 
   ret <- FALSE
 
-  dtct <- grepl("#%do", ln, fixed = TRUE)[[1]]
+  dtct <- grepl("#%do ", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
 
@@ -317,7 +317,7 @@ is_do <- function(ln) {
     ln <- mreplace(ln)
 
     # Remove do token
-    nl <- trimws(sub("#%do", "", ln, fixed = TRUE))
+    nl <- trimws(sub("#%do ", "", ln, fixed = TRUE))
 
     # Split on equals sign
     snl <- strsplit(nl, "=", fixed = TRUE)[[1]]
@@ -461,13 +461,13 @@ is_macro <- function(ln) {
 
   ret <- FALSE
 
-  dtct <- grepl("#%macro", ln, fixed = TRUE)[[1]]
+  dtct <- grepl("#%macro ", ln, fixed = TRUE)[[1]]
   if (dtct) {
 
     ret <- TRUE
 
     # Remove macro keyword
-    nl <- trimws(sub("#%macro", "", ln, fixed = TRUE)[[1]])
+    nl <- trimws(sub("#%macro ", "", ln, fixed = TRUE)[[1]])
 
     # Get first paren
     pos <- regexpr("(", nl, fixed = TRUE)[[1]]

@@ -48,7 +48,7 @@ preview. <- TRUE
 #* Macro Source Listing Template Code
 #***********************************#
 msource(file.path(base_dir., "templates/lst02.R"),
-        file.path(base_dir., "code/l_dm.R"), 
+        file.path(base_dir., "code/l_dm2.R"), 
         debug = TRUE)
 ```
 Note the following in the above driver:
@@ -78,20 +78,20 @@ a few more macro statements than the previous one:
 
 ```{r eval=FALSE, echo=TRUE}
 #####################################################################
-# Program Name: prog_name.
-# Study: study_name.
+# Program Name: &prog_name.
+# Study: &study_name.
 #####################################################################
 
 library(reporter)
 
 # Output path
-out_pth <- "output_dir./prog_name."
+out_pth <- "&output_dir./&prog_name."
 
 # Get listing data
-load("data_dir./data_file.")
+load("&data_dir./&data_file.")
 
 # Create table object
-tbl <- create_table(data_name.) |>
+tbl <- create_table(`&data_name.`) |>
   define(USUBJID, id_var = TRUE)
 
 #% Assign default output type
@@ -100,15 +100,15 @@ tbl <- create_table(data_name.) |>
 #%end
 
 # Create report object
-rpt <- create_report(out_pth, font = "Courier", output_type = "output_type.") |>
-  page_header("Sponsor: sponsor_name.", "Study: study_name.") |>
-  titles(titles.) |>
+rpt <- create_report(out_pth, font = "Courier", output_type = "&output_type.") |>
+  page_header("Sponsor: &sponsor_name.", "Study: &study_name.") |>
+  titles(`&titles.`) |>
   add_content(tbl, align = "left") |>
-  footnotes(footnotes.) |>
+  footnotes(`&footnotes.`) |>
   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
 
 # Write report to file
-#%if (preview. == TRUE)
+#%if (&preview. == TRUE)
 write_report(rpt, preview = 1)
 #%else
 write_report(rpt)
@@ -135,7 +135,7 @@ the script will write the following to the console:
 **  Pre-Processing
 ******************************************************************************** 
 -    File In:  ./examples/templates/lst02.R 
--   File Out:  ./examples/code/l_dm.R 
+-   File Out:  ./examples/code/l_dm2.R 
 ******************************************************************************** 
 [ In#][Out#]:
 [   1][   1]: #####################################################################
@@ -241,25 +241,27 @@ Upon execution, the generated code file will look like this:
 library(reporter)
 
 # Output path
-out_pth <- "./examples/output/l_dm"
+out_pth <- "./macro/tests/testthat/examples/output/l_dm"
 
 # Get listing data
-load("./examples/data/dm.rda")
+load("./macro/tests/testthat/examples/data/dm.rda")
 
 # Create table object
-tbl <- create_table(dm) |> 
+tbl <- create_table(dm) |>
   define(USUBJID, id_var = TRUE)
 
+
 # Create report object
-rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |> 
-  page_header("Sponsor: Acme", "Study: ABC") |> 
-  titles(c("Listing 1.0", "SDTM Demographics")) |> 
-  add_content(tbl, align = "left") |> 
-  footnotes(c("Program: l_dm.R")) |> 
+rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
+  page_header("Sponsor: Acme", "Study: ABC") |>
+  titles(c('Listing 1.0', 'SDTM Demographics')) |>
+  add_content(tbl, align = "left") |>
+  footnotes('Program: l_dm.R') |>
   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
 
 # Write report to file
 write_report(rpt, preview = 1)
+
   
 ```
 The listing code above is identical to the previous listing, except

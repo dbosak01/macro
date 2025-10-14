@@ -168,13 +168,18 @@ following features:</p>
 <li>Macro Comments</li>
 <li>Macro Variables</li>
 <li>Macro Conditions</li>
-<li>Macro System Function</li>
 <li>Macro Include</li>
+<li>Macro Do Loops</li>
+<li>User-Defined Macro Functions</li>
+<li>Some Built-In Macro Functions</li>
 </ul>
 <p>These features are the most essential features of the SAS macro
-language, and are missing from R. Other features are not needed for the
-primary use case of code generation, and are better handled using
-standard R code.</p>
+language, and will allow you to do most of the things you can do in SAS.
+There are many built-in macro functions in SAS that have not been
+replicated in the <strong>macro</strong> package. The built-in macro
+functions included in the <strong>macro</strong> package are
+<code>%sysfunc()</code>, <code>%symexist()</code>, and
+<code>%symput()</code>.</p>
 <p><a href="#top">top</a></p>
 <hr>
 </div>
@@ -185,9 +190,9 @@ standard R code.</p>
 this package?</p>
 <p><strong>A:</strong> A macro-enabled R program is a standard R
 program, with macro commands added as code comments. These special
-comments act as pre-processor directives. These directives are resolved
-by the pre-processor function <code><a href="../reference/msource.html">msource()</a></code>. What you will do
-is write your macro enabled program, and run it with the
+comments act as pre-processor directives. The pre-processor directives
+are resolved by the pre-processor function <code><a href="../reference/msource.html">msource()</a></code>. What
+you will do is write your macro enabled program, and run it with the
 <code><a href="../reference/msource.html">msource()</a></code> function instead of the <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code>
 function. Normally, you will do this on the command line. By default,
 the <code><a href="../reference/msource.html">msource()</a></code> function will run the currently selected
@@ -199,13 +204,16 @@ the resolved code.</p>
 <hr>
 </div>
 <div class="section level3">
-<h3 id="function">Can I create macro functions?<a class="anchor" aria-label="anchor" href="#function"></a>
+<h3 id="functions">Can I create macro functions and do loops?<a class="anchor" aria-label="anchor" href="#functions"></a>
 </h3>
 <p><strong>Q:</strong> I want to create a macro function. Does the
-<strong>macro</strong> package support it?</p>
-<p><strong>A:</strong> No. Base R provides true function capabilities,
-and nothing would be gained by replicating that capability with macro
-functions. It is recommended to use those existing features.</p>
+<strong>macro</strong> package support it? What about do loops?</p>
+<p><strong>A:</strong> Yes. The package supports user-defined macro
+functions and do loops. The syntax is similar to SAS. Note that both of
+these features are text replacement operations. They are useful
+specifically when you want to replicate some chunk of code repeatedly.
+Be mindful of the difference between these macro capabilities and normal
+Base R functions and loops, and choose your approach appropriately.</p>
 <p><a href="#top">top</a></p>
 <hr>
 </div>
@@ -215,7 +223,7 @@ functions. It is recommended to use those existing features.</p>
 <p><strong>Q:</strong> I have a complicated set of conditions that are
 nested several levels deep. Can I do that with the
 <strong>macro</strong> package?</p>
-<p><strong>A:</strong> Yes. The package supports nest conditionals.
+<p><strong>A:</strong> Yes. The package supports nested conditionals.
 There is no limit on the number of nested levels.</p>
 <p><a href="#top">top</a></p>
 <hr>

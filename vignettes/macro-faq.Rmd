@@ -60,13 +60,16 @@ What capabilities does it provide?
 * Macro Comments
 * Macro Variables
 * Macro Conditions
-* Macro System Function
 * Macro Include
+* Macro Do Loops
+* User-Defined Macro Functions
+* Some Built-In Macro Functions
 
 These features are the most essential features of the SAS macro language,
-and are missing from R.  Other features are not needed
-for the primary use case of code generation, and are better handled using
-standard R code.
+and will allow you to do most of the things you can do in SAS. There 
+are many built-in macro functions in SAS that have not been replicated in the 
+**macro** package. The built-in macro functions included in the **macro**
+package are `%sysfunc()`, `%symexist()`, and `%symput()`.
 
 [top](#top) 
 
@@ -78,7 +81,7 @@ standard R code.
 
 **A:** A macro-enabled R program is a standard R program, with macro
 commands added as code comments. These special comments act as pre-processor
-directives.  These directives are resolved by the pre-processor function
+directives.  The pre-processor directives are resolved by the pre-processor function
 `msource()`. What you will do is write your macro enabled program, and
 run it with the `msource()` function instead of the `source()` function.
 Normally, you will do this on the command line.  By default, the `msource()`
@@ -91,15 +94,18 @@ macro statements, and then execute the resolved code.
 
 ******
 
-### Can I create macro functions? {#function}
+### Can I create macro functions and do loops? {#functions}
 
 **Q:** I want to create a macro function.  Does the
-**macro** package support it?  
+**macro** package support it? What about do loops?
 
 
-**A:** No.  Base R provides true function capabilities, and nothing
-would be gained by replicating that capability with macro functions. 
-It is recommended to use those existing features.
+**A:** Yes. The package supports user-defined macro functions and do loops.
+The syntax is similar to SAS.  Note that both of these features are 
+text replacement operations. They are useful specifically when you want
+to replicate some chunk of code repeatedly. Be mindful of the difference
+between these macro capabilities and normal Base R functions and loops, 
+and choose your approach appropriately.
 
 [top](#top) 
 
@@ -110,7 +116,7 @@ It is recommended to use those existing features.
 **Q:** I have a complicated set of conditions that are nested
 several levels deep. Can I do that with the **macro** package?  
 
-**A:** Yes. The package supports nest conditionals.  There is no
+**A:** Yes. The package supports nested conditionals.  There is no
 limit on the number of nested levels.
 
 [top](#top) 
@@ -142,7 +148,7 @@ be used as a code generator.  How does that work?
 parameter on `msource()`.  When the second parameter is not supplied, 
 the function will create a temporary output file.  When the second parameter
 is supplied, the function will output the resolved code to the specified path.
-That file is the generated code.
+That file is the generated code. 
 
 [top](#top) 
 

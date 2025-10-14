@@ -77,12 +77,12 @@ R macro language:
   * R macro statements do not end with a semicolon (";").  They are single-line
   commands, and end with a carriage return.
   * R macro commands can be used anywhere in the program.  They are not restricted to 
-  functions.  
+  use inside macro functions.  
   * Single-quotes will not prevent macro variable resolution.  In the R macro
   language, single and double quotes operate the same.
   * All operators in the R macro language use R syntax, including the 
   comparison operator ("==").
-  * R macro variables in open code must be surrounded by backticks ("`") to 
+  * R macro variables in open code often must be surrounded by backticks ("`") to 
   avoid errors. Inside comments and other macro commands, they do not need
   backticks.  
 
@@ -132,11 +132,11 @@ the macro variable as a text replacement token.
 3. **Macro Conditionals**: If-Then-Else logic that allows you to conditionally 
 execute a chunk of code.
 4. **Macro Include**: Inserts the contents of an external file into your program.
-5. **Macro Functions**: A small number of macro functions
+5. **Built-in Macro Functions**: A small number of macro functions
 to make the system more practical.
 6. **Macro Do Loops**: Copies code inside the do block for each iteration of the loop.
-7. **Macro User-Defined Functions**: The ability to create a user-defined  
-text-replacement function. 
+7. **User-Defined Macro Functions**: The ability to create a user-defined  
+text-replacement function, with or without parameters.
 
 ### Macro Comments and Variables
 
@@ -180,10 +180,11 @@ Once a macro variable is assigned, it can be used as a text replacement token
 anywhere in your program. 
 
 R macro variables begin with an ampersand ("&") 
-prefix, just like SAS. Also like SAS, a trailing dot (".") suffix is optional. 
+prefix, just like SAS. Also like SAS, a trailing dot (".") suffix is optional.
+The trailing dot can help separate the macro variable from surrounding text.
 
-One difference is that in R, special 
-characters are normally not allowed in variable names.  
+One difference is that, in R, the ampersand ("&") is normally not 
+allowed as the first character of a variable name.  
 Therefore, when macro variables appear in open code,
 they must be back-quoted to avoid errors.
 
@@ -193,7 +194,7 @@ For example, we can use some of the above macro assignments like this:
 # The value of 'v1' is &v1
 
 # Resolve in a text string
-a <- "The value of 'v2' is &v2."
+a <- "The value of 'v2' is &v2"
 print(a)
 
 # Resolve in open code
@@ -201,7 +202,7 @@ b <- `&v3`
 print(b)
 
 # Resolve in a function
-c <- mean(`&v5.`)
+c <- mean(`&v5`)
 print(c)
 
 ```
@@ -230,7 +231,7 @@ c <- mean(c(1, 2, 3, 4, 5))
 print(c)
 
 ```
-Notice in the above generated code that the macro variables '&v3' and '&v5.' were
+Notice in the above generated code that the macro variables '&v3' and '&v5' were
 replaced exactly as they were assigned.  All macro variable resolution is 
 text replacement.
 
@@ -246,10 +247,10 @@ Here are some examples of simple macro conditions:
 #% Assign integer value 
 #%let x = 1
 
-#%if (&x. == 1)
+#%if (&x == 1)
   # X is one
   print("Inside the first condition")
-#%elseif (&x. == 2)
+#%elseif (&x == 2)
   # X is two
   print("Inside the second condition")
 #%else 
@@ -289,7 +290,7 @@ example that illustrates such conditionals:
 
   #%else
 
-    print("X is one and Y is y.")
+    print("X is one and Y is &y.")
 
   #%end
 
@@ -301,7 +302,7 @@ example that illustrates such conditionals:
 
     #%else
 
-    print("X is two and Y is y.")
+    print("X is two and Y is &y.")
 
     #%end
 
@@ -309,11 +310,11 @@ example that illustrates such conditionals:
 
   #%if (&y. == 1)
 
-    print("X is x. and Y is 1")
+    print("X is &x. and Y is 1")
 
   #%else
 
-    print("X is x. and Y is y.")
+    print("X is &x. and Y is &y.")
 
   #%end
 
@@ -503,7 +504,7 @@ v1 <- c("one", "two", "three")
 #% Get vector values
 #%let y <- %symput(v1)
 
-# Print each value of vector y.
+# Print each value of vector &y.
 #%do idx = 1 %to &x.
 print("Vector value %sysfunc(&y[&idx])")
 #%end
@@ -528,6 +529,89 @@ print("Vector value three")
 Note that you can have any number of statements inside the do loop. This 
 macro feature is useful when you are performing repetitive operations, want
 to avoid copying the code, but still want a resolved and transparent output file.
+
+### User-defined Macro Functions
+
+User-defined macro function allows you to wrap up a set up statements,
+assign a name to it, and call these functions as needed. Calling the function
+will insert the contents of the function into the generated file. It is 
+important to note the difference between a regular R function and an R
+macro function: an R macro function is still a text replacement/insertion.
+
+Here is an illustrative example:
+```{r eval=FALSE, echo=TRUE}
+#% Define macro function
+#%macro do_analysis(data, varname)
+# Analysis for "&varname"
+mean_&varname <- mean(`&data`[["&varname"]])
+min_&varname <- min(`&data`[["&varname"]])
+max_&varname <- max(`&data`[["&varname"]])
+anal_&varname <- data.frame("Variable" = "&varname",
+                            "Mean" = mean_&varname,
+                            "Min"  = min_&varname,
+                            "Max"  = max_&varname)
+#%mend
+
+#%do_analysis(mtcars, mpg)
+#%do_analysis(mtcars, cyl)
+#%do_analysis(mtcars, disp)
+
+# Combine analysis blocks
+final <- rbind(anal_mpg, anal_cyl, anal_disp)
+
+# Print result
+print(final)
+
+```
+Here is the generated code.  Notice that the code inside the macro function
+is repeated for every call:
+```{r eval=FALSE, echo=TRUE}
+
+# Analysis for "mpg"
+mean_mpg <- mean(mtcars[["mpg"]])
+min_mpg <- min(mtcars[["mpg"]])
+max_mpg <- max(mtcars[["mpg"]])
+anal_mpg <- data.frame("Variable" = "mpg",
+                            "Mean" = mean_mpg,
+                            "Min"  = min_mpg,
+                            "Max"  = max_mpg)
+# Analysis for "cyl"
+mean_cyl <- mean(mtcars[["cyl"]])
+min_cyl <- min(mtcars[["cyl"]])
+max_cyl <- max(mtcars[["cyl"]])
+anal_cyl <- data.frame("Variable" = "cyl",
+                            "Mean" = mean_cyl,
+                            "Min"  = min_cyl,
+                            "Max"  = max_cyl)
+# Analysis for "disp"
+mean_disp <- mean(mtcars[["disp"]])
+min_disp <- min(mtcars[["disp"]])
+max_disp <- max(mtcars[["disp"]])
+anal_disp <- data.frame("Variable" = "disp",
+                            "Mean" = mean_disp,
+                            "Min"  = min_disp,
+                            "Max"  = max_disp)
+
+# Combine analysis blocks
+final <- rbind(anal_mpg, anal_cyl, anal_disp)
+
+# Print result
+print(final)
+
+```
+The result of the above code is a data frame that contains analysis for
+all three variables.  The console output looks like this:
+
+```
+> msource()
+  Variable      Mean  Min   Max
+1      mpg  20.09062 10.4  33.9
+2      cyl   6.18750  4.0   8.0
+3     disp 230.72188 71.1 472.0
+```
+Using combinations of macro functions, macro do loops, and macro conditions, 
+you can create very dynamic, flexible, and useful programs. 
+
 
 # Next Steps
 

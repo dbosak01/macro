@@ -1,0 +1,440 @@
+=========================================================================
+Log Path: c:/packages/macro/tests/testthat/examples/log/t_dm.log
+Program Path: C:/packages/macro/tests/testthat/examples/code/t_dm.R
+Working Directory: C:/packages/macro
+User Name: dbosa
+R Version: 4.4.3 (2025-02-28 ucrt)
+Machine: SOCRATES x86-64
+Operating System: Windows 10 x64 build 26100
+Base Packages: stats graphics grDevices utils datasets methods base
+Other Packages: tidylog_1.1.0 procs_1.0.7 libr_1.3.9 logr_1.3.9 fmtr_1.7.0
+sassy_1.2.5 reporter_1.4.4 macro_0.1.2 dplyr_1.1.4 testthat_3.2.1.1
+common_1.1.3
+Log Start Time: 2025-10-13 20:43:02.895837
+=========================================================================
+
+=========================================================================
+Prepare formats
+=========================================================================
+
+Compile format catalog
+
+# A format catalog: 8 formats
+- $MEAN: type S, "%.1f"
+- $STD: type S, "(%.2f)"
+- $Q1: type S, "%.1f"
+- $Q3: type S, "%.1f"
+- $MIN: type S, "%d"
+- $MAX: type S, "%d"
+- $CNT: type S, "%2d"
+- $PCT: type S, "(%5.1f%%)"
+
+Age Groups
+
+# A user-defined format: 4 conditions
+- as.factor: TRUE
+  Name Type        Expression    Label Order
+1  obj    U x >= 18 & x <= 29 18 to 29    NA
+2  obj    U x >= 30 & x <= 39 30 to 39    NA
+3  obj    U x >= 40 & x <= 49 40 to 49    NA
+4  obj    U           x >= 50    >= 50    NA
+
+Sex decodes
+
+# A user-defined format: 3 conditions
+- as.factor: TRUE
+  Name Type Expression  Label Order
+1  obj    U   x == "M"   Male    NA
+2  obj    U   x == "F" Female    NA
+3  obj    U       TRUE  Other    NA
+
+Race decodes
+
+# A user-defined format: 5 conditions
+- as.factor: TRUE
+  Name Type                       Expression                     Label Order
+1  obj    U                     x == "WHITE"                     White    NA
+2  obj    U x == "BLACK OR AFRICAN AMERICAN" Black or African American    NA
+3  obj    U                     x == "ASIAN" Asian or Pacific Islander    NA
+4  obj    U                   x == "UNKNOWN"                   Unknown    NA
+5  obj    U                             TRUE                     Other    NA
+
+=========================================================================
+Prepare Data
+=========================================================================
+
+Create sample data.
+
+Log starting dataset
+
+   SUBJID   ARM SEX                      RACE AGE
+1       1 ARM A   F                     ASIAN  19
+2       2 ARM B   F                     WHITE  21
+3       3 ARM C   F                     WHITE  23
+4       4 ARM D   F BLACK OR AFRICAN AMERICAN  28
+5       5 ARM A   M                     WHITE  37
+6       6 ARM B   M                     WHITE  34
+7       7 ARM C   M                     ASIAN  36
+8       8 ARM D   M                     WHITE  30
+9       9 ARM A   F                     WHITE  39
+10     10 ARM B   F                     WHITE  31
+11     11 ARM C   F BLACK OR AFRICAN AMERICAN  33
+12     12 ARM D   F                     WHITE  38
+13     13 ARM A   M BLACK OR AFRICAN AMERICAN  37
+14     14 ARM B   M                     WHITE  34
+15     15 ARM C   M                     WHITE  36
+16     16 ARM A   M                     WHITE  40
+
+Filter out screen failure
+
+Get ARM population counts
+
+proc_freq: input data set 16 rows and 5 columns
+           tables: ARM
+           output: long
+           view: TRUE
+           output: 1 datasets
+
+  VAR STAT ARM A ARM B ARM C ARM D
+1 ARM  CNT     5     4     4     3
+
+Log treatment groups variable
+
+Placebo
+Drug 50mg
+Drug 100mg
+Competitor
+
+Categorize AGE
+
+=========================================================================
+Create summary statistics for age.
+=========================================================================
+
+Call means procedure to get summary statistics for age
+
+proc_means: input data set 16 rows and 6 columns
+            by: ARM
+            var: AGE
+            stats: n mean std median q1 q3 min max
+            view: TRUE
+            output: 1 datasets
+
+     BY VAR N MEAN      STD MEDIAN Q1 Q3 MIN MAX
+1 ARM A AGE 5 34.4 8.706320   37.0 37 39  19  40
+2 ARM B AGE 4 30.0 6.164414   32.5 26 34  21  34
+3 ARM C AGE 4 32.0 6.164414   34.5 28 36  23  36
+4 ARM D AGE 3 32.0 5.291503   30.0 28 38  28  38
+
+Combine stats
+
+datastep: columns decreased from 10 to 7
+
+     BY  VAR N   Mean (SD) Median     Q1 - Q3 Min - Max
+1 ARM A lbl. 5 34.4 (8.71)   37.0 37.0 - 39.0   19 - 40
+2 ARM B lbl. 4 30.0 (6.16)   32.5 26.0 - 34.0   21 - 34
+3 ARM C lbl. 4 32.0 (6.16)   34.5 28.0 - 36.0   23 - 36
+4 ARM D lbl. 3 32.0 (5.29)   30.0 28.0 - 38.0   28 - 38
+
+Transpose ARMs into columns
+
+proc_transpose: input data set 4 rows and 7 columns
+                var: BY VAR N Mean (SD) Median Q1 - Q3 Min - Max
+                id: BY
+                copy: VAR
+                name: LABEL
+                output dataset 5 rows and 6 columns
+
+   VAR     LABEL       ARM A       ARM B       ARM C       ARM D
+1 lbl.         N           5           4           4           3
+2 lbl. Mean (SD) 34.4 (8.71) 30.0 (6.16) 32.0 (6.16) 32.0 (5.29)
+3 lbl.    Median        37.0        32.5        34.5        30.0
+4 lbl.   Q1 - Q3 37.0 - 39.0 26.0 - 34.0 28.0 - 36.0 28.0 - 38.0
+5 lbl. Min - Max     19 - 40     21 - 34     23 - 36     28 - 38
+
+=========================================================================
+Create frequency counts for Age Group
+=========================================================================
+
+Get ageg frequency counts
+
+proc_freq: input data set 16 rows and 6 columns
+           tables: AGEG
+           by: ARM
+           view: TRUE
+           output: 1 datasets
+
+      BY  VAR      CAT CNT      PCT
+1  ARM A AGEG 18 to 29   1 20.00000
+2  ARM A AGEG 30 to 39   3 60.00000
+3  ARM A AGEG 40 to 49   1 20.00000
+4  ARM A AGEG    >= 50   0  0.00000
+5  ARM B AGEG 18 to 29   1 25.00000
+6  ARM B AGEG 30 to 39   3 75.00000
+7  ARM B AGEG 40 to 49   0  0.00000
+8  ARM B AGEG    >= 50   0  0.00000
+9  ARM C AGEG 18 to 29   1 25.00000
+10 ARM C AGEG 30 to 39   3 75.00000
+11 ARM C AGEG 40 to 49   0  0.00000
+12 ARM C AGEG    >= 50   0  0.00000
+13 ARM D AGEG 18 to 29   1 33.33333
+14 ARM D AGEG 30 to 39   2 66.66667
+15 ARM D AGEG 40 to 49   0  0.00000
+16 ARM D AGEG    >= 50   0  0.00000
+
+Combine counts and percents and assign age group factor for sorting
+
+datastep: columns decreased from 5 to 4
+
+         VAR    LABEL    BY      CNTPCT
+1  Age Group 18 to 29 ARM A  1 ( 20.0%)
+2  Age Group 30 to 39 ARM A  3 ( 60.0%)
+3  Age Group 40 to 49 ARM A  1 ( 20.0%)
+4  Age Group    >= 50 ARM A  0 (  0.0%)
+5  Age Group 18 to 29 ARM B  1 ( 25.0%)
+6  Age Group 30 to 39 ARM B  3 ( 75.0%)
+7  Age Group 40 to 49 ARM B  0 (  0.0%)
+8  Age Group    >= 50 ARM B  0 (  0.0%)
+9  Age Group 18 to 29 ARM C  1 ( 25.0%)
+10 Age Group 30 to 39 ARM C  3 ( 75.0%)
+11 Age Group 40 to 49 ARM C  0 (  0.0%)
+12 Age Group    >= 50 ARM C  0 (  0.0%)
+13 Age Group 18 to 29 ARM D  1 ( 33.3%)
+14 Age Group 30 to 39 ARM D  2 ( 66.7%)
+15 Age Group 40 to 49 ARM D  0 (  0.0%)
+16 Age Group    >= 50 ARM D  0 (  0.0%)
+
+Sort by lvar. factor
+
+proc_sort: input data set 16 rows and 4 columns
+           by: BY LABEL
+           keep: VAR LABEL BY CNTPCT
+           order: a a
+           output data set 16 rows and 4 columns
+
+         VAR    LABEL    BY      CNTPCT
+1  Age Group 18 to 29 ARM A  1 ( 20.0%)
+2  Age Group 30 to 39 ARM A  3 ( 60.0%)
+3  Age Group 40 to 49 ARM A  1 ( 20.0%)
+4  Age Group    >= 50 ARM A  0 (  0.0%)
+5  Age Group 18 to 29 ARM B  1 ( 25.0%)
+6  Age Group 30 to 39 ARM B  3 ( 75.0%)
+7  Age Group 40 to 49 ARM B  0 (  0.0%)
+8  Age Group    >= 50 ARM B  0 (  0.0%)
+9  Age Group 18 to 29 ARM C  1 ( 25.0%)
+10 Age Group 30 to 39 ARM C  3 ( 75.0%)
+11 Age Group 40 to 49 ARM C  0 (  0.0%)
+12 Age Group    >= 50 ARM C  0 (  0.0%)
+13 Age Group 18 to 29 ARM D  1 ( 33.3%)
+14 Age Group 30 to 39 ARM D  2 ( 66.7%)
+15 Age Group 40 to 49 ARM D  0 (  0.0%)
+16 Age Group    >= 50 ARM D  0 (  0.0%)
+
+Tranpose lvar. block
+
+proc_transpose: input data set 16 rows and 4 columns
+                by: LABEL
+                var: CNTPCT
+                id: BY
+                copy: VAR
+                name: NAME
+                output dataset 4 rows and 6 columns
+
+        VAR    LABEL       ARM A       ARM B       ARM C       ARM D
+1 Age Group 18 to 29  1 ( 20.0%)  1 ( 25.0%)  1 ( 25.0%)  1 ( 33.3%)
+2 Age Group 30 to 39  3 ( 60.0%)  3 ( 75.0%)  3 ( 75.0%)  2 ( 66.7%)
+3 Age Group 40 to 49  1 ( 20.0%)  0 (  0.0%)  0 (  0.0%)  0 (  0.0%)
+4 Age Group    >= 50  0 (  0.0%)  0 (  0.0%)  0 (  0.0%)  0 (  0.0%)
+
+=========================================================================
+Create frequency counts for Sex
+=========================================================================
+
+Get sex frequency counts
+
+proc_freq: input data set 16 rows and 6 columns
+           tables: SEX
+           by: ARM
+           view: TRUE
+           output: 1 datasets
+
+     BY VAR CAT CNT      PCT
+1 ARM A SEX   F   2 40.00000
+2 ARM A SEX   M   3 60.00000
+3 ARM B SEX   F   2 50.00000
+4 ARM B SEX   M   2 50.00000
+5 ARM C SEX   F   2 50.00000
+6 ARM C SEX   M   2 50.00000
+7 ARM D SEX   F   2 66.66667
+8 ARM D SEX   M   1 33.33333
+
+Combine counts and percents and assign age group factor for sorting
+
+datastep: columns decreased from 5 to 4
+
+  VAR  LABEL    BY      CNTPCT
+1 Sex Female ARM A  2 ( 40.0%)
+2 Sex   Male ARM A  3 ( 60.0%)
+3 Sex Female ARM B  2 ( 50.0%)
+4 Sex   Male ARM B  2 ( 50.0%)
+5 Sex Female ARM C  2 ( 50.0%)
+6 Sex   Male ARM C  2 ( 50.0%)
+7 Sex Female ARM D  2 ( 66.7%)
+8 Sex   Male ARM D  1 ( 33.3%)
+
+Sort by lvar. factor
+
+proc_sort: input data set 8 rows and 4 columns
+           by: BY LABEL
+           keep: VAR LABEL BY CNTPCT
+           order: a a
+           output data set 8 rows and 4 columns
+
+  VAR  LABEL    BY      CNTPCT
+2 Sex   Male ARM A  3 ( 60.0%)
+1 Sex Female ARM A  2 ( 40.0%)
+4 Sex   Male ARM B  2 ( 50.0%)
+3 Sex Female ARM B  2 ( 50.0%)
+6 Sex   Male ARM C  2 ( 50.0%)
+5 Sex Female ARM C  2 ( 50.0%)
+8 Sex   Male ARM D  1 ( 33.3%)
+7 Sex Female ARM D  2 ( 66.7%)
+
+Tranpose lvar. block
+
+proc_transpose: input data set 8 rows and 4 columns
+                by: LABEL
+                var: CNTPCT
+                id: BY
+                copy: VAR
+                name: NAME
+                output dataset 2 rows and 6 columns
+
+  VAR  LABEL       ARM A       ARM B       ARM C       ARM D
+1 Sex   Male  3 ( 60.0%)  2 ( 50.0%)  2 ( 50.0%)  1 ( 33.3%)
+2 Sex Female  2 ( 40.0%)  2 ( 50.0%)  2 ( 50.0%)  2 ( 66.7%)
+
+=========================================================================
+Create frequency counts for Race
+=========================================================================
+
+Get race frequency counts
+
+proc_freq: input data set 16 rows and 6 columns
+           tables: RACE
+           by: ARM
+           view: TRUE
+           output: 1 datasets
+
+      BY  VAR                       CAT CNT       PCT
+1  ARM A RACE                     ASIAN   1  20.00000
+2  ARM A RACE BLACK OR AFRICAN AMERICAN   1  20.00000
+3  ARM A RACE                     WHITE   3  60.00000
+4  ARM B RACE                     ASIAN   0   0.00000
+5  ARM B RACE BLACK OR AFRICAN AMERICAN   0   0.00000
+6  ARM B RACE                     WHITE   4 100.00000
+7  ARM C RACE                     ASIAN   1  25.00000
+8  ARM C RACE BLACK OR AFRICAN AMERICAN   1  25.00000
+9  ARM C RACE                     WHITE   2  50.00000
+10 ARM D RACE                     ASIAN   0   0.00000
+11 ARM D RACE BLACK OR AFRICAN AMERICAN   1  33.33333
+12 ARM D RACE                     WHITE   2  66.66667
+
+Combine counts and percents and assign age group factor for sorting
+
+datastep: columns decreased from 5 to 4
+
+    VAR                     LABEL    BY      CNTPCT
+1  Race Asian or Pacific Islander ARM A  1 ( 20.0%)
+2  Race Black or African American ARM A  1 ( 20.0%)
+3  Race                     White ARM A  3 ( 60.0%)
+4  Race Asian or Pacific Islander ARM B  0 (  0.0%)
+5  Race Black or African American ARM B  0 (  0.0%)
+6  Race                     White ARM B  4 (100.0%)
+7  Race Asian or Pacific Islander ARM C  1 ( 25.0%)
+8  Race Black or African American ARM C  1 ( 25.0%)
+9  Race                     White ARM C  2 ( 50.0%)
+10 Race Asian or Pacific Islander ARM D  0 (  0.0%)
+11 Race Black or African American ARM D  1 ( 33.3%)
+12 Race                     White ARM D  2 ( 66.7%)
+
+Sort by lvar. factor
+
+proc_sort: input data set 12 rows and 4 columns
+           by: BY LABEL
+           keep: VAR LABEL BY CNTPCT
+           order: a a
+           output data set 12 rows and 4 columns
+
+    VAR                     LABEL    BY      CNTPCT
+3  Race                     White ARM A  3 ( 60.0%)
+2  Race Black or African American ARM A  1 ( 20.0%)
+1  Race Asian or Pacific Islander ARM A  1 ( 20.0%)
+6  Race                     White ARM B  4 (100.0%)
+5  Race Black or African American ARM B  0 (  0.0%)
+4  Race Asian or Pacific Islander ARM B  0 (  0.0%)
+9  Race                     White ARM C  2 ( 50.0%)
+8  Race Black or African American ARM C  1 ( 25.0%)
+7  Race Asian or Pacific Islander ARM C  1 ( 25.0%)
+12 Race                     White ARM D  2 ( 66.7%)
+11 Race Black or African American ARM D  1 ( 33.3%)
+10 Race Asian or Pacific Islander ARM D  0 (  0.0%)
+
+Tranpose lvar. block
+
+proc_transpose: input data set 12 rows and 4 columns
+                by: LABEL
+                var: CNTPCT
+                id: BY
+                copy: VAR
+                name: NAME
+                output dataset 3 rows and 6 columns
+
+   VAR                     LABEL       ARM A       ARM B       ARM C       ARM D
+1 Race                     White  3 ( 60.0%)  4 (100.0%)  2 ( 50.0%)  2 ( 66.7%)
+2 Race Black or African American  1 ( 20.0%)  0 (  0.0%)  1 ( 25.0%)  1 ( 33.3%)
+3 Race Asian or Pacific Islander  1 ( 20.0%)  0 (  0.0%)  1 ( 25.0%)  0 (  0.0%)
+
+=========================================================================
+Create and print report
+=========================================================================
+
+Write out the report
+
+# A report specification: 1 pages  PREVIEW
+- file_path: 'c:/packages/macro/tests/testthat/examples/output/t_dm.pdf'
+- output_type: PDF
+- units: inches
+- orientation: landscape
+- margins: top 1 bottom 1 left 1 right 1
+- line size/count: 9/41
+- page_header: left=Sponsor: Acme, Inc. right=Study: ABC
+- page_footer: left=Date Produced: 2025OCT13 center= right=Page [pg] of [tpg]
+- content: 
+# A table specification:
+- data: data.frame 'final' 14 rows 6 cols
+- show_cols: all
+- use_attributes: all
+- title 1: 'Table 1.0'
+- title 2: 'Analysis of Demographic Characteristics'
+- title 3: 'Safety Population'
+- footnote 1: 'Program: t_dm.R'
+- footnote 2: 'NOTE: Denominator based on number of non-missing responses.'
+- stub: VAR LABEL 'Variable' width=2.5 align='left' 
+- define: VAR 'Variable' dedupe='TRUE' 
+- define: LABEL 'Demographic Category' 
+- define: ARM A 'Placebo' 
+- define: ARM B 'Drug 50mg' 
+- define: ARM C 'Drug 100mg' 
+- define: ARM D 'Competitor' 
+
+=========================================================================
+Clean Up
+=========================================================================
+
+Close log
+
+=========================================================================
+Log End Time: 2025-10-13 20:43:11.688214
+Log Elapsed Time: 0 00:00:08
+=========================================================================

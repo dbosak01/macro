@@ -181,15 +181,15 @@ and the R macro language:</p>
 <li>R macro statements do not end with a semicolon (“;”). They are
 single-line commands, and end with a carriage return.</li>
 <li>R macro commands can be used anywhere in the program. They are not
-restricted to functions.<br>
+restricted to use inside macro functions.<br>
 </li>
 <li>Single-quotes will not prevent macro variable resolution. In the R
 macro language, single and double quotes operate the same.</li>
 <li>All operators in the R macro language use R syntax, including the
 comparison operator (“==”).</li>
-<li>R macro variables in open code must be surrounded by backticks (“`”)
-to avoid errors. Inside comments and other macro commands, they do not
-need backticks.</li>
+<li>R macro variables in open code often must be surrounded by backticks
+(“`”) to avoid errors. Inside comments and other macro commands, they do
+not need backticks.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -250,15 +250,15 @@ you to conditionally execute a chunk of code.</li>
 <strong>Macro Include</strong>: Inserts the contents of an external
 file into your program.</li>
 <li>
-<strong>Macro Functions</strong>: A small number of macro functions
-to make the system more practical.</li>
+<strong>Built-in Macro Functions</strong>: A small number of macro
+functions to make the system more practical.</li>
 <li>
 <strong>Macro Do Loops</strong>: Copies code inside the do block for
 each iteration of the loop.</li>
 <li>
-<strong>Macro User-Defined Functions</strong>: The ability to create
+<strong>User-Defined Macro Functions</strong>: The ability to create
 a user-defined<br>
-text-replacement function.</li>
+text-replacement function, with or without parameters.</li>
 </ol>
 <div class="section level4">
 <h4 id="macro-comments-and-variables">Macro Comments and Variables<a class="anchor" aria-label="anchor" href="#macro-comments-and-variables"></a>
@@ -300,9 +300,11 @@ data types:</p>
 <p>Once a macro variable is assigned, it can be used as a text
 replacement token anywhere in your program.</p>
 <p>R macro variables begin with an ampersand (“&amp;”) prefix, just like
-SAS. Also like SAS, a trailing dot (“.”) suffix is optional.</p>
-<p>One difference is that in R, special characters are normally not
-allowed in variable names.<br>
+SAS. Also like SAS, a trailing dot (“.”) suffix is optional. The
+trailing dot can help separate the macro variable from surrounding
+text.</p>
+<p>One difference is that, in R, the ampersand (“&amp;”) is normally not
+allowed as the first character of a variable name.<br>
 Therefore, when macro variables appear in open code, they must be
 back-quoted to avoid errors.</p>
 <p>For example, we can use some of the above macro assignments like
@@ -312,7 +314,7 @@ this:</p>
 <span><span class="co"># The value of 'v1' is &amp;v1</span></span>
 <span></span>
 <span><span class="co"># Resolve in a text string</span></span>
-<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="st">"The value of 'v2' is &amp;v2."</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="st">"The value of 'v2' is &amp;v2"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Resolve in open code</span></span>
@@ -320,7 +322,7 @@ this:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Resolve in a function</span></span>
-<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">`&amp;v5.`</span><span class="op">)</span></span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">`&amp;v5`</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span></code></pre></div>
 <p>If we execute the above code using <code><a href="../reference/msource.html">msource()</a></code>, we’ll get
 the following result:</p>
@@ -345,7 +347,7 @@ the following result:</p>
 <span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span></code></pre></div>
 <p>Notice in the above generated code that the macro variables ‘&amp;v3’
-and ‘&amp;v5.’ were replaced exactly as they were assigned. All macro
+and ‘&amp;v5’ were replaced exactly as they were assigned. All macro
 variable resolution is text replacement.</p>
 </div>
 <div class="section level4">
@@ -361,10 +363,10 @@ compact.</p>
 <code class="sourceCode R"><span><span class="co">#% Assign integer value </span></span>
 <span><span class="co">#%let x = 1</span></span>
 <span></span>
-<span><span class="co">#%if (&amp;x. == 1)</span></span>
+<span><span class="co">#%if (&amp;x == 1)</span></span>
 <span>  <span class="co"># X is one</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Inside the first condition"</span><span class="op">)</span></span>
-<span><span class="co">#%elseif (&amp;x. == 2)</span></span>
+<span><span class="co">#%elseif (&amp;x == 2)</span></span>
 <span>  <span class="co"># X is two</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Inside the second condition"</span><span class="op">)</span></span>
 <span><span class="co">#%else </span></span>
@@ -402,7 +404,7 @@ illustrates such conditionals:</p>
 <span></span>
 <span>  <span class="co">#%else</span></span>
 <span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is one and Y is y."</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is one and Y is &amp;y."</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co">#%end</span></span>
 <span></span>
@@ -414,7 +416,7 @@ illustrates such conditionals:</p>
 <span></span>
 <span>    <span class="co">#%else</span></span>
 <span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is two and Y is y."</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is two and Y is &amp;y."</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co">#%end</span></span>
 <span></span>
@@ -422,11 +424,11 @@ illustrates such conditionals:</p>
 <span></span>
 <span>  <span class="co">#%if (&amp;y. == 1)</span></span>
 <span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is x. and Y is 1"</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is &amp;x. and Y is 1"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co">#%else</span></span>
 <span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is x. and Y is y."</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"X is &amp;x. and Y is &amp;y."</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co">#%end</span></span>
 <span></span>
@@ -605,7 +607,7 @@ example that demonstrates a macro loop:</p>
 <span><span class="co">#% Get vector values</span></span>
 <span><span class="co">#%let y &lt;- %symput(v1)</span></span>
 <span></span>
-<span><span class="co"># Print each value of vector y.</span></span>
+<span><span class="co"># Print each value of vector &amp;y.</span></span>
 <span><span class="co">#%do idx = 1 %to &amp;x.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Vector value %sysfunc(&amp;y[&amp;idx])"</span><span class="op">)</span></span>
 <span><span class="co">#%end</span></span></code></pre></div>
@@ -627,6 +629,83 @@ example that demonstrates a macro loop:</p>
 This macro feature is useful when you are performing repetitive
 operations, want to avoid copying the code, but still want a resolved
 and transparent output file.</p>
+</div>
+<div class="section level4">
+<h4 id="user-defined-macro-functions">User-defined Macro Functions<a class="anchor" aria-label="anchor" href="#user-defined-macro-functions"></a>
+</h4>
+<p>User-defined macro function allows you to wrap up a set up
+statements, assign a name to it, and call these functions as needed.
+Calling the function will insert the contents of the function into the
+generated file. It is important to note the difference between a regular
+R function and an R macro function: an R macro function is still a text
+replacement/insertion.</p>
+<p>Here is an illustrative example:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Define macro function</span></span>
+<span><span class="co">#%macro do_analysis(data, varname)</span></span>
+<span><span class="co"># Analysis for "&amp;varname"</span></span>
+<span><span class="va">mean_</span><span class="op">&amp;</span><span class="va">varname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">`&amp;data`</span><span class="op">[[</span><span class="st">"&amp;varname"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">min_</span><span class="op">&amp;</span><span class="va">varname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">`&amp;data`</span><span class="op">[[</span><span class="st">"&amp;varname"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">max_</span><span class="op">&amp;</span><span class="va">varname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">`&amp;data`</span><span class="op">[[</span><span class="st">"&amp;varname"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">anal_</span><span class="op">&amp;</span><span class="va">varname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"Variable"</span> <span class="op">=</span> <span class="st">"&amp;varname"</span>,</span>
+<span>                            <span class="st">"Mean"</span> <span class="op">=</span> <span class="va">mean_</span><span class="op">&amp;</span><span class="va">varname</span>,</span>
+<span>                            <span class="st">"Min"</span>  <span class="op">=</span> <span class="va">min_</span><span class="op">&amp;</span><span class="va">varname</span>,</span>
+<span>                            <span class="st">"Max"</span>  <span class="op">=</span> <span class="va">max_</span><span class="op">&amp;</span><span class="va">varname</span><span class="op">)</span></span>
+<span><span class="co">#%mend</span></span>
+<span></span>
+<span><span class="co">#%do_analysis(mtcars, mpg)</span></span>
+<span><span class="co">#%do_analysis(mtcars, cyl)</span></span>
+<span><span class="co">#%do_analysis(mtcars, disp)</span></span>
+<span></span>
+<span><span class="co"># Combine analysis blocks</span></span>
+<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">anal_mpg</span>, <span class="va">anal_cyl</span>, <span class="va">anal_disp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print result</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">final</span><span class="op">)</span></span></code></pre></div>
+<p>Here is the generated code. Notice that the code inside the macro
+function is repeated for every call:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Analysis for "mpg"</span></span>
+<span><span class="va">mean_mpg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"mpg"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">min_mpg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"mpg"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">max_mpg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"mpg"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">anal_mpg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"Variable"</span> <span class="op">=</span> <span class="st">"mpg"</span>,</span>
+<span>                            <span class="st">"Mean"</span> <span class="op">=</span> <span class="va">mean_mpg</span>,</span>
+<span>                            <span class="st">"Min"</span>  <span class="op">=</span> <span class="va">min_mpg</span>,</span>
+<span>                            <span class="st">"Max"</span>  <span class="op">=</span> <span class="va">max_mpg</span><span class="op">)</span></span>
+<span><span class="co"># Analysis for "cyl"</span></span>
+<span><span class="va">mean_cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">min_cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">max_cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">anal_cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"Variable"</span> <span class="op">=</span> <span class="st">"cyl"</span>,</span>
+<span>                            <span class="st">"Mean"</span> <span class="op">=</span> <span class="va">mean_cyl</span>,</span>
+<span>                            <span class="st">"Min"</span>  <span class="op">=</span> <span class="va">min_cyl</span>,</span>
+<span>                            <span class="st">"Max"</span>  <span class="op">=</span> <span class="va">max_cyl</span><span class="op">)</span></span>
+<span><span class="co"># Analysis for "disp"</span></span>
+<span><span class="va">mean_disp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"disp"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">min_disp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"disp"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">max_disp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"disp"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">anal_disp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"Variable"</span> <span class="op">=</span> <span class="st">"disp"</span>,</span>
+<span>                            <span class="st">"Mean"</span> <span class="op">=</span> <span class="va">mean_disp</span>,</span>
+<span>                            <span class="st">"Min"</span>  <span class="op">=</span> <span class="va">min_disp</span>,</span>
+<span>                            <span class="st">"Max"</span>  <span class="op">=</span> <span class="va">max_disp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combine analysis blocks</span></span>
+<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">anal_mpg</span>, <span class="va">anal_cyl</span>, <span class="va">anal_disp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print result</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">final</span><span class="op">)</span></span></code></pre></div>
+<p>The result of the above code is a data frame that contains analysis
+for all three variables. The console output looks like this:</p>
+<pre><code>&gt; msource()
+  Variable      Mean  Min   Max
+1      mpg  20.09062 10.4  33.9
+2      cyl   6.18750  4.0   8.0
+3     disp 230.72188 71.1 472.0</code></pre>
+<p>Using combinations of macro functions, macro do loops, and macro
+conditions, you can create very dynamic, flexible, and useful
+programs.</p>
 </div>
 </div>
 </div>

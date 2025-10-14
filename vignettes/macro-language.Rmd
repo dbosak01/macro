@@ -458,7 +458,7 @@ Notice that the included code is integrated with the surrounding code
 from the macro-enabled program.  In this way, you can collate a program
 from multiple code snippets into a unified result.
 
-## Macro Functions
+## Built-in Macro Functions
 
 The **macro** package currently supports three built-in macro functions: 
 `%sysfunc()`, `%symexist()`, and `%symput()`.  
@@ -761,10 +761,186 @@ Because the macro language is a text replacement language, any part of the code
 is available for manipulation.
 
 
-## Macro User-Defined Functions
+## User-Defined Macro Functions
 
-Put stuff here...
+### Syntax
+```
+#%macro <name>([<param1>, <param2> = <default>, ...])
+#%mend
+```
+Where "&lt;name&gt;" is the name of the user-defined function,  
+"&lt;param1&gt;", "&lt;param2&gt;", etc. are zero or more parameters,
+and "&lt;default&gt;" is an optional default value. Between the "#%macro" and 
+"#%mend" commands are one or more statements that comprise the function.
 
+### Details
+
+A user-defined macro function is essentially a code insertion function. Once
+the macro function is defined, you can call it as many times as needed. For
+each call, the pre-processor will replace the call with the code inside 
+the macro function definition. This behavior is different from a normal
+R function, which only returns the result of the function. Keep this difference
+in mind, as it can influence which kind of function you choose for different
+contexts.
+
+When the macro pre-processor encounters a macro function definition, it
+performs three steps.  First, the pre-processor will parse the `#%macro`
+definition and the parameters. Then the pre-processor will scan the code 
+until the `#%mend` is reached.  Lastly, both the parameters and the code
+are stored in the symbol table for later use. 
+
+When the function is called, the pre-processor first looks up the function
+in the symbol table. The pre-processor then matches the called parameters
+to the defined parameters, and ensures basic compliance.  A `#%let` statement
+is generated for each parameter to assign the macro variables internal to the 
+function.  Then the contents of the function is inserted into the output 
+code file at the point the call was made.
+
+Note that macro functions have a scope. Macro variables defined inside the 
+macro function will not be available outside the function.
+Macro variables assigned outside the function will be available inside the function.
+If a macro variable inside the function is defined with the same name 
+as a macro variable defined outside the function, a new variable is created
+within the scope of the macro function.  
+
+Macro function can be created inside other macro functions.  The scope of the 
+inner function will be nested inside the outer function.  Any macro variables
+not passed into the inner function will be looked up first in the outer function,
+and then in the global environment.
+
+
+### Examples 
+
+First, let's declare a simple function, just to see how the **macro** function
+definitions work:
+```{r eval=FALSE, echo=TRUE}
+#%macro printit(txt)
+print("Print the text: &txt.")
+#%mend
+#%printit(Hello!)
+```
+The console output for the above code is this:
+```
+> msource()
+[1] "Print the text: Hello!"
+```
+And the generated code is this:
+```{r eval=FALSE, echo=TRUE}
+print("Print the text: Hello!")
+```
+Note that the macro definition and call have both been removed.  Only the 
+code inside the macro function has been emitted to the generated code.
+
+Here is a more interesting example:
+```{r eval=FALSE, echo=TRUE}
+library(dplyr)
+
+#%macro print_analysis(dat, byvar, var)
+cat("Analysis for &var.\n")
+`&dat` |>
+  select(`&byvar`, `&var`) |>
+  group_by(`&byvar`) |>
+  summarize(Mean = mean(`&var`, rm.na = TRUE),
+            SD = sd(`&var`),
+            Quantile = quantile(`&var`, probs = .25, rm.na = TRUE)) |>
+  as.data.frame() |> print()
+cat("\n")
+
+#%mend
+
+#%let vars <- c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+#%do idx = 1 %to %sysfunc(length(&vars))
+#%print_analysis(iris, Species, %sysfunc(&vars[&idx]))
+#%end
+```
+The above example loops through some variables on the `iris` dataset and 
+prints an analysis for each to the console.  The macro function `print_analysis()`
+uses the **dplyr** package, and accepts parameters for the dataset, by variable, 
+and analysis variable. 
+
+Here is the console output:
+```
+> msource()
+Analysis for Sepal.Length
+     Species  Mean        SD Quantile
+1     setosa 5.006 0.3524897    4.800
+2 versicolor 5.936 0.5161711    5.600
+3  virginica 6.588 0.6358796    6.225
+
+Analysis for Sepal.Width
+     Species  Mean        SD Quantile
+1     setosa 3.428 0.3790644    3.200
+2 versicolor 2.770 0.3137983    2.525
+3  virginica 2.974 0.3224966    2.800
+
+Analysis for Petal.Length
+     Species  Mean        SD Quantile
+1     setosa 1.462 0.1736640      1.4
+2 versicolor 4.260 0.4699110      4.0
+3  virginica 5.552 0.5518947      5.1
+
+Analysis for Petal.Width
+     Species  Mean        SD Quantile
+1     setosa 0.246 0.1053856      0.2
+2 versicolor 1.326 0.1977527      1.2
+3  virginica 2.026 0.2746501      1.8
+
+```
+And here is the generated code:
+```{r eval=FALSE, echo=TRUE}
+library(dplyr)
+
+cat("Analysis for Sepal.Length\n")
+iris |>
+  select(Species, Sepal.Length) |>
+  group_by(Species) |>
+  summarize(Mean = mean(Sepal.Length, rm.na = TRUE),
+            SD = sd(Sepal.Length),
+            Quantile = quantile(Sepal.Length, probs = .25, rm.na = TRUE)) |>
+  as.data.frame() |> print()
+cat("\n")
+
+cat("Analysis for Sepal.Width\n")
+iris |>
+  select(Species, Sepal.Width) |>
+  group_by(Species) |>
+  summarize(Mean = mean(Sepal.Width, rm.na = TRUE),
+            SD = sd(Sepal.Width),
+            Quantile = quantile(Sepal.Width, probs = .25, rm.na = TRUE)) |>
+  as.data.frame() |> print()
+cat("\n")
+
+cat("Analysis for Petal.Length\n")
+iris |>
+  select(Species, Petal.Length) |>
+  group_by(Species) |>
+  summarize(Mean = mean(Petal.Length, rm.na = TRUE),
+            SD = sd(Petal.Length),
+            Quantile = quantile(Petal.Length, probs = .25, rm.na = TRUE)) |>
+  as.data.frame() |> print()
+cat("\n")
+
+cat("Analysis for Petal.Width\n")
+iris |>
+  select(Species, Petal.Width) |>
+  group_by(Species) |>
+  summarize(Mean = mean(Petal.Width, rm.na = TRUE),
+            SD = sd(Petal.Width),
+            Quantile = quantile(Petal.Width, probs = .25, rm.na = TRUE)) |>
+  as.data.frame() |> print()
+cat("\n")
+
+```
+
+A macro like this is highly re-useable. You can use it for any dataset, and
+any set of variables.  If desired, you could put macro conditions inside
+the macro function to handle different scenarios, such as the absence of 
+a grouping variable.  
+
+Note that you can use the macro capabilities to construct **tidyverse** 
+statements dynamically.  This feature is convenient because **tidyverse** 
+statements make heavy use of non-standard evaluation, which sometimes
+make them difficult to use inside functions, loops, or other dynamic situations.
 
 
 Next: [Debugging](macro-debug.html)

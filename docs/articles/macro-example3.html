@@ -148,44 +148,47 @@ That technique will be used again here:</p>
 <span><span class="co">#####################################</span></span>
 <span></span>
 <span><span class="co"># Assign base path</span></span>
-<span><span class="va">base_path</span> <span class="op">&lt;-</span> <span class="st">"./macro/code"</span></span>
+<span><span class="va">`&amp;base_path`</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/macro/tests/testthat/examples"</span></span>
 <span></span>
 <span><span class="co"># Assign relative paths</span></span>
-<span><span class="va">log_path.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_path</span>, <span class="st">"log"</span><span class="op">)</span></span>
-<span><span class="va">output_path.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_path</span>, <span class="st">"output"</span><span class="op">)</span></span>
-<span><span class="va">template_path.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_path</span>, <span class="st">"templates"</span><span class="op">)</span></span>
-<span><span class="va">data_path.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_path</span>, <span class="st">"data"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;log_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"log"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;output_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"output"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;template_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"templates"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;data_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"data"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign global variables</span></span>
-<span><span class="va">sponsor_name.</span> <span class="op">&lt;-</span> <span class="st">"Acme, Inc."</span></span>
-<span><span class="va">study_name.</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
-<span><span class="va">prog_name.</span> <span class="op">&lt;-</span> <span class="st">"t_dm"</span></span>
+<span><span class="va">`&amp;sponsor_name`</span> <span class="op">&lt;-</span> <span class="st">"Acme, Inc."</span></span>
+<span><span class="va">`&amp;study_name`</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
+<span><span class="va">`&amp;prog_name`</span> <span class="op">&lt;-</span> <span class="st">"t_dm"</span></span>
 <span></span>
-<span><span class="co"># Select analysis variables </span></span>
-<span><span class="va">vars.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"AGEG"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span><span class="op">)</span></span>
-<span><span class="va">anals.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cont"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span><span class="op">)</span></span>
-<span><span class="va">lbls.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Age Group"</span>, <span class="st">"Sex"</span>, <span class="st">"Race"</span><span class="op">)</span></span>
+<span><span class="co"># Select analysis variables</span></span>
+<span><span class="va">`&amp;vars`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"AGEG"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;anals`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cont"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;lbls`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Age Group"</span>, <span class="st">"Sex"</span>, <span class="st">"Race"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign or get titles</span></span>
-<span><span class="va">titles.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Table 1.0"</span>, </span>
+<span><span class="va">`&amp;titles`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Table 1.0"</span>,</span>
 <span>             <span class="st">"Analysis of Demographic Characteristics"</span>,</span>
 <span>             <span class="st">"Safety Population"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign or get footnotes</span></span>
-<span><span class="va">footnotes.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Program: "</span>, <span class="va">prog_name.</span>, <span class="st">".R"</span><span class="op">)</span>,</span>
+<span><span class="va">`&amp;footnotes`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Program: "</span>, <span class="va">`&amp;prog_name`</span>, <span class="st">".R"</span><span class="op">)</span>,</span>
 <span>                <span class="st">"NOTE: Denominator based on number of non-missing responses."</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign treatment groups and labels</span></span>
-<span><span class="va">trt_grps.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span> <span class="op">=</span> <span class="st">"Placebo"</span>, <span class="st">"ARM B"</span> <span class="op">=</span> <span class="st">"Drug 50mg"</span>, <span class="st">"ARM C"</span> <span class="op">=</span> <span class="st">"Drug 100mg"</span>,</span>
-<span>              <span class="st">"ARM D"</span> <span class="op">=</span> <span class="st">"Competitor"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;trt_grps`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span> <span class="op">=</span> <span class="st">"Placebo"</span>, <span class="st">"ARM B"</span> <span class="op">=</span> <span class="st">"Drug 50mg"</span>, <span class="st">"ARM C"</span> <span class="op">=</span> <span class="st">"Drug 100mg"</span>,</span>
+<span>               <span class="st">"ARM D"</span> <span class="op">=</span> <span class="st">"Competitor"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign other parameters</span></span>
-<span><span class="va">env.</span> <span class="op">&lt;-</span> <span class="st">"dev"</span> <span class="co"># "prod"</span></span>
-<span><span class="va">out_type.</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
+<span><span class="va">`&amp;env`</span> <span class="op">&lt;-</span> <span class="st">"dev"</span> <span class="co"># "prod"</span></span>
+<span><span class="va">`&amp;out_type`</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
+<span></span>
+<span><span class="co"># Assign preview</span></span>
+<span><span class="va">`&amp;preview`</span> <span class="op">&lt;-</span> <span class="st">", preview = 1"</span></span>
 <span></span>
 <span><span class="co"># Preprocess and Run Example3</span></span>
-<span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="st">"./macro/Example3.R"</span>, </span>
-<span>               <span class="st">"./macro/code/t_dm.R"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"/templates/dm01.R"</span><span class="op">)</span>,</span>
+<span>               <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"/code/t_dm.R"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Observe that there are four possible analysis variables for this
 demographics table: “age”, “ageg”, “sex”, and “race”. The program allows
 the user to pick which variables will be added to the final report. The
@@ -199,8 +202,8 @@ variables.</p>
 calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################################################</span></span>
-<span><span class="co"># Program Name: prog_name.</span></span>
-<span><span class="co"># Study: study_name.</span></span>
+<span><span class="co"># Program Name: &amp;prog_name.</span></span>
+<span><span class="co"># Study: &amp;study_name.</span></span>
 <span><span class="co">#####################################################################</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-sassy.org" class="external-link">sassy</a></span><span class="op">)</span></span>
@@ -214,11 +217,11 @@ calling:</p>
 <span>        <span class="st">"procs.print"</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign program name</span></span>
-<span><span class="va">prog_nm</span> <span class="op">&lt;-</span> <span class="st">"prog_name."</span></span>
+<span><span class="va">prog_nm</span> <span class="op">&lt;-</span> <span class="st">"&amp;prog_name."</span></span>
 <span></span>
 <span><span class="co"># Construct paths</span></span>
-<span><span class="va">l_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"log_path."</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">prog_nm</span>, <span class="st">".log"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">o_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"output_path."</span>, <span class="va">prog_nm</span><span class="op">)</span></span>
+<span><span class="va">l_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"&amp;log_path."</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">prog_nm</span>, <span class="st">".log"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">o_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"&amp;output_path."</span>, <span class="va">prog_nm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Open log</span></span>
 <span><span class="va">lf</span> <span class="op">&lt;-</span> <span class="fu">log_open</span><span class="op">(</span><span class="va">l_path</span><span class="op">)</span></span>
@@ -228,33 +231,33 @@ calling:</p>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Prepare formats"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Compile format catalog"</span><span class="op">)</span></span>
-<span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu">fcat</span><span class="op">(</span>MEAN <span class="op">=</span> <span class="st">"%.1f"</span>, STD <span class="op">=</span> <span class="st">"(%.2f)"</span>, </span>
+<span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu">fcat</span><span class="op">(</span>MEAN <span class="op">=</span> <span class="st">"%.1f"</span>, STD <span class="op">=</span> <span class="st">"(%.2f)"</span>,</span>
 <span>           Q1 <span class="op">=</span> <span class="st">"%.1f"</span>, Q3 <span class="op">=</span> <span class="st">"%.1f"</span>,</span>
-<span>           MIN <span class="op">=</span> <span class="st">"%d"</span>, MAX <span class="op">=</span> <span class="st">"%d"</span>, </span>
-<span>           CNT <span class="op">=</span> <span class="st">"%2d"</span>, PCT <span class="op">=</span> <span class="st">"(%5.1f%%)"</span><span class="op">)</span> </span>
+<span>           MIN <span class="op">=</span> <span class="st">"%d"</span>, MAX <span class="op">=</span> <span class="st">"%d"</span>,</span>
+<span>           CNT <span class="op">=</span> <span class="st">"%2d"</span>, PCT <span class="op">=</span> <span class="st">"(%5.1f%%)"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="co">#%if ("AGEG" %in% vars.)</span></span>
+<span><span class="co">#%if ("AGEG" %in% &amp;vars.)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Age Groups"</span><span class="op">)</span></span>
 <span><span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">value</span><span class="op">(</span><span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">18</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">29</span>, <span class="st">"18 to 29"</span><span class="op">)</span>,</span>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span><span class="fl">30</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">39</span>, <span class="st">"30 to 39"</span><span class="op">)</span>,</span>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span><span class="fl">40</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span><span class="fl">49</span>, <span class="st">"40 to 49"</span><span class="op">)</span>,</span>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">50</span>, <span class="st">"&gt;= 50"</span><span class="op">)</span>,</span>
-<span>                 as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span>                 as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
-<span><span class="co">#%if ("SEX" %in% vars.)</span></span>
+<span><span class="co">#%if ("SEX" %in% &amp;vars.)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Sex decodes"</span><span class="op">)</span></span>
 <span><span class="va">fc</span><span class="op">$</span><span class="va">SEX</span> <span class="op">&lt;-</span> <span class="fu">value</span><span class="op">(</span><span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"M"</span>, <span class="st">"Male"</span><span class="op">)</span>,</span>
 <span>                <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"F"</span>, <span class="st">"Female"</span><span class="op">)</span>,</span>
 <span>                <span class="fu">condition</span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Other"</span><span class="op">)</span>,</span>
-<span>                as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span>                as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
-<span><span class="co">#%if ("RACE" %in% vars.)</span></span>
+<span><span class="co">#%if ("RACE" %in% &amp;vars.)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Race decodes"</span><span class="op">)</span></span>
 <span><span class="va">fc</span><span class="op">$</span><span class="va">RACE</span> <span class="op">&lt;-</span> <span class="fu">value</span><span class="op">(</span><span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"WHITE"</span>, <span class="st">"White"</span><span class="op">)</span>,</span>
@@ -272,17 +275,17 @@ calling:</p>
 <span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Prepare Data"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#%if ("env." == "prod")</span></span>
+<span><span class="co">#%if ("&amp;env." == "prod")</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Get data"</span><span class="op">)</span></span>
-<span><span class="fu">libname</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"data_path."</span>, <span class="st">"Rda"</span><span class="op">)</span></span>
+<span><span class="fu">libname</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"&amp;data_path."</span>, <span class="st">"Rda"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">$</span><span class="va">dm</span></span>
 <span></span>
-<span><span class="co">#%else </span></span>
+<span><span class="co">#%else</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Create sample data."</span><span class="op">)</span></span>
-<span><span class="co">#%include 'template_path./dat01.R'</span></span>
+<span><span class="co">#%include '&amp;template_path./dat01.R'</span></span>
 <span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
@@ -294,122 +297,115 @@ calling:</p>
 <span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Get ARM population counts"</span><span class="op">)</span></span>
-<span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>, tables <span class="op">=</span> <span class="va">ARM</span>, </span>
+<span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>, tables <span class="op">=</span> <span class="va">ARM</span>,</span>
 <span>          output <span class="op">=</span> <span class="va">long</span>,</span>
 <span>          options <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">nopercent</span>, <span class="va">nonobs</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">arm_pop</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Log treatment groups variable"</span><span class="op">)</span></span>
-<span><span class="va">trt_grps</span> <span class="op">&lt;-</span> <span class="va">trt_grps.</span></span>
+<span><span class="va">trt_grps</span> <span class="op">&lt;-</span> <span class="va">`&amp;trt_grps`</span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#%if ("AGEG" %in% vars.)</span></span>
+<span><span class="co">#%if ("AGEG" %in% &amp;vars.)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Categorize AGE"</span><span class="op">)</span></span>
-<span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGE</span>, <span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span><span class="op">)</span> </span>
+<span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGE</span>, <span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span><span class="op">)</span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
 <span><span class="co">#% Get length of variable vector</span></span>
-<span><span class="co">#%let varcnt &lt;- %sysfunc(length(vars.))</span></span>
-<span></span>
+<span><span class="co">#%let varcnt &lt;- %sysfunc(length(&amp;vars.))</span></span>
+<span><span class="co">#%</span></span>
 <span><span class="co"># Perform Analysis  -------------------------------------------------------</span></span>
-<span></span>
+<span><span class="co">#%</span></span>
 <span><span class="co">#% Iterate analysis variables</span></span>
-<span><span class="co">#%do idx = 1 %to varcnt.</span></span>
+<span><span class="co">#%do idx = 1 %to &amp;varcnt.</span></span>
+<span><span class="co">#%</span></span>
+<span><span class="co">#%let var &lt;- %sysfunc(&amp;vars[&amp;idx])</span></span>
+<span><span class="co">#%let lvar &lt;- %sysfunc(tolower("&amp;var"))</span></span>
+<span><span class="co">#%let lbl &lt;- %sysfunc(&amp;lbls[&amp;idx])</span></span>
+<span><span class="co">#%let anal &lt;- %sysfunc(&amp;anals[&amp;idx])</span></span>
+<span><span class="co">#%</span></span>
+<span><span class="co">#%if ("&amp;anal" == "cont")</span></span>
+<span><span class="co">#%</span></span>
+<span><span class="co"># &amp;lbl. Summary Block -------------------------------------------------------</span></span>
 <span></span>
-<span><span class="co">#%let var &lt;- %sysfunc(vars.[idx.])</span></span>
-<span><span class="co">#%let lvar &lt;- %sysfunc(tolower("var."))</span></span>
-<span><span class="co">#%let lbl &lt;- %sysfunc(lbls.[idx.])</span></span>
-<span><span class="co">#%let anal &lt;- %sysfunc(anals.[idx.])</span></span>
+<span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create summary statistics for &amp;lvar.."</span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="co">#%if ("anal." == "cont")</span></span>
-<span></span>
-<span><span class="co"># lbl. Summary Block -------------------------------------------------------</span></span>
-<span></span>
-<span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create summary statistics for lvar."</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Call means procedure to get summary statistics for lvar."</span><span class="op">)</span></span>
-<span><span class="fu">proc_means</span><span class="op">(</span><span class="va">dm_f</span>, var <span class="op">=</span> <span class="va">var.</span>,</span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Call means procedure to get summary statistics for &amp;lvar."</span><span class="op">)</span></span>
+<span><span class="fu">proc_means</span><span class="op">(</span><span class="va">dm_f</span>, var <span class="op">=</span> <span class="va">`&amp;var.`</span>,</span>
 <span>           stats <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">mean</span>, <span class="va">std</span>, <span class="va">median</span>, <span class="va">q1</span>, <span class="va">q3</span>, <span class="va">min</span>, <span class="va">max</span><span class="op">)</span>,</span>
-<span>           by <span class="op">=</span> <span class="va">ARM</span>, </span>
-<span>           options <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">notype</span>, <span class="va">nofreq</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._stats</span> </span>
+<span>           by <span class="op">=</span> <span class="va">ARM</span>,</span>
+<span>           options <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">notype</span>, <span class="va">nofreq</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._stats`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Combine stats"</span><span class="op">)</span></span>
-<span><span class="fu">datastep</span><span class="op">(</span><span class="va">lvar._stats</span>, </span>
+<span><span class="fu">datastep</span><span class="op">(</span><span class="va">`&amp;lvar._stats`</span>,</span>
 <span>         format <span class="op">=</span> <span class="va">fc</span>,</span>
-<span>         drop <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/find.names.html" class="external-link">find.names</a></span><span class="op">(</span><span class="va">lvar._stats</span>, start <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, </span>
+<span>         drop <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/find.names.html" class="external-link">find.names</a></span><span class="op">(</span><span class="va">`&amp;lvar._stats`</span>, start <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
 <span>         <span class="op">{</span></span>
 <span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"lbl."</span></span>
 <span>           <span class="va">`Mean (SD)`</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">MEAN</span>, <span class="va">STD</span><span class="op">)</span></span>
 <span>           <span class="va">Median</span> <span class="op">&lt;-</span> <span class="va">MEDIAN</span></span>
 <span>           <span class="va">`Q1 - Q3`</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">Q1</span>, <span class="va">Q3</span>, sep <span class="op">=</span> <span class="st">" - "</span><span class="op">)</span></span>
 <span>           <span class="va">`Min - Max`</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">MIN</span>, <span class="va">MAX</span>, sep <span class="op">=</span> <span class="st">" - "</span><span class="op">)</span></span>
-<span>           </span>
-<span>           </span>
-<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._comb</span></span>
+<span></span>
+<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._comb`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Transpose ARMs into columns"</span><span class="op">)</span></span>
-<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">lvar._comb</span>, </span>
-<span>               var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">lvar._comb</span><span class="op">)</span>,</span>
-<span>               copy <span class="op">=</span> <span class="va">VAR</span>, id <span class="op">=</span> <span class="va">BY</span>, </span>
-<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._block</span> </span>
-<span></span>
+<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">`&amp;lvar._comb`</span>,</span>
+<span>               var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">`&amp;lvar._comb`</span><span class="op">)</span>,</span>
+<span>               copy <span class="op">=</span> <span class="va">VAR</span>, id <span class="op">=</span> <span class="va">BY</span>,</span>
+<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._block`</span></span>
 <span><span class="co">#%end</span></span>
+<span><span class="co">#%if ("&amp;anal." == "cat")</span></span>
 <span></span>
-<span><span class="co">#%if ("anal." == "cat")</span></span>
+<span><span class="co"># &amp;lbl. Block ---------------------------------------------------------------</span></span>
 <span></span>
-<span><span class="co"># lbl. Block ---------------------------------------------------------------</span></span>
+<span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create frequency counts for &amp;lbl."</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create frequency counts for lbl."</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Get lvar. frequency counts"</span><span class="op">)</span></span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Get &amp;lvar. frequency counts"</span><span class="op">)</span></span>
 <span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>,</span>
-<span>          table <span class="op">=</span> <span class="va">var.</span>,</span>
+<span>          table <span class="op">=</span> <span class="va">`&amp;var.`</span>,</span>
 <span>          by <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._freq</span></span>
+<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._freq`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Combine counts and percents and assign age group factor for sorting"</span><span class="op">)</span></span>
-<span><span class="fu">datastep</span><span class="op">(</span><span class="va">lvar._freq</span>,</span>
-<span>         format <span class="op">=</span> <span class="va">fc</span>, </span>
+<span><span class="fu">datastep</span><span class="op">(</span><span class="va">`&amp;lvar._freq`</span>,</span>
+<span>         format <span class="op">=</span> <span class="va">fc</span>,</span>
 <span>         keep <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">VAR</span>, <span class="va">LABEL</span>, <span class="va">BY</span>, <span class="va">CNTPCT</span><span class="op">)</span>,</span>
 <span>         <span class="op">{</span></span>
-<span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"lbl."</span></span>
+<span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"&amp;lbl."</span></span>
 <span>           <span class="va">CNTPCT</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">CNT</span>, <span class="va">PCT</span><span class="op">)</span></span>
-<span>           <span class="co">#%if ("var." == "AGEG")</span></span>
+<span>           <span class="co">#%if ("&amp;var." == "AGEG")</span></span>
 <span>           <span class="va">LABEL</span> <span class="op">&lt;-</span> <span class="va">CAT</span></span>
-<span>           <span class="co">#%else </span></span>
-<span>           <span class="va">LABEL</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">CAT</span>, <span class="va">fc</span><span class="op">$</span><span class="va">var.</span><span class="op">)</span></span>
+<span>           <span class="co">#%else</span></span>
+<span>           <span class="va">LABEL</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">CAT</span>, <span class="va">fc</span><span class="op">$</span><span class="va">`&amp;var.`</span><span class="op">)</span></span>
 <span>           <span class="co">#%end</span></span>
-<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._comb</span></span>
+<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._comb`</span></span>
 <span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by lvar. factor"</span><span class="op">)</span></span>
-<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">lvar._comb</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._sort</span> </span>
+<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">`&amp;lvar._comb`</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._sort`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose lvar. block"</span><span class="op">)</span></span>
-<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">lvar._sort</span>,</span>
+<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">`&amp;lvar._sort`</span>,</span>
 <span>               var <span class="op">=</span> <span class="va">CNTPCT</span>,</span>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
-<span>               by <span class="op">=</span> <span class="va">LABEL</span>, </span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">lvar._block</span> </span>
-<span></span>
+<span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;lvar._block`</span></span>
 <span><span class="co">#%end</span></span>
-<span></span>
 <span><span class="co">#%end</span></span>
-<span></span>
 <span></span>
 <span><span class="co"># Create final data frame -------------------------------------------------</span></span>
 <span></span>
 <span></span>
-<span><span class="co">#%let blocks &lt;- %sysfunc(paste0(tolower(vars.), "_block", collapse = ", "))</span></span>
+<span><span class="co">#%let blocks &lt;- %sysfunc(paste0(tolower(&amp;vars.), "_block", collapse = ", "))</span></span>
 <span></span>
-<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">blocks.</span><span class="op">)</span></span>
+<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">`&amp;blocks.`</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Report ------------------------------------------------------------------</span></span>
 <span></span>
 <span><span class="co">#% Include standard report code 01</span></span>
-<span><span class="co">#%include 'template_path./rpt01.R'</span></span>
+<span><span class="co">#%include '&amp;template_path./rpt01.R'</span></span>
 <span></span>
 <span><span class="co"># Clean Up ----------------------------------------------------------------</span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Clean Up"</span><span class="op">)</span></span>
@@ -452,30 +448,31 @@ analysis variables.</li>
 <p>Here is the template code for the sample dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header <span class="op">=</span> <span class="cn">TRUE</span>, text <span class="op">=</span> <span class="st">'</span></span>
-<span><span class="st">  SUBJID  ARM    SEX  RACE    AGE</span></span>
-<span><span class="st">  "001"   "ARM A" "F"  "ASIAN" 19 </span></span>
-<span><span class="st">  "002"   "ARM B" "F"  "WHITE" 21 </span></span>
-<span><span class="st">  "003"   "ARM C" "F"  "WHITE" 23 </span></span>
-<span><span class="st">  "004"   "ARM D" "F"  "BLACK OR AFRICAN AMERICAN" 28 </span></span>
-<span><span class="st">  "005"   "ARM A" "M"  "WHITE" 37  </span></span>
-<span><span class="st">  "006"   "ARM B" "M"  "WHITE" 34 </span></span>
-<span><span class="st">  "007"   "ARM C" "M"  "ASIAN" 36  </span></span>
-<span><span class="st">  "008"   "ARM D" "M"  "WHITE" 30   </span></span>
-<span><span class="st">  "009"   "ARM A" "F"  "WHITE" 39  </span></span>
-<span><span class="st">  "010"   "ARM B" "F"  "WHITE" 31  </span></span>
-<span><span class="st">  "011"   "ARM C" "F"  "BLACK OR AFRICAN AMERICAN" 33 </span></span>
-<span><span class="st">  "012"   "ARM D" "F"  "WHITE" 38 </span></span>
-<span><span class="st">  "013"   "ARM A" "M"  "BLACK OR AFRICAN AMERICAN" 37 </span></span>
-<span><span class="st">  "014"   "ARM B" "M"  "WHITE" 34  </span></span>
-<span><span class="st">  "015"   "ARM C" "M"  "WHITE" 36</span></span>
-<span><span class="st">  "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="st">       SUBJID  ARM    SEX  RACE    AGE</span></span>
+<span><span class="st">       "001"   "ARM A" "F"  "ASIAN" 19</span></span>
+<span><span class="st">       "002"   "ARM B" "F"  "WHITE" 21</span></span>
+<span><span class="st">       "003"   "ARM C" "F"  "WHITE" 23</span></span>
+<span><span class="st">       "004"   "ARM D" "F"  "BLACK OR AFRICAN AMERICAN" 28</span></span>
+<span><span class="st">       "005"   "ARM A" "M"  "WHITE" 37</span></span>
+<span><span class="st">       "006"   "ARM B" "M"  "WHITE" 34</span></span>
+<span><span class="st">       "007"   "ARM C" "M"  "ASIAN" 36</span></span>
+<span><span class="st">       "008"   "ARM D" "M"  "WHITE" 30</span></span>
+<span><span class="st">       "009"   "ARM A" "F"  "WHITE" 39</span></span>
+<span><span class="st">       "010"   "ARM B" "F"  "WHITE" 31</span></span>
+<span><span class="st">       "011"   "ARM C" "F"  "BLACK OR AFRICAN AMERICAN" 33</span></span>
+<span><span class="st">       "012"   "ARM D" "F"  "WHITE" 38</span></span>
+<span><span class="st">       "013"   "ARM A" "M"  "BLACK OR AFRICAN AMERICAN" 37</span></span>
+<span><span class="st">       "014"   "ARM B" "M"  "WHITE" 34</span></span>
+<span><span class="st">       "015"   "ARM C" "M"  "WHITE" 36</span></span>
+<span><span class="st">       "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span></code></pre></div>
 <p>Here is the template code for the report snippet:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
+<span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create and print report"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#%if (%symexist(out_type) == FALSE)</span></span>
-<span>  <span class="co">#%let out_type &lt;- "RTF"</span></span>
+<span><span class="co">#%let out_type &lt;- "RTF"</span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
 <span><span class="co"># Get min and max columns</span></span>
@@ -483,15 +480,15 @@ analysis variables.</li>
 <span><span class="va">maxcol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create Table</span></span>
-<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">final</span>, first_row_blank <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/column_defaults.html" class="external-link">column_defaults</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">mincol</span>, to <span class="op">=</span> <span class="va">maxcol</span>, align <span class="op">=</span> <span class="st">"center"</span>, </span>
-<span>                  width <span class="op">=</span> <span class="fl">1.1</span>, standard_eval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/stub.html" class="external-link">stub</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"VAR"</span>, <span class="st">"LABEL"</span><span class="op">)</span>, <span class="st">"Variable"</span>, width <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
+<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">final</span>, first_row_blank <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/column_defaults.html" class="external-link">column_defaults</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">mincol</span>, to <span class="op">=</span> <span class="va">maxcol</span>, align <span class="op">=</span> <span class="st">"center"</span>,</span>
+<span>                  width <span class="op">=</span> <span class="fl">1.1</span>, standard_eval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/stub.html" class="external-link">stub</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"VAR"</span>, <span class="st">"LABEL"</span><span class="op">)</span>, <span class="st">"Variable"</span>, width <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">VAR</span>, blank_after <span class="op">=</span> <span class="cn">TRUE</span>, dedupe <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="st">"Variable"</span>,</span>
-<span>         label_row <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">LABEL</span>, indent <span class="op">=</span> <span class="fl">.25</span>, label <span class="op">=</span> <span class="st">"Demographic Category"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="va">titles.</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="va">footnotes.</span><span class="op">)</span> </span>
+<span>         label_row <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">LABEL</span>, indent <span class="op">=</span> <span class="fl">.25</span>, label <span class="op">=</span> <span class="st">"Demographic Category"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="va">`&amp;titles.`</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="va">`&amp;footnotes.`</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add treatment groups</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">trt</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -499,17 +496,17 @@ analysis variables.</li>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create report</span></span>
-<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">o_path</span>, </span>
-<span>                     output_type <span class="op">=</span> <span class="st">"out_type."</span>, </span>
-<span>                     font <span class="op">=</span> <span class="st">"Arial"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: sponsor_name."</span>, <span class="st">"Study: study_name."</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/set_margins.html" class="external-link">set_margins</a></span><span class="op">(</span>top <span class="op">=</span> <span class="fl">1</span>, bottom <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="st">"Date Produced: {toupper(fapply(Sys.Date(), '%Y%b%d'))}"</span>, </span>
+<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">o_path</span>,</span>
+<span>                     output_type <span class="op">=</span> <span class="st">"&amp;out_type."</span>,</span>
+<span>                     font <span class="op">=</span> <span class="st">"Arial"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: &amp;sponsor_name."</span>, <span class="st">"Study: &amp;study_name."</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/set_margins.html" class="external-link">set_margins</a></span><span class="op">(</span>top <span class="op">=</span> <span class="fl">1</span>, bottom <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="st">"Date Produced: {toupper(fapply(Sys.Date(), '%Y%b%d'))}"</span>,</span>
 <span>              right <span class="op">=</span> <span class="st">"Page [pg] of [tpg]"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Write out the report"</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span><span class="op">&amp;</span><span class="va">preview.</span><span class="op">)</span></span></code></pre></div>
 <p>In the above reporting code, notice the following:</p>
 <ul>
 <li>The code starts by setting a default output type of “RTF” if the
@@ -537,6 +534,7 @@ code will be generated:</p>
 <span></span>
 <span><span class="co"># Prepare Log -------------------------------------------------------------</span></span>
 <span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"logr.autolog"</span> <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>        <span class="st">"logr.on"</span> <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>        <span class="st">"logr.notes"</span> <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -546,8 +544,8 @@ code will be generated:</p>
 <span><span class="va">prog_nm</span> <span class="op">&lt;-</span> <span class="st">"t_dm"</span></span>
 <span></span>
 <span><span class="co"># Construct paths</span></span>
-<span><span class="va">l_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"c:/packages/Testing/macro/code/log"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">prog_nm</span>, <span class="st">".log"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">o_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"c:/packages/Testing/macro/code/output"</span>, <span class="va">prog_nm</span><span class="op">)</span></span>
+<span><span class="va">l_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"c:/packages/macro/tests/testthat/examples/log"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">prog_nm</span>, <span class="st">".log"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">o_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"c:/packages/macro/tests/testthat/examples/output"</span>, <span class="va">prog_nm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Open log</span></span>
 <span><span class="va">lf</span> <span class="op">&lt;-</span> <span class="fu">log_open</span><span class="op">(</span><span class="va">l_path</span><span class="op">)</span></span>
@@ -557,23 +555,28 @@ code will be generated:</p>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Prepare formats"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Compile format catalog"</span><span class="op">)</span></span>
-<span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu">fcat</span><span class="op">(</span>MEAN <span class="op">=</span> <span class="st">"%.1f"</span>, STD <span class="op">=</span> <span class="st">"(%.2f)"</span>, </span>
+<span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu">fcat</span><span class="op">(</span>MEAN <span class="op">=</span> <span class="st">"%.1f"</span>, STD <span class="op">=</span> <span class="st">"(%.2f)"</span>,</span>
 <span>           Q1 <span class="op">=</span> <span class="st">"%.1f"</span>, Q3 <span class="op">=</span> <span class="st">"%.1f"</span>,</span>
-<span>           MIN <span class="op">=</span> <span class="st">"%d"</span>, MAX <span class="op">=</span> <span class="st">"%d"</span>, </span>
-<span>           CNT <span class="op">=</span> <span class="st">"%2d"</span>, PCT <span class="op">=</span> <span class="st">"(%5.1f%%)"</span><span class="op">)</span> </span>
+<span>           MIN <span class="op">=</span> <span class="st">"%d"</span>, MAX <span class="op">=</span> <span class="st">"%d"</span>,</span>
+<span>           CNT <span class="op">=</span> <span class="st">"%2d"</span>, PCT <span class="op">=</span> <span class="st">"(%5.1f%%)"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Age Groups"</span><span class="op">)</span></span>
 <span><span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">value</span><span class="op">(</span><span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">18</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">29</span>, <span class="st">"18 to 29"</span><span class="op">)</span>,</span>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span><span class="fl">30</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">39</span>, <span class="st">"30 to 39"</span><span class="op">)</span>,</span>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span><span class="fl">40</span> <span class="op">&amp;</span> <span class="va">x</span> <span class="op">&lt;=</span><span class="fl">49</span>, <span class="st">"40 to 49"</span><span class="op">)</span>,</span>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">50</span>, <span class="st">"&gt;= 50"</span><span class="op">)</span>,</span>
-<span>                 as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span>                 as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Sex decodes"</span><span class="op">)</span></span>
 <span><span class="va">fc</span><span class="op">$</span><span class="va">SEX</span> <span class="op">&lt;-</span> <span class="fu">value</span><span class="op">(</span><span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"M"</span>, <span class="st">"Male"</span><span class="op">)</span>,</span>
 <span>                <span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"F"</span>, <span class="st">"Female"</span><span class="op">)</span>,</span>
 <span>                <span class="fu">condition</span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Other"</span><span class="op">)</span>,</span>
-<span>                as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span>
+<span>                as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Race decodes"</span><span class="op">)</span></span>
 <span><span class="va">fc</span><span class="op">$</span><span class="va">RACE</span> <span class="op">&lt;-</span> <span class="fu">value</span><span class="op">(</span><span class="fu">condition</span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"WHITE"</span>, <span class="st">"White"</span><span class="op">)</span>,</span>
@@ -583,29 +586,34 @@ code will be generated:</p>
 <span>                 <span class="fu">condition</span><span class="op">(</span><span class="cn">TRUE</span>, <span class="st">"Other"</span><span class="op">)</span>,</span>
 <span>                 as.factor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
+<span></span>
+<span></span>
+<span></span>
 <span><span class="co"># Load and Prepare Data ---------------------------------------------------</span></span>
 <span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Prepare Data"</span><span class="op">)</span></span>
 <span></span>
+<span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Create sample data."</span><span class="op">)</span></span>
 <span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header <span class="op">=</span> <span class="cn">TRUE</span>, text <span class="op">=</span> <span class="st">'</span></span>
-<span><span class="st">  SUBJID  ARM    SEX  RACE    AGE</span></span>
-<span><span class="st">  "001"   "ARM A" "F"  "ASIAN" 19 </span></span>
-<span><span class="st">  "002"   "ARM B" "F"  "WHITE" 21 </span></span>
-<span><span class="st">  "003"   "ARM C" "F"  "WHITE" 23 </span></span>
-<span><span class="st">  "004"   "ARM D" "F"  "BLACK OR AFRICAN AMERICAN" 28 </span></span>
-<span><span class="st">  "005"   "ARM A" "M"  "WHITE" 37  </span></span>
-<span><span class="st">  "006"   "ARM B" "M"  "WHITE" 34 </span></span>
-<span><span class="st">  "007"   "ARM C" "M"  "ASIAN" 36  </span></span>
-<span><span class="st">  "008"   "ARM D" "M"  "WHITE" 30   </span></span>
-<span><span class="st">  "009"   "ARM A" "F"  "WHITE" 39  </span></span>
-<span><span class="st">  "010"   "ARM B" "F"  "WHITE" 31  </span></span>
-<span><span class="st">  "011"   "ARM C" "F"  "BLACK OR AFRICAN AMERICAN" 33 </span></span>
-<span><span class="st">  "012"   "ARM D" "F"  "WHITE" 38 </span></span>
-<span><span class="st">  "013"   "ARM A" "M"  "BLACK OR AFRICAN AMERICAN" 37 </span></span>
-<span><span class="st">  "014"   "ARM B" "M"  "WHITE" 34  </span></span>
-<span><span class="st">  "015"   "ARM C" "M"  "WHITE" 36</span></span>
-<span><span class="st">  "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span>
+<span><span class="st">       SUBJID  ARM    SEX  RACE    AGE</span></span>
+<span><span class="st">       "001"   "ARM A" "F"  "ASIAN" 19</span></span>
+<span><span class="st">       "002"   "ARM B" "F"  "WHITE" 21</span></span>
+<span><span class="st">       "003"   "ARM C" "F"  "WHITE" 23</span></span>
+<span><span class="st">       "004"   "ARM D" "F"  "BLACK OR AFRICAN AMERICAN" 28</span></span>
+<span><span class="st">       "005"   "ARM A" "M"  "WHITE" 37</span></span>
+<span><span class="st">       "006"   "ARM B" "M"  "WHITE" 34</span></span>
+<span><span class="st">       "007"   "ARM C" "M"  "ASIAN" 36</span></span>
+<span><span class="st">       "008"   "ARM D" "M"  "WHITE" 30</span></span>
+<span><span class="st">       "009"   "ARM A" "F"  "WHITE" 39</span></span>
+<span><span class="st">       "010"   "ARM B" "F"  "WHITE" 31</span></span>
+<span><span class="st">       "011"   "ARM C" "F"  "BLACK OR AFRICAN AMERICAN" 33</span></span>
+<span><span class="st">       "012"   "ARM D" "F"  "WHITE" 38</span></span>
+<span><span class="st">       "013"   "ARM A" "M"  "BLACK OR AFRICAN AMERICAN" 37</span></span>
+<span><span class="st">       "014"   "ARM B" "M"  "WHITE" 34</span></span>
+<span><span class="st">       "015"   "ARM C" "M"  "WHITE" 36</span></span>
+<span><span class="st">       "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Log starting dataset"</span><span class="op">)</span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span>
@@ -613,8 +621,9 @@ code will be generated:</p>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Filter out screen failure"</span><span class="op">)</span></span>
 <span><span class="va">dm_f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">ARM</span> <span class="op">!=</span> <span class="st">'SCREEN FAILURE'</span><span class="op">)</span></span>
 <span></span>
+<span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Get ARM population counts"</span><span class="op">)</span></span>
-<span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>, tables <span class="op">=</span> <span class="va">ARM</span>, </span>
+<span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>, tables <span class="op">=</span> <span class="va">ARM</span>,</span>
 <span>          output <span class="op">=</span> <span class="va">long</span>,</span>
 <span>          options <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">nopercent</span>, <span class="va">nonobs</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">arm_pop</span></span>
 <span></span>
@@ -622,39 +631,39 @@ code will be generated:</p>
 <span><span class="va">trt_grps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ARM A'</span> <span class="op">=</span> <span class="st">'Placebo'</span>, <span class="st">'ARM B'</span> <span class="op">=</span> <span class="st">'Drug 50mg'</span>, <span class="st">'ARM C'</span> <span class="op">=</span> <span class="st">'Drug 100mg'</span>, <span class="st">'ARM D'</span> <span class="op">=</span> <span class="st">'Competitor'</span><span class="op">)</span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span></span>
 <span></span>
+<span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Categorize AGE"</span><span class="op">)</span></span>
-<span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGE</span>, <span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span><span class="op">)</span> </span>
+<span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGE</span>, <span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Perform Analysis  -------------------------------------------------------</span></span>
-<span></span>
 <span><span class="co"># Age Summary Block -------------------------------------------------------</span></span>
 <span></span>
-<span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create summary statistics for age"</span><span class="op">)</span></span>
+<span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create summary statistics for age."</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Call means procedure to get summary statistics for age"</span><span class="op">)</span></span>
 <span><span class="fu">proc_means</span><span class="op">(</span><span class="va">dm_f</span>, var <span class="op">=</span> <span class="va">AGE</span>,</span>
 <span>           stats <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">mean</span>, <span class="va">std</span>, <span class="va">median</span>, <span class="va">q1</span>, <span class="va">q3</span>, <span class="va">min</span>, <span class="va">max</span><span class="op">)</span>,</span>
-<span>           by <span class="op">=</span> <span class="va">ARM</span>, </span>
-<span>           options <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">notype</span>, <span class="va">nofreq</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">age_stats</span> </span>
+<span>           by <span class="op">=</span> <span class="va">ARM</span>,</span>
+<span>           options <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">notype</span>, <span class="va">nofreq</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`age_stats`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Combine stats"</span><span class="op">)</span></span>
-<span><span class="fu">datastep</span><span class="op">(</span><span class="va">age_stats</span>, </span>
+<span><span class="fu">datastep</span><span class="op">(</span><span class="va">`age_stats`</span>,</span>
 <span>         format <span class="op">=</span> <span class="va">fc</span>,</span>
-<span>         drop <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/find.names.html" class="external-link">find.names</a></span><span class="op">(</span><span class="va">age_stats</span>, start <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, </span>
+<span>         drop <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/find.names.html" class="external-link">find.names</a></span><span class="op">(</span><span class="va">`age_stats`</span>, start <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
 <span>         <span class="op">{</span></span>
-<span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"Age"</span></span>
+<span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"lbl."</span></span>
 <span>           <span class="va">`Mean (SD)`</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">MEAN</span>, <span class="va">STD</span><span class="op">)</span></span>
 <span>           <span class="va">Median</span> <span class="op">&lt;-</span> <span class="va">MEDIAN</span></span>
 <span>           <span class="va">`Q1 - Q3`</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">Q1</span>, <span class="va">Q3</span>, sep <span class="op">=</span> <span class="st">" - "</span><span class="op">)</span></span>
 <span>           <span class="va">`Min - Max`</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">MIN</span>, <span class="va">MAX</span>, sep <span class="op">=</span> <span class="st">" - "</span><span class="op">)</span></span>
-<span>           </span>
-<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">age_comb</span></span>
+<span></span>
+<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`age_comb`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Transpose ARMs into columns"</span><span class="op">)</span></span>
-<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">age_comb</span>, </span>
-<span>               var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">age_comb</span><span class="op">)</span>,</span>
-<span>               copy <span class="op">=</span> <span class="va">VAR</span>, id <span class="op">=</span> <span class="va">BY</span>, </span>
-<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">age_block</span> </span>
+<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">`age_comb`</span>,</span>
+<span>               var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">`age_comb`</span><span class="op">)</span>,</span>
+<span>               copy <span class="op">=</span> <span class="va">VAR</span>, id <span class="op">=</span> <span class="va">BY</span>,</span>
+<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`age_block`</span></span>
 <span></span>
 <span><span class="co"># Age Group Block ---------------------------------------------------------------</span></span>
 <span></span>
@@ -664,28 +673,29 @@ code will be generated:</p>
 <span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>,</span>
 <span>          table <span class="op">=</span> <span class="va">AGEG</span>,</span>
 <span>          by <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">ageg_freq</span></span>
+<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`ageg_freq`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Combine counts and percents and assign age group factor for sorting"</span><span class="op">)</span></span>
-<span><span class="fu">datastep</span><span class="op">(</span><span class="va">ageg_freq</span>,</span>
-<span>         format <span class="op">=</span> <span class="va">fc</span>, </span>
+<span><span class="fu">datastep</span><span class="op">(</span><span class="va">`ageg_freq`</span>,</span>
+<span>         format <span class="op">=</span> <span class="va">fc</span>,</span>
 <span>         keep <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">VAR</span>, <span class="va">LABEL</span>, <span class="va">BY</span>, <span class="va">CNTPCT</span><span class="op">)</span>,</span>
 <span>         <span class="op">{</span></span>
 <span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"Age Group"</span></span>
 <span>           <span class="va">CNTPCT</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">CNT</span>, <span class="va">PCT</span><span class="op">)</span></span>
 <span>           <span class="va">LABEL</span> <span class="op">&lt;-</span> <span class="va">CAT</span></span>
-<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">ageg_comb</span></span>
+<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`ageg_comb`</span></span>
 <span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by ageg factor"</span><span class="op">)</span></span>
-<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">ageg_comb</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">ageg_sort</span> </span>
 <span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose ageg block"</span><span class="op">)</span></span>
-<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">ageg_sort</span>,</span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by lvar. factor"</span><span class="op">)</span></span>
+<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">`ageg_comb`</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`ageg_sort`</span></span>
+<span></span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose lvar. block"</span><span class="op">)</span></span>
+<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">`ageg_sort`</span>,</span>
 <span>               var <span class="op">=</span> <span class="va">CNTPCT</span>,</span>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
-<span>               by <span class="op">=</span> <span class="va">LABEL</span>, </span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">ageg_block</span> </span>
+<span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`ageg_block`</span></span>
 <span></span>
 <span><span class="co"># Sex Block ---------------------------------------------------------------</span></span>
 <span></span>
@@ -695,28 +705,29 @@ code will be generated:</p>
 <span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>,</span>
 <span>          table <span class="op">=</span> <span class="va">SEX</span>,</span>
 <span>          by <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">sex_freq</span></span>
+<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`sex_freq`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Combine counts and percents and assign age group factor for sorting"</span><span class="op">)</span></span>
-<span><span class="fu">datastep</span><span class="op">(</span><span class="va">sex_freq</span>,</span>
-<span>         format <span class="op">=</span> <span class="va">fc</span>, </span>
+<span><span class="fu">datastep</span><span class="op">(</span><span class="va">`sex_freq`</span>,</span>
+<span>         format <span class="op">=</span> <span class="va">fc</span>,</span>
 <span>         keep <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">VAR</span>, <span class="va">LABEL</span>, <span class="va">BY</span>, <span class="va">CNTPCT</span><span class="op">)</span>,</span>
 <span>         <span class="op">{</span></span>
 <span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"Sex"</span></span>
 <span>           <span class="va">CNTPCT</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">CNT</span>, <span class="va">PCT</span><span class="op">)</span></span>
 <span>           <span class="va">LABEL</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">CAT</span>, <span class="va">fc</span><span class="op">$</span><span class="va">SEX</span><span class="op">)</span></span>
-<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">sex_comb</span></span>
+<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`sex_comb`</span></span>
 <span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by sex factor"</span><span class="op">)</span></span>
-<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">sex_comb</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">sex_sort</span> </span>
 <span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose sex block"</span><span class="op">)</span></span>
-<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">sex_sort</span>,</span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by lvar. factor"</span><span class="op">)</span></span>
+<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">`sex_comb`</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`sex_sort`</span></span>
+<span></span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose lvar. block"</span><span class="op">)</span></span>
+<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">`sex_sort`</span>,</span>
 <span>               var <span class="op">=</span> <span class="va">CNTPCT</span>,</span>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
-<span>               by <span class="op">=</span> <span class="va">LABEL</span>, </span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">sex_block</span> </span>
+<span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`sex_block`</span></span>
 <span></span>
 <span><span class="co"># Race Block ---------------------------------------------------------------</span></span>
 <span></span>
@@ -726,51 +737,56 @@ code will be generated:</p>
 <span><span class="fu">proc_freq</span><span class="op">(</span><span class="va">dm_f</span>,</span>
 <span>          table <span class="op">=</span> <span class="va">RACE</span>,</span>
 <span>          by <span class="op">=</span> <span class="va">ARM</span>,</span>
-<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">race_freq</span></span>
+<span>          options <span class="op">=</span> <span class="va">nonobs</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`race_freq`</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Combine counts and percents and assign age group factor for sorting"</span><span class="op">)</span></span>
-<span><span class="fu">datastep</span><span class="op">(</span><span class="va">race_freq</span>,</span>
-<span>         format <span class="op">=</span> <span class="va">fc</span>, </span>
+<span><span class="fu">datastep</span><span class="op">(</span><span class="va">`race_freq`</span>,</span>
+<span>         format <span class="op">=</span> <span class="va">fc</span>,</span>
 <span>         keep <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">VAR</span>, <span class="va">LABEL</span>, <span class="va">BY</span>, <span class="va">CNTPCT</span><span class="op">)</span>,</span>
 <span>         <span class="op">{</span></span>
 <span>           <span class="va">VAR</span> <span class="op">&lt;-</span> <span class="st">"Race"</span></span>
 <span>           <span class="va">CNTPCT</span> <span class="op">&lt;-</span> <span class="fu">fapply2</span><span class="op">(</span><span class="va">CNT</span>, <span class="va">PCT</span><span class="op">)</span></span>
 <span>           <span class="va">LABEL</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">CAT</span>, <span class="va">fc</span><span class="op">$</span><span class="va">RACE</span><span class="op">)</span></span>
-<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">race_comb</span></span>
+<span>         <span class="op">}</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`race_comb`</span></span>
 <span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by race factor"</span><span class="op">)</span></span>
-<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">race_comb</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">race_sort</span> </span>
 <span></span>
-<span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose race block"</span><span class="op">)</span></span>
-<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">race_sort</span>,</span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Sort by lvar. factor"</span><span class="op">)</span></span>
+<span><span class="fu">proc_sort</span><span class="op">(</span><span class="va">`race_comb`</span>, by <span class="op">=</span> <span class="fu"><a href="https://common.r-sassy.org/reference/v.html" class="external-link">v</a></span><span class="op">(</span><span class="va">BY</span>, <span class="va">LABEL</span><span class="op">)</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`race_sort`</span></span>
+<span></span>
+<span><span class="fu">put</span><span class="op">(</span><span class="st">"Tranpose lvar. block"</span><span class="op">)</span></span>
+<span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">`race_sort`</span>,</span>
 <span>               var <span class="op">=</span> <span class="va">CNTPCT</span>,</span>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
-<span>               by <span class="op">=</span> <span class="va">LABEL</span>, </span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">race_block</span> </span>
+<span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`race_block`</span></span>
 <span></span>
 <span><span class="co"># Create final data frame -------------------------------------------------</span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">age_block</span>, <span class="va">ageg_block</span>, <span class="va">sex_block</span>, <span class="va">race_block</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Report ------------------------------------------------------------------</span></span>
 <span></span>
+<span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create and print report"</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Get min and max columns</span></span>
 <span><span class="va">mincol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">maxcol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create Table</span></span>
-<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">final</span>, first_row_blank <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/column_defaults.html" class="external-link">column_defaults</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">mincol</span>, to <span class="op">=</span> <span class="va">maxcol</span>, align <span class="op">=</span> <span class="st">"center"</span>, </span>
-<span>                  width <span class="op">=</span> <span class="fl">1.1</span>, standard_eval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/stub.html" class="external-link">stub</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"VAR"</span>, <span class="st">"LABEL"</span><span class="op">)</span>, <span class="st">"Variable"</span>, width <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
+<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">final</span>, first_row_blank <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/column_defaults.html" class="external-link">column_defaults</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">mincol</span>, to <span class="op">=</span> <span class="va">maxcol</span>, align <span class="op">=</span> <span class="st">"center"</span>,</span>
+<span>                  width <span class="op">=</span> <span class="fl">1.1</span>, standard_eval <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/stub.html" class="external-link">stub</a></span><span class="op">(</span>vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"VAR"</span>, <span class="st">"LABEL"</span><span class="op">)</span>, <span class="st">"Variable"</span>, width <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">VAR</span>, blank_after <span class="op">=</span> <span class="cn">TRUE</span>, dedupe <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="st">"Variable"</span>,</span>
-<span>         label_row <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">LABEL</span>, indent <span class="op">=</span> <span class="fl">.25</span>, label <span class="op">=</span> <span class="st">"Demographic Category"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Table 1.0'</span>, <span class="st">'Analysis of Demographic Characteristics'</span>, <span class="st">'Safety Population'</span><span class="op">)</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Program: t_dm.R'</span>, <span class="st">'NOTE: Denominator based on number of non-missing responses.'</span><span class="op">)</span><span class="op">)</span> </span>
+<span>         label_row <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">LABEL</span>, indent <span class="op">=</span> <span class="fl">.25</span>, label <span class="op">=</span> <span class="st">"Demographic Category"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/titles.html" class="external-link">titles</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Table 1.0'</span>, <span class="st">'Analysis of Demographic Characteristics'</span>, <span class="st">'Safety Population'</span><span class="op">)</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/footnotes.html" class="external-link">footnotes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Program: t_dm.R'</span>, <span class="st">'NOTE: Denominator based on number of non-missing responses.'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add treatment groups</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">trt</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trt_grps</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -778,23 +794,24 @@ code will be generated:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create report</span></span>
-<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">o_path</span>, </span>
-<span>                     output_type <span class="op">=</span> <span class="st">"PDF"</span>, </span>
-<span>                     font <span class="op">=</span> <span class="st">"Arial"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: Acme, Inc."</span>, <span class="st">"Study: ABC"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/set_margins.html" class="external-link">set_margins</a></span><span class="op">(</span>top <span class="op">=</span> <span class="fl">1</span>, bottom <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="st">"Date Produced: {toupper(fapply(Sys.Date(), '%Y%b%d'))}"</span>, </span>
+<span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">o_path</span>,</span>
+<span>                     output_type <span class="op">=</span> <span class="st">"PDF"</span>,</span>
+<span>                     font <span class="op">=</span> <span class="st">"Arial"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_header.html" class="external-link">page_header</a></span><span class="op">(</span><span class="st">"Sponsor: Acme, Inc."</span>, <span class="st">"Study: ABC"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/set_margins.html" class="external-link">set_margins</a></span><span class="op">(</span>top <span class="op">=</span> <span class="fl">1</span>, bottom <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/add_content.html" class="external-link">add_content</a></span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="st">"Date Produced: {toupper(fapply(Sys.Date(), '%Y%b%d'))}"</span>,</span>
 <span>              right <span class="op">=</span> <span class="st">"Page [pg] of [tpg]"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Write out the report"</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span>, preview <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Clean Up ----------------------------------------------------------------</span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Clean Up"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Close log"</span><span class="op">)</span></span>
 <span><span class="fu">log_close</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Uncomment to view report</span></span>
 <span><span class="co"># file.show(res$modified_path)</span></span>
