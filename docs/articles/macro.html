@@ -132,8 +132,8 @@ executed to produce some sort of output. It is, at heart, a text
 replacement/generation system.</p>
 <p>The SAS® macro language is commonly used in SAS programs. The R
 <strong>macro</strong> package was inspired by SAS. Specifically, the
-<strong>macro</strong> package aims to replicate the SAS macro language
-with “mprint” and “mfile” options, which generate a resolved code
+<strong>macro</strong> package aims to replicate SAS macro with “mprint”
+and “mfile” options turned on. These options generate a resolved code
 file.</p>
 </div>
 <div class="section level2">
@@ -187,9 +187,9 @@ restricted to use inside macro functions.<br>
 macro language, single and double quotes operate the same.</li>
 <li>All operators in the R macro language use R syntax, including the
 comparison operator (“==”).</li>
-<li>R macro variables in open code often must be surrounded by backticks
-(“`”) to avoid errors. Inside comments and other macro commands, they do
-not need backticks.</li>
+<li>R macro variables in open code must be surrounded by backticks (“`”)
+to avoid errors. Inside comments and other macro commands, they do not
+need backticks.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -633,7 +633,7 @@ and transparent output file.</p>
 <div class="section level4">
 <h4 id="user-defined-macro-functions">User-defined Macro Functions<a class="anchor" aria-label="anchor" href="#user-defined-macro-functions"></a>
 </h4>
-<p>User-defined macro function allows you to wrap up a set up
+<p>User-defined macro functions allows you to wrap up a set up
 statements, assign a name to it, and call these functions as needed.
 Calling the function will insert the contents of the function into the
 generated file. It is important to note the difference between a regular

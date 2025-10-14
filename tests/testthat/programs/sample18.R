@@ -2,7 +2,6 @@
 # Get data
 dat <- mtcars
 
-
 #% Print mean for each variable
 #%do v = 1 %to %sysfunc(length(&vars))
 #%let var <- %sysfunc(&vars[&v])

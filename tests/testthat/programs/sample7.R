@@ -3,17 +3,17 @@
 #%let env <- dev
 
 # Path to data
-#%if ("env." == "prod")
-pth <- "prod_path./dm.sas7bdat"
+#%if ("&env." == "prod")
+pth <- "&prod_path./dm.sas7bdat"
 #%else
-pth <- "dev_path./dm.sas7bdat"
+pth <- "&dev_path./dm.sas7bdat"
 #%end
 
 #% Unquoted Assignment
 #%let c <- Three
 
 # Unquoted resolution
-z <- "c."
+z <- "&c."
 
 
 

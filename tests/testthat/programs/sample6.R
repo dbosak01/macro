@@ -5,16 +5,16 @@
 
 #% Assignment using left arrow
 #%let a <- 1
-print(a.)
+print(`&a`)
 
 #% Assignment using equals sign
 #%let b = 2
-print(b.)
+print(`&b`)
 
 #% Clear assignment
 #%let b
-print(b.)
+print(`&b`)
 
 #% Assignment using left arrow
-c. <- 3
-print(c.)
+`&c` <- 3
+print(`&c`)

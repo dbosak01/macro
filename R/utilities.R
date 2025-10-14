@@ -28,6 +28,8 @@ is_let <- function(ln, opn = TRUE) {
         pos <- regexpr("<-", nl, fixed = TRUE)[[1]]
         spl[1] <- substring(nl, 1, pos - 1)
         spl[2] <- substring(nl, pos + 2)
+      } else {
+        spl <- nl
       }
 
       if (length(spl) > 1) {

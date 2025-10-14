@@ -44,7 +44,8 @@ Here is a macro comment and a regular R comment:
 # Here is a regular comment
 
 ```
-During pre-processing, the macro comment and the blank line before it are removed:
+During pre-processing, the macro comment is removed, while the regular comment
+is retained:
 
 ```{r eval=FALSE, echo=TRUE}
 
@@ -67,8 +68,9 @@ Note that macro variable names must
 begin with an alphabetic character or dot (".").  They can contain only alphabetic 
 characters, numbers, dots, and underscores ("_"). 
 
-Macro variables should be named without a trailing dot (".").  The trailing
-dot will be appended automatically when the variable is added to the symbol table.
+Macro variables should be named without a leading ampersend ("&").  The leading 
+ampersand will be appended automatically when the variable is added to 
+the symbol table.
 
 Either the left arrow ("&lt;-") or equals sign ("=") is a valid assignment
 operator for macro variables.
@@ -95,43 +97,54 @@ Here is a basic macro assignment of numeric values:
 ```{r eval=FALSE, echo=TRUE}
 #% Assignment using left arrow
 #%let a <- 1
-x <- a.
+x <- `&a`
 
 #% Assignment using equals sign
 #%let b = 2
-y <- b.
+y <- `&b`
 
 ```
 Here is the resolved output:
 ```{r eval=FALSE, echo=TRUE}
 x <- 1
+
 y <- 2
 
 ```
-Both variables `a.` an `b.` have been replaced as assigned.
+Both variables `a.` and `b.` have been replaced as assigned. 
+
+Note the use of backticks ("`") on the macro variables.  The backticks are necessary
+because R does not normally permit a special character to begin the name
+of a variable.  The backticks essentially "escape" the variable name, and allow
+it to contain any character.
 
 #### Quoted Assignment
 
 ```{r eval=FALSE, echo=TRUE}
 #% Quoted Assignment
 #%let a <- "One"
-x <- a.
+x <- `&a`
 
 #% Unquoted Assignment
 #%let b <- Two
-y <- "b."
-z <- 'b.'
+y <- "&b"
+z <- '&b'
 
 ```
 The above code will resolve as follows:
 ```{r eval=FALSE, echo=TRUE}
 x <- "One"
+
 y <- "Two"
 z <- 'Two'
 
 ```
-Observe that single or double quotes have no effect on macro variable resolution.
-Both are resolved normally.  This behavior is different from SAS.
+Observe that when macro variables appear inside text strings, comments, 
+or macro commands, they do not need to be escaped with backticks.  
+
+Also observe with the macro variable "&b" that single or double quotes 
+have no effect on macro variable resolution. Both are resolved normally.  
+This behavior is different from SAS.
 
 If you do not quote the macro variable value, and do not quote the macro variable
 to be replaced, it will result in an error:
@@ -140,7 +153,7 @@ to be replaced, it will result in an error:
 #%let c <- Three
 
 # Unquoted resolution
-z <- c.
+z <- `&c`
 
 ```
 The error is:
@@ -159,29 +172,30 @@ leave it unassigned.  Like this:
 ```{r eval=FALSE, echo=TRUE}
 #% Macro assignment
 #%let b <- 2
-x <- b.
+x <- `&b`
 
 #% Clear assignment
 #%let b
-y <- b.
+y <- `&b`
 
 ```
-The above code will generate an error, as the `y <- b.` runs
-after the variable has been cleared.  Here is the error that is generated:
+The above code will generate an error, as the "y" assignment runs
+after the "&b" macro variable has been cleared.  Here is the 
+error that is generated:
 ```
 Error in mreplace(ln) : 
-  Macro variable 'b.' not valid for text replacement.
+  Macro variable '&b' not valid for text replacement.
 ```
 #### Global Macro Assignment 
 
 Macro variables can also be assigned in regular R code, as long as it is done
-before `msource()` is executed.  In the below code, macro variable `c.` is
+before `msource()` is executed.  In the below code, macro variable `&c` is
 assigned the value of 3, and then the template code file "temp1.R" is executed
 via `msource()`:
 
 ```{r eval=FALSE, echo=TRUE}
 # Assignment before msource()
-c. <- 3
+`&c` <- 3
 
 # Pre-process
 msource("./temp1.R", "./temp1_mod.R")
@@ -191,15 +205,15 @@ msource("./temp1.R", "./temp1_mod.R")
 Here is the file "temp1.R":
 ```{r eval=FALSE, echo=TRUE}
 # Print macro variable
-z <- c.
+z <- `&c`
 ```
 When the "temp1.R" file is resolved to "temp1_mod.R", it will look like this:
 ```{r eval=FALSE, echo=TRUE}
 # Print macro variable
 z <- 3
 ```
-You can see that the macro variable `c.` is replaced normally. The reason is because 
-any variable with a trailing dot (".") in the parent environment will
+You can see that the macro variable `&c` is replaced normally. The reason is because 
+any variable with a leading ampersand ("&") in the parent environment will
 be copied to the macro symbol table when the pre-processor begins.
 
 Also note that parent macro assignments do not need to take place in the 
@@ -217,12 +231,12 @@ This feature allows for more dynamic assignments.  Here is a simple demonstratio
 #%let x <- 1
 #%let mvar1 <- Hello!
 
-print("mvarx..")
+print("&mvar&x")
 ```
 The above code outputs the string "Hello!".  Why?  The reason is because the
-macro processor first found the variable "x." and replaced it with the value
+macro processor first found the variable "&x" and replaced it with the value
 "1". The macro processor continued to scan for variables, found that
-"mvar1." was also a macro variable, and made the replacement. The system
+"&mvar1" was also a macro variable, and made the replacement. The system
 allows up to 10 levels of nesting.  This feature can be useful in some situations.
 
 #### Advanced Assignment
@@ -234,11 +248,11 @@ manipulate any piece of code.  Here is a taste of some advanced assignments:
 #%let a <- # Subset mtcars
 #%let b <- mtcars
 #%let c <- , mpg > 25
-#%let d <- dat <- subset(b.c.)
+#%let d <- dat <- subset(&b&c)
 #%let e <- (dat)
-a.
-d.
-printe.
+`&a`
+`&d`
+print&e
 ```
 Here is the generated code:
 ```{r eval=FALSE, echo=TRUE}
@@ -329,10 +343,10 @@ change depending on the environment.
 #%let env <- dev
 
 # Path to data
-#%if ("env." == "prod")
-pth <- "prod_path./dm.sas7bdat"
+#%if ("&env" == "prod")
+pth <- "&prod_path/dm.sas7bdat"
 #%else 
-pth <- "dev_path./dm.sas7bdat"
+pth <- "&dev_path/dm.sas7bdat"
 #%end
 ```
 When run through the macro processor, the above code will generate the following:
@@ -358,13 +372,13 @@ you to construct more complicated logic.  Here is an example:
 ###################
 # Get data
 ###################
-#%if ("src." == "SAS")
+#%if ("&src" == "SAS")
   library(haven)
 
   # Get adsl dataset
   adsl <- haven("./data/ADSL.sas7bdat")
   
-  #%if (any(c("PULSE", "TEMP", "BP") %in% anal_vars.))
+  #%if (any(c("PULSE", "TEMP", "BP") %in% &anal_vars))
   # Get advs dataset
   advs <- haven("./data/ADVS.sas7bdat")
   #%end
@@ -374,7 +388,7 @@ you to construct more complicated logic.  Here is an example:
   # Get adsl dataset
   adsl <- readRDS("./data/ADSL.rds")
   
-  #%if (any(c("PULSE", "TEMP", "BP") %in% anal_vars.))
+  #%if (any(c("PULSE", "TEMP", "BP") %in% &anal_vars))
   # Get advs dataset
   advs <- readRDS("./data/ADVS.rds")
   #%end
@@ -432,24 +446,24 @@ print(dat)
 The resolved macro will look like this:
 ```{r eval=FALSE, echo=TRUE}
 # Create sample data
-dat <- read.table(header = TRUE, text = '
-  SUBJID  ARM    SEX  RACE    AGE
-  "001"   "ARM A" "F"  "WHITE" 19 
-  "002"   "ARM B" "F"  "WHITE" 21 
-  "003"   "ARM C" "F"  "WHITE" 23 
-  "004"   "ARM D" "F"  "BLACK" 28 
-  "005"   "ARM A" "M"  "WHITE" 37  
-  "006"   "ARM B" "M"  "WHITE" 34 
-  "007"   "ARM C" "M"  "WHITE" 36  
-  "008"   "ARM D" "M"  "WHITE" 30   
-  "009"   "ARM A" "F"  "ASIAN" 39  
-  "010"   "ARM B" "F"  "WHITE" 31  
-  "011"   "ARM C" "F"  "BLACK" 33 
-  "012"   "ARM D" "F"  "WHITE" 38 
-  "013"   "ARM A" "M"  "BLACK" 37 
-  "014"   "ARM B" "M"  "WHITE" 34  
-  "015"   "ARM C" "M"  "ASIAN" 36
-  "016"   "ARM A" "M"  "WHITE" 40')
+dm <- read.table(header = TRUE, text = '
+       SUBJID  ARM    SEX  RACE    AGE
+       "001"   "ARM A" "F"  "ASIAN" 19
+       "002"   "ARM B" "F"  "WHITE" 21
+       "003"   "ARM C" "F"  "WHITE" 23
+       "004"   "ARM D" "F"  "BLACK OR AFRICAN AMERICAN" 28
+       "005"   "ARM A" "M"  "WHITE" 37
+       "006"   "ARM B" "M"  "WHITE" 34
+       "007"   "ARM C" "M"  "ASIAN" 36
+       "008"   "ARM D" "M"  "WHITE" 30
+       "009"   "ARM A" "F"  "WHITE" 39
+       "010"   "ARM B" "F"  "WHITE" 31
+       "011"   "ARM C" "F"  "BLACK OR AFRICAN AMERICAN" 33
+       "012"   "ARM D" "F"  "WHITE" 38
+       "013"   "ARM A" "M"  "BLACK OR AFRICAN AMERICAN" 37
+       "014"   "ARM B" "M"  "WHITE" 34
+       "015"   "ARM C" "M"  "WHITE" 36
+       "016"   "ARM A" "M"  "WHITE" 40')
 
 # Print sample data
 print(dat)
@@ -519,7 +533,7 @@ the remaining R code is executed.  Sometimes, however, you want to make
 decisions in the macro code depending on what is going on in the regular 
 R code.  For example, if your input dataset has no rows, you may decide do 
 something differently in the macro logic. It is for this type of 
-situation that `symput()` was designed for.
+situation that `%symput()` was designed for.
 
 When the macro pre-processor encounters a `%symput()` function, it will 
 first evaluate all emitted code. Then it will evaluate and return the expression
@@ -536,19 +550,19 @@ Here are some examples illustrating the basic operation of `%sysfunc()`:
 ```{r eval=FALSE, echo=TRUE}
 #% Unevaluated assignment
 #%let a <- 2 + 2
-w <- a.
+w <- `&a`
 
 #% Evaluated assignment
 #%let b <- %sysfunc(2 + 2)
-x <- b.
+x <- `&b`
 
 #% Unevaluated replacement 
 #%let c <- a. + b.
-y <- c.
+y <- `&c`
 
 #% Evaluated replacement
 #%let d <- %sysfunc(a. + b.)
-z <- d.
+z <- `&d`
   
 ```
 The above code resolves as follows:
@@ -565,15 +579,15 @@ Here is another example:
 ```{r eval=FALSE, echo=TRUE}
 #%let a <- c(1.205, 4.683, 3.812, 6.281, 9.467)
 
-#%if (%sysfunc(mean(a.)) > 5)
+#%if (%sysfunc(mean(&a.)) > 5)
 x <- "> 5"
 #%else 
 x <- "<= 5"
 #%end
 print(x)
-print("The mean of 'a' is %sysfunc(mean(a., %.2f))")
+print("The mean of 'a' is %sysfunc(mean(&a., %.2f))")
 ```
-The above macro function evaluates the mean of `a.`, compares to the hard-coded
+The above macro function evaluates the mean of `&a.`, compares to the hard-coded
 value 5, and then sets the value of `x`.  The `%sysfunc()` macro function
 allows for immediate evaluation of the Base R `mean()` function. 
 
@@ -606,7 +620,7 @@ before using them in a calculation:
 #%end
 
 # Calculate a * b
-x <- a. * b.
+x <- `&a` * `&b`
 ```
 And here is the resolved version:
 ```{r eval=FALSE, echo=TRUE}
@@ -632,8 +646,8 @@ v1 <- c("one", "two", "three")
 #%let y <- %symput(v1)
 
 # Use macro variables
-a <- x.
-b <- y.
+a <- `&x`
+b <- `&y`
 
 ```
 If you run the above code in `msource()`, you will get the following output:
@@ -685,7 +699,7 @@ iteration of the loop.
 Here is a simple example of a macro do loop:
 ```{r eval=FALSE, echo=TRUE}
 #%do x = 1 %to 3
-print("Hello #x.")
+print("Hello #&x.")
 #%end
 ```
 The console output from the above macro do loop is as follows:
@@ -711,12 +725,12 @@ Here is a more interesting example:
 dat <- mtcars
 
 #% Print mean for each variable
-#%do v = 1 %to %sysfunc(length(&vars.))
+#%do v = 1 %to %sysfunc(length(&vars))
 #%let var <- %sysfunc(&vars[&v])
 
-# Calculate mean for &var
-mn&v. <- sprintf("%.2f", mean(dat$`&var`))
-print(paste0("Mean of '&var' is ", mn&v.))
+# Calculate mean for var.
+mn&v. <- sprintf("%.2f", mean(dat$`&var.`))
+print(paste0("Mean of '&var.' is ", mn&v.))
 
 #%end
 
@@ -759,7 +773,6 @@ Notice that the macro functionality can be used to create variable names dynamic
 The macro system can also produce comments and other statements dynamically.
 Because the macro language is a text replacement language, any part of the code
 is available for manipulation.
-
 
 ## User-Defined Macro Functions
 

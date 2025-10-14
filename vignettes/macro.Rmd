@@ -25,7 +25,7 @@ some sort of output. It is, at heart, a text replacement/generation system.
 
 The SAS® macro language is commonly used in SAS programs. The R **macro** package 
 was inspired by SAS. Specifically, the **macro** package aims to replicate
-the SAS macro language with "mprint" and "mfile" options, which generate 
+SAS macro with "mprint" and "mfile" options turned on.  These options generate 
 a resolved code file.
 
 # An R Macro Language
@@ -82,7 +82,7 @@ R macro language:
   language, single and double quotes operate the same.
   * All operators in the R macro language use R syntax, including the 
   comparison operator ("==").
-  * R macro variables in open code often must be surrounded by backticks ("`") to 
+  * R macro variables in open code must be surrounded by backticks ("`") to 
   avoid errors. Inside comments and other macro commands, they do not need
   backticks.  
 
@@ -532,7 +532,7 @@ to avoid copying the code, but still want a resolved and transparent output file
 
 ### User-defined Macro Functions
 
-User-defined macro function allows you to wrap up a set up statements,
+User-defined macro functions allows you to wrap up a set up statements,
 assign a name to it, and call these functions as needed. Calling the function
 will insert the contents of the function into the generated file. It is 
 important to note the difference between a regular R function and an R
