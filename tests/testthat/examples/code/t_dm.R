@@ -108,7 +108,12 @@ put(trt_grps)
 put("Categorize AGE")
 dm_f$AGEG <- fapply(dm_f$AGE, fc$AGEG)
 
+
+
+
 # Perform Analysis  -------------------------------------------------------
+
+
 # Age Summary Block -------------------------------------------------------
 
 sep("Create summary statistics for age.")
@@ -137,7 +142,8 @@ put("Transpose ARMs into columns")
 proc_transpose(comb_age,
                var = names(comb_age),
                copy = VAR, id = BY,
-               name = LABEL) -> block_age
+               name = LABEL) -> age_block
+
 
 # Age Group Block ---------------------------------------------------------------
 
@@ -169,7 +175,8 @@ proc_transpose(sort_ageg,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_ageg
+               options = noname) -> ageg_block
+
 
 # Sex Block ---------------------------------------------------------------
 
@@ -201,7 +208,8 @@ proc_transpose(sort_sex,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_sex
+               options = noname) -> sex_block
+
 
 # Race Block ---------------------------------------------------------------
 
@@ -233,13 +241,12 @@ proc_transpose(sort_race,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_race
+               options = noname) -> race_block
 
 # Create final data frame -------------------------------------------------
 
 
-
-final <- rbind(block_age, block_ageg, block_sex, block_race)
+final <- rbind(age_block, ageg_block, sex_block, race_block)
 
 # Report ------------------------------------------------------------------
 

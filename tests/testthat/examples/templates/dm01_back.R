@@ -108,10 +108,21 @@ put("Categorize AGE")
 dm_f$AGEG <- fapply(dm_f$AGE, fc$AGEG)
 #%end
 
-#% Analysis Macros --------------------------------------------------------
-
-#%macro anal_cont(var, lvar, lbl)
-#%let blknm <- &lvar._block
+#% Get length of variable vector
+#%let varcnt <- %sysfunc(length(&vars.))
+#%
+# Perform Analysis  -------------------------------------------------------
+#%
+#% Iterate analysis variables
+#%do idx = 1 %to &varcnt.
+#%
+#%let var <- %sysfunc(&vars[&idx])
+#%let lvar <- %sysfunc(tolower("&var"))
+#%let lbl <- %sysfunc(&lbls[&idx])
+#%let anal <- %sysfunc(&anals[&idx])
+#%
+#%if ("&anal" == "cont")
+#%
 # &lbl. Summary Block -------------------------------------------------------
 
 sep("Create summary statistics for &lvar..")
@@ -140,11 +151,10 @@ put("Transpose ARMs into columns")
 proc_transpose(comb_&lvar,
                var = names(comb_&lvar),
                copy = VAR, id = BY,
-               name = LABEL) -> `&blknm`
-#%mend
+               name = LABEL) -> block_&lvar
+#%end
+#%if ("&anal." == "cat")
 
-#%macro anal_cat(var, lvar, lbl)
-#%let blknm <- &lvar._block
 # &lbl. Block ---------------------------------------------------------------
 
 sep("Create frequency counts for &lbl.")
@@ -179,33 +189,14 @@ proc_transpose(sort_&lvar,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> `&blknm`
-#%mend
-
-#% Get length of variable vector
-#%let varcnt <- %sysfunc(length(&vars.))
-#%
-# Perform Analysis  -------------------------------------------------------
-#%
-#% Iterate analysis variables
-#%do idx = 1 %to &varcnt.
-
-  #%let var <- %sysfunc(&vars[&idx])
-  #%let lvar <- %sysfunc(tolower("&var"))
-  #%let lbl <- %sysfunc(&lbls[&idx])
-  #%let anal <- %sysfunc(&anals[&idx])
-
-  #%if ("&anal" == "cont")
-    #%anal_cont(&var, &lvar, &lbl)
-  #%end
-  #%if ("&anal." == "cat")
-    #%anal_cat(&var, &lvar, &lbl)
-  #%end
+               options = noname) -> block_&lvar
+#%end
 #%end
 
 # Create final data frame -------------------------------------------------
 
-#%let blocks <- %sysfunc(paste0(tolower(&vars.), "_block", collapse = ", "))
+
+#%let blocks <- %sysfunc(paste0("block_", tolower(&vars.), collapse = ", "))
 
 final <- rbind(`&blocks.`)
 

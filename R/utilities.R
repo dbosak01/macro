@@ -749,7 +749,7 @@ get_macro_call <- function(mnm, mfunc, cpm) {
       }
 
       # Concat let statement
-      ret[length(ret) + 1] <- paste0("#%let ", nm, " <- ", vl)
+      ret[length(ret) + 1] <- paste0("#%let ", nm, " <- ", mreplace(vl))
 
     }
   }

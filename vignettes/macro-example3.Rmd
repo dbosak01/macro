@@ -35,7 +35,6 @@ In the second listing example, we assigned macro parameters directly in R code.
 That technique will be used again here:  
 
 ```{r eval=FALSE, echo=TRUE}
-
 #####################################
 # Assign Macro Variables
 #####################################
@@ -203,21 +202,10 @@ put("Categorize AGE")
 dm_f$AGEG <- fapply(dm_f$AGE, fc$AGEG)
 #%end
 
-#% Get length of variable vector
-#%let varcnt <- %sysfunc(length(&vars.))
-#%
-# Perform Analysis  -------------------------------------------------------
-#%
-#% Iterate analysis variables
-#%do idx = 1 %to &varcnt.
-#%
-#%let var <- %sysfunc(&vars[&idx])
-#%let lvar <- %sysfunc(tolower("&var"))
-#%let lbl <- %sysfunc(&lbls[&idx])
-#%let anal <- %sysfunc(&anals[&idx])
-#%
-#%if ("&anal" == "cont")
-#%
+#% Analysis Macros --------------------------------------------------------
+
+#%macro anal_cont(var, lvar, lbl)
+#%let blknm <- &lvar._block
 # &lbl. Summary Block -------------------------------------------------------
 
 sep("Create summary statistics for &lvar..")
@@ -246,10 +234,11 @@ put("Transpose ARMs into columns")
 proc_transpose(comb_&lvar,
                var = names(comb_&lvar),
                copy = VAR, id = BY,
-               name = LABEL) -> block_&lvar
-#%end
-#%if ("&anal." == "cat")
+               name = LABEL) -> `&blknm`
+#%mend
 
+#%macro anal_cat(var, lvar, lbl)
+#%let blknm <- &lvar._block
 # &lbl. Block ---------------------------------------------------------------
 
 sep("Create frequency counts for &lbl.")
@@ -284,14 +273,33 @@ proc_transpose(sort_&lvar,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_&lvar
-#%end
+               options = noname) -> `&blknm`
+#%mend
+
+#% Get length of variable vector
+#%let varcnt <- %sysfunc(length(&vars.))
+#%
+# Perform Analysis  -------------------------------------------------------
+#%
+#% Iterate analysis variables
+#%do idx = 1 %to &varcnt.
+
+  #%let var <- %sysfunc(&vars[&idx])
+  #%let lvar <- %sysfunc(tolower("&var"))
+  #%let lbl <- %sysfunc(&lbls[&idx])
+  #%let anal <- %sysfunc(&anals[&idx])
+
+  #%if ("&anal" == "cont")
+    #%anal_cont(&var, &lvar, &lbl)
+  #%end
+  #%if ("&anal." == "cat")
+    #%anal_cat(&var, &lvar, &lbl)
+  #%end
 #%end
 
 # Create final data frame -------------------------------------------------
 
-
-#%let blocks <- %sysfunc(paste0("block_", tolower(&vars.), collapse = ", "))
+#%let blocks <- %sysfunc(paste0(tolower(&vars.), "_block", collapse = ", "))
 
 final <- rbind(`&blocks.`)
 
@@ -312,6 +320,7 @@ log_close()
 
 # Uncomment to view log
 # file.show(lf)
+
 
 ```
 In the above code, notice the following:
@@ -363,7 +372,6 @@ Here is the template code for the report snippet:
 
 ```{r eval=FALSE, echo=TRUE}
 
-
 sep("Create and print report")
 
 #%if (%symexist(out_type) == FALSE)
@@ -402,7 +410,6 @@ rpt <- create_report(o_path,
 
 put("Write out the report")
 res <- write_report(rpt&preview.)
-
 
 ```
 In the above reporting code, notice the following:
@@ -530,7 +537,12 @@ put(trt_grps)
 put("Categorize AGE")
 dm_f$AGEG <- fapply(dm_f$AGE, fc$AGEG)
 
+
+
+
 # Perform Analysis  -------------------------------------------------------
+
+
 # Age Summary Block -------------------------------------------------------
 
 sep("Create summary statistics for age.")
@@ -559,7 +571,8 @@ put("Transpose ARMs into columns")
 proc_transpose(comb_age,
                var = names(comb_age),
                copy = VAR, id = BY,
-               name = LABEL) -> block_age
+               name = LABEL) -> age_block
+
 
 # Age Group Block ---------------------------------------------------------------
 
@@ -591,7 +604,8 @@ proc_transpose(sort_ageg,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_ageg
+               options = noname) -> ageg_block
+
 
 # Sex Block ---------------------------------------------------------------
 
@@ -623,7 +637,8 @@ proc_transpose(sort_sex,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_sex
+               options = noname) -> sex_block
+
 
 # Race Block ---------------------------------------------------------------
 
@@ -655,13 +670,12 @@ proc_transpose(sort_race,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> block_race
+               options = noname) -> race_block
 
 # Create final data frame -------------------------------------------------
 
 
-
-final <- rbind(block_age, block_ageg, block_sex, block_race)
+final <- rbind(age_block, ageg_block, sex_block, race_block)
 
 # Report ------------------------------------------------------------------
 
@@ -714,6 +728,7 @@ log_close()
 
 # Uncomment to view log
 # file.show(lf)
+
 
 ```
 Observe that the generated code is clean and easy to read.  Only the necessary

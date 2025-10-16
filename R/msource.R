@@ -588,12 +588,6 @@ mprocess <- function(lns, debug, debug_out) {
           log_debug(paste0("SYMBOLGEN: Executing macro '", mnm, "'."))
         }
 
-        # Set up scope
-        ne <- new.env(parent = scope[[scopelvl]])
-        scopelvl <- scopelvl + 1
-        scope[[scopelvl]] <- ne
-        gbl$env <- scope[[scopelvl]]
-
         # Get stored macro definition
         mfnc <- gbl$macros[[mnm]]
 
@@ -605,6 +599,12 @@ mprocess <- function(lns, debug, debug_out) {
 
         # Reset line count
         lncnt <- length(lns)
+
+        # Set up new scope
+        ne <- new.env(parent = scope[[scopelvl]])
+        scopelvl <- scopelvl + 1
+        scope[[scopelvl]] <- ne
+        gbl$env <- scope[[scopelvl]]
 
       } else if (as.logical(ismend)) {     # Deal with macro call mend
 

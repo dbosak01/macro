@@ -138,8 +138,7 @@ create such a parameterized table.</p>
 <p>In the second listing example, we assigned macro parameters directly
 in R code. That technique will be used again here:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">#####################################</span></span>
+<code class="sourceCode R"><span><span class="co">#####################################</span></span>
 <span><span class="co"># Assign Macro Variables</span></span>
 <span><span class="co">#####################################</span></span>
 <span></span>
@@ -307,21 +306,10 @@ calling:</p>
 <span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGE</span>, <span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span><span class="op">)</span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
-<span><span class="co">#% Get length of variable vector</span></span>
-<span><span class="co">#%let varcnt &lt;- %sysfunc(length(&amp;vars.))</span></span>
-<span><span class="co">#%</span></span>
-<span><span class="co"># Perform Analysis  -------------------------------------------------------</span></span>
-<span><span class="co">#%</span></span>
-<span><span class="co">#% Iterate analysis variables</span></span>
-<span><span class="co">#%do idx = 1 %to &amp;varcnt.</span></span>
-<span><span class="co">#%</span></span>
-<span><span class="co">#%let var &lt;- %sysfunc(&amp;vars[&amp;idx])</span></span>
-<span><span class="co">#%let lvar &lt;- %sysfunc(tolower("&amp;var"))</span></span>
-<span><span class="co">#%let lbl &lt;- %sysfunc(&amp;lbls[&amp;idx])</span></span>
-<span><span class="co">#%let anal &lt;- %sysfunc(&amp;anals[&amp;idx])</span></span>
-<span><span class="co">#%</span></span>
-<span><span class="co">#%if ("&amp;anal" == "cont")</span></span>
-<span><span class="co">#%</span></span>
+<span><span class="co">#% Analysis Macros --------------------------------------------------------</span></span>
+<span></span>
+<span><span class="co">#%macro anal_cont(var, lvar, lbl)</span></span>
+<span><span class="co">#%let blknm &lt;- &amp;lvar._block</span></span>
 <span><span class="co"># &amp;lbl. Summary Block -------------------------------------------------------</span></span>
 <span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create summary statistics for &amp;lvar.."</span><span class="op">)</span></span>
@@ -349,10 +337,11 @@ calling:</p>
 <span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">comb_</span><span class="op">&amp;</span><span class="va">lvar</span>,</span>
 <span>               var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">comb_</span><span class="op">&amp;</span><span class="va">lvar</span><span class="op">)</span>,</span>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>, id <span class="op">=</span> <span class="va">BY</span>,</span>
-<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">block_</span><span class="op">&amp;</span><span class="va">lvar</span></span>
-<span><span class="co">#%end</span></span>
-<span><span class="co">#%if ("&amp;anal." == "cat")</span></span>
+<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;blknm`</span></span>
+<span><span class="co">#%mend</span></span>
 <span></span>
+<span><span class="co">#%macro anal_cat(var, lvar, lbl)</span></span>
+<span><span class="co">#%let blknm &lt;- &amp;lvar._block</span></span>
 <span><span class="co"># &amp;lbl. Block ---------------------------------------------------------------</span></span>
 <span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create frequency counts for &amp;lbl."</span><span class="op">)</span></span>
@@ -387,14 +376,33 @@ calling:</p>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
 <span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">block_</span><span class="op">&amp;</span><span class="va">lvar</span></span>
-<span><span class="co">#%end</span></span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">`&amp;blknm`</span></span>
+<span><span class="co">#%mend</span></span>
+<span></span>
+<span><span class="co">#% Get length of variable vector</span></span>
+<span><span class="co">#%let varcnt &lt;- %sysfunc(length(&amp;vars.))</span></span>
+<span><span class="co">#%</span></span>
+<span><span class="co"># Perform Analysis  -------------------------------------------------------</span></span>
+<span><span class="co">#%</span></span>
+<span><span class="co">#% Iterate analysis variables</span></span>
+<span><span class="co">#%do idx = 1 %to &amp;varcnt.</span></span>
+<span></span>
+<span>  <span class="co">#%let var &lt;- %sysfunc(&amp;vars[&amp;idx])</span></span>
+<span>  <span class="co">#%let lvar &lt;- %sysfunc(tolower("&amp;var"))</span></span>
+<span>  <span class="co">#%let lbl &lt;- %sysfunc(&amp;lbls[&amp;idx])</span></span>
+<span>  <span class="co">#%let anal &lt;- %sysfunc(&amp;anals[&amp;idx])</span></span>
+<span></span>
+<span>  <span class="co">#%if ("&amp;anal" == "cont")</span></span>
+<span>    <span class="co">#%anal_cont(&amp;var, &amp;lvar, &amp;lbl)</span></span>
+<span>  <span class="co">#%end</span></span>
+<span>  <span class="co">#%if ("&amp;anal." == "cat")</span></span>
+<span>    <span class="co">#%anal_cat(&amp;var, &amp;lvar, &amp;lbl)</span></span>
+<span>  <span class="co">#%end</span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
 <span><span class="co"># Create final data frame -------------------------------------------------</span></span>
 <span></span>
-<span></span>
-<span><span class="co">#%let blocks &lt;- %sysfunc(paste0("block_", tolower(&amp;vars.), collapse = ", "))</span></span>
+<span><span class="co">#%let blocks &lt;- %sysfunc(paste0(tolower(&amp;vars.), "_block", collapse = ", "))</span></span>
 <span></span>
 <span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">`&amp;blocks.`</span><span class="op">)</span></span>
 <span></span>
@@ -464,7 +472,6 @@ analysis variables.</li>
 <p>Here is the template code for the report snippet:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create and print report"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#%if (%symexist(out_type) == FALSE)</span></span>
@@ -631,7 +638,12 @@ code will be generated:</p>
 <span><span class="fu">put</span><span class="op">(</span><span class="st">"Categorize AGE"</span><span class="op">)</span></span>
 <span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGEG</span> <span class="op">&lt;-</span> <span class="fu">fapply</span><span class="op">(</span><span class="va">dm_f</span><span class="op">$</span><span class="va">AGE</span>, <span class="va">fc</span><span class="op">$</span><span class="va">AGEG</span><span class="op">)</span></span>
 <span></span>
+<span></span>
+<span></span>
+<span></span>
 <span><span class="co"># Perform Analysis  -------------------------------------------------------</span></span>
+<span></span>
+<span></span>
 <span><span class="co"># Age Summary Block -------------------------------------------------------</span></span>
 <span></span>
 <span><span class="fu">sep</span><span class="op">(</span><span class="st">"Create summary statistics for age."</span><span class="op">)</span></span>
@@ -659,7 +671,8 @@ code will be generated:</p>
 <span><span class="fu">proc_transpose</span><span class="op">(</span><span class="va">comb_age</span>,</span>
 <span>               var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">comb_age</span><span class="op">)</span>,</span>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>, id <span class="op">=</span> <span class="va">BY</span>,</span>
-<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">block_age</span></span>
+<span>               name <span class="op">=</span> <span class="va">LABEL</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">age_block</span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Age Group Block ---------------------------------------------------------------</span></span>
 <span></span>
@@ -691,7 +704,8 @@ code will be generated:</p>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
 <span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">block_ageg</span></span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">ageg_block</span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Sex Block ---------------------------------------------------------------</span></span>
 <span></span>
@@ -723,7 +737,8 @@ code will be generated:</p>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
 <span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">block_sex</span></span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">sex_block</span></span>
+<span></span>
 <span></span>
 <span><span class="co"># Race Block ---------------------------------------------------------------</span></span>
 <span></span>
@@ -755,13 +770,12 @@ code will be generated:</p>
 <span>               copy <span class="op">=</span> <span class="va">VAR</span>,</span>
 <span>               id <span class="op">=</span> <span class="va">BY</span>,</span>
 <span>               by <span class="op">=</span> <span class="va">LABEL</span>,</span>
-<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">block_race</span></span>
+<span>               options <span class="op">=</span> <span class="va">noname</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="va">race_block</span></span>
 <span></span>
 <span><span class="co"># Create final data frame -------------------------------------------------</span></span>
 <span></span>
 <span></span>
-<span></span>
-<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">block_age</span>, <span class="va">block_ageg</span>, <span class="va">block_sex</span>, <span class="va">block_race</span><span class="op">)</span></span>
+<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">age_block</span>, <span class="va">ageg_block</span>, <span class="va">sex_block</span>, <span class="va">race_block</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Report ------------------------------------------------------------------</span></span>
 <span></span>
