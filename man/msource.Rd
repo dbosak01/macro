@@ -41,7 +41,7 @@ Default is FALSE.}
 is supplied, debug output will be written to the file instead of the
 console. Default is NULL.}
 
-\item{symbolgen}{If debugger is on, will display the name and value
+\item{symbolgen}{If debugger is on, this option will display the name and value
 of any macro variables encountered during resolution. Default is FALSE.}
 
 \item{...}{Follow-on parameters to the \code{source} function. See
@@ -108,10 +108,11 @@ a macro command.}
 exists in the macro symbol table.}
 \item{\strong{\%symput(<expression>)}: Assigns the result of
 an expression in the execution environment to a macro variable.}
+\item{\strong{#\%macro <name>(<parm1>, <parm2>, ...)}:
+Declares the start of a macro function, identifies the function name,
+and defines any parameters.}
+\item{\strong{#\%mend}: Ends a macro function definition.}
 }
-
-Note that there are no user-defined macro functions in the R macro language.
-Use regular R function definitions instead.
 
 You can find extensive documentation for the above macro commands in the
 the Macro Language vignette. To access the vignette, run

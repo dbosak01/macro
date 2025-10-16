@@ -71,9 +71,6 @@
       <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
-      <a href="../articles/macro-generated.html">Generalized vs. Generated</a>
-    </li>
-    <li>
       <a href="../articles/macro-disclaimer.html">Disclaimer</a>
     </li>
     <li>
@@ -129,7 +126,7 @@ concept at a high level.</p>
 <p>A macro language is like a meta-language for code. The meta-language
 runs first, generates the regular code, and then the regular code is
 executed to produce some sort of output. It is, at heart, a text
-replacement/generation system.</p>
+manipulation system.</p>
 <p>The SAS® macro language is commonly used in SAS programs. The R
 <strong>macro</strong> package was inspired by SAS. Specifically, the
 <strong>macro</strong> package aims to replicate SAS macro with “mprint”
@@ -257,8 +254,8 @@ functions to make the system more practical.</li>
 each iteration of the loop.</li>
 <li>
 <strong>User-Defined Macro Functions</strong>: The ability to create
-a user-defined<br>
-text-replacement function, with or without parameters.</li>
+a user-defined text-replacement function, with or without
+parameters.</li>
 </ol>
 <div class="section level4">
 <h4 id="macro-comments-and-variables">Macro Comments and Variables<a class="anchor" aria-label="anchor" href="#macro-comments-and-variables"></a>
@@ -353,7 +350,7 @@ variable resolution is text replacement.</p>
 <div class="section level4">
 <h4 id="simple-macro-conditionals">Simple Macro Conditionals<a class="anchor" aria-label="anchor" href="#simple-macro-conditionals"></a>
 </h4>
-<p>Macro conditionals allows you to conditionally execute a chunk of
+<p>Macro conditionals allow you to conditionally execute a chunk of
 code. If a macro condition is TRUE, the code inside that condition will
 be output to the generated code file and executed. Otherwise, the code
 will not be emitted. This feature makes the generated code file more
@@ -633,7 +630,7 @@ and transparent output file.</p>
 <div class="section level4">
 <h4 id="user-defined-macro-functions">User-defined Macro Functions<a class="anchor" aria-label="anchor" href="#user-defined-macro-functions"></a>
 </h4>
-<p>User-defined macro functions allows you to wrap up a set up
+<p>User-defined macro functions allow you to wrap up a set up
 statements, assign a name to it, and call these functions as needed.
 Calling the function will insert the contents of the function into the
 generated file. It is important to note the difference between a regular

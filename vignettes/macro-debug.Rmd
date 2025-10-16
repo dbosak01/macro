@@ -20,7 +20,9 @@ a debug feature in the **macro** package that can make debugging easier.
 ## How to Debug a Macro
 
 To enhance debugging, the `msource()` function contains two parameters: 
-`debug` and `debug_out`.  
+`debug`, `debug_out`, and `symbolgen`.  
+
+### Baseline
 
 The `debug` parameter turns debugging on or off. When set to TRUE, the debug
 parameter will send debugging information to the console. This information
@@ -33,10 +35,10 @@ Here is a very simple macro program to illustrate the debug feature:
 #%let prod_path <- ./prod/data
 
 # Path to data
-#%if ("env." == "prod")
-pth <- "prod_path./dm.sas7bdat"
+#%if ("&env." == "prod")
+pth <- "&prod_path./dm.sas7bdat"
 #%else
-pth <- "dev_path./dm.sas7bdat"
+pth <- "&dev_path./dm.sas7bdat"
 #%end
 
 ```
@@ -76,8 +78,8 @@ But when the `debug` parameter is TRUE, the following is printed to the console:
 [   3][    ]: #%let prod_path <- ./prod/data
 [   4][   1]: 
 [   5][   2]: # Path to data
-[   6][    ]: #%if ("env." == "prod")
-[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   6][    ]: #%if ("&env." == "prod")
+[   7][    ]: pth <- "&prod_path./dm.sas7bdat"
 [   8][    ]: #%else
 [   9][   3]: pth <- "./dev/data/dm.sas7bdat"
 [  10][    ]: #%end
@@ -99,12 +101,12 @@ Note the following about the above debug information:
   * The debug info starts with a header that introduces the pre-processing
   stage.  The header contains the path of the input and output files.
   * The pre-processor then steps through the input file one line at a time.
-  The pre-processor outputs each input line, and determines whether it
+  The pre-processor examines each input line, and determines whether it
   should be emitted to the output file.  The line numbers for the input
   and output file are shown in the left margin of the debug output.  If 
   the line is not emitted to the output file, the "Out#" line number is shown as blank.
   * All emitted lines are resolved as they will appear in the generated code.
-  Lines that are not emitted are not resolved.
+  Lines that are not emitted are usually not resolved.
   * After pre-processing, the generated code file will be executed.  A separation
   header announces the execution phase.
   * The generated code is sourced and echoed into the execution section of the
@@ -123,9 +125,9 @@ First, we'll introduce a syntax error into a macro statement. On line 6 of the
 macro program, we'll delete one of the parenthesis.  Like this:
 ```{r eval=FALSE, echo=TRUE}
 # Path to data
-#%if ("env." == "prod"   
+#%if ("&env." == "prod"   
 ```
-Then we'll run `msource()` again.  The debug info will then show the following:
+Then we'll run `msource()` again.  The debug info will show the following:
 ```
 > msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
 ******************************************************************************** 
@@ -169,8 +171,8 @@ Then rerun `msource()`.  The debug info will display the following:
 [   3][    ]: #%let prod_path <- ./prod/data
 [   4][   1]: 
 [   5][   2]: # Path to data
-[   6][    ]: #%if ("env." == "prod")
-[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   6][    ]: #%if ("&env." == "prod")
+[   7][    ]: pth <- "&prod_path./dm.sas7bdat"
 [   8][    ]: #%else
 [   9][   3]: pth <- "./dev/data/dm.sas7bdat"
 [  10][    ]: 
@@ -190,8 +192,8 @@ In the next example, we'll add an extra `#%end` instead of removing it. Like thi
 #%let prod_path <- ./prod/data
 
 # Path to data
-#%if ("env." == "prod")
-pth <- "prod_path./dm.sas7bdat"
+#%if ("&env." == "prod")
+pth <- "&prod_path./dm.sas7bdat"
 #%else
 pth <- "dev_path./dm.sas7bdat"
 #%end
@@ -213,8 +215,8 @@ Here is the result:
 [   3][    ]: #%let prod_path <- ./prod/data
 [   4][   1]: 
 [   5][   2]: # Path to data
-[   6][    ]: #%if ("env." == "prod")
-[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   6][    ]: #%if ("&env." == "prod")
+[   7][    ]: pth <- "&prod_path./dm.sas7bdat"
 [   8][    ]: #%else
 [   9][   3]: pth <- "./dev/data/dm.sas7bdat"
 [  10][    ]: #%end
@@ -238,8 +240,8 @@ line 9.  Like this:
 #%let prod_path <- ./prod/data
 
 # Path to data
-#%if ("env." == "prod")
-pth <- "prod_path./dm.sas7bdat"
+#%if ("&env." == "prod")
+pth <- "&prod_path./dm.sas7bdat"
 #%else
 pth < - "dev_path./dm.sas7bdat"
 #%end
@@ -262,8 +264,8 @@ Here is what it does:
 [   3][    ]: #%let prod_path <- ./prod/data
 [   4][   1]: 
 [   5][   2]: # Path to data
-[   6][    ]: #%if ("env." == "prod")
-[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   6][    ]: #%if ("&env." == "prod")
+[   7][    ]: pth <- "&prod_path./dm.sas7bdat"
 [   8][    ]: #%else
 [   9][   3]: pth < - "./dev/data/dm.sas7bdat"
 [  10][    ]: #%end
@@ -310,8 +312,8 @@ the console.  Here is the contents of the debug file:
 [   3][    ]: #%let prod_path <- ./prod/data
 [   4][   1]: 
 [   5][   2]: # Path to data
-[   6][    ]: #%if ("env." == "prod")
-[   7][    ]: pth <- "prod_path./dm.sas7bdat"
+[   6][    ]: #%if ("&env." == "prod")
+[   7][    ]: pth <- "&prod_path./dm.sas7bdat"
 [   8][    ]: #%else
 [   9][   3]: pth <- "./dev/data/dm.sas7bdat"
 [  10][    ]: #%end
@@ -362,11 +364,11 @@ variable encountered.  Observe:
 [   3][    ]: #%let prod_path <- ./prod/data 
 [   4][   1]:  
 [   5][   2]: # Path to data 
-SYMBOLGEN: env. = dev 
-[   6][    ]: #%if ("env." == "prod") 
-[   7][    ]: pth <- "prod_path./dm.sas7bdat" 
+SYMBOLGEN: &env = dev 
+[   6][    ]: #%if ("&env." == "prod") 
+[   7][    ]: pth <- "&prod_path./dm.sas7bdat" 
 [   8][    ]: #%else 
-SYMBOLGEN: dev_path. = ./dev/data 
+SYMBOLGEN: &dev_path = ./dev/data 
 [   9][   3]: pth <- "./dev/data/dm.sas7bdat" 
 [  10][    ]: #%end 
 ******************************************************************************** 
@@ -381,9 +383,10 @@ SYMBOLGEN: dev_path. = ./dev/data
 ******************************************************************************** 
 ```
 The value of the "symbolgen" parameter is that it will print out every macro
-variable value, even if the line is not emitted.  Notice that the "if" block
+variable value that is examined, even if the line is not emitted.
+Notice that the "if" block
 on line 6 above was not sent to the output file.  The reason, as indicated by
-the symbolgen line above, was that the value of the `env.` macro variable 
+the symbolgen line above, was that the value of the `&env` macro variable 
 was "dev" instead of "prod".  This option can help you detect if the value
 of a macro variable is not what you expect.
 

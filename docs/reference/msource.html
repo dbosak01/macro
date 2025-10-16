@@ -51,9 +51,6 @@ is sourced normally."><meta property="og:image" content="https://macro.r-sassy.o
       <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
-      <a href="../articles/macro-generated.html">Generalized vs. Generated</a>
-    </li>
-    <li>
       <a href="../articles/macro-disclaimer.html">Disclaimer</a>
     </li>
     <li>
@@ -152,7 +149,7 @@ console. Default is NULL.</p></dd>
 
 
 <dt id="arg-symbolgen">symbolgen<a class="anchor" aria-label="anchor" href="#arg-symbolgen"></a></dt>
-<dd><p>If debugger is on, will display the name and value
+<dd><p>If debugger is on, this option will display the name and value
 of any macro variables encountered during resolution. Default is FALSE.</p></dd>
 
 
@@ -216,9 +213,11 @@ a macro command.</p></li>
 exists in the macro symbol table.</p></li>
 <li><p><strong>%symput(&lt;expression&gt;)</strong>: Assigns the result of
 an expression in the execution environment to a macro variable.</p></li>
-</ul><p>Note that there are no user-defined macro functions in the R macro language.
-Use regular R function definitions instead.</p>
-<p>You can find extensive documentation for the above macro commands in the
+<li><p><strong>#%macro &lt;name&gt;(&lt;parm1&gt;, &lt;parm2&gt;, ...)</strong>:
+Declares the start of a macro function, identifies the function name,
+and defines any parameters.</p></li>
+<li><p><strong>#%mend</strong>: Ends a macro function definition.</p></li>
+</ul><p>You can find extensive documentation for the above macro commands in the
 the Macro Language vignette. To access the vignette, run
 <code><a href="../articles/macro-language.html">vignette("macro-language")</a></code> on the R command line.</p>
     </div>

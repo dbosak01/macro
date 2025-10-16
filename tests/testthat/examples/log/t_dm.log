@@ -7,10 +7,9 @@ R Version: 4.4.3 (2025-02-28 ucrt)
 Machine: SOCRATES x86-64
 Operating System: Windows 10 x64 build 26100
 Base Packages: stats graphics grDevices utils datasets methods base
-Other Packages: tidylog_1.1.0 procs_1.0.7 libr_1.3.9 logr_1.3.9 fmtr_1.7.0
-sassy_1.2.5 reporter_1.4.4 macro_0.1.2 dplyr_1.1.4 testthat_3.2.1.1
-common_1.1.3
-Log Start Time: 2025-10-13 20:43:02.895837
+Other Packages: tidylog_1.1.0 procs_1.0.7 reporter_1.4.4 libr_1.3.9 logr_1.3.9
+fmtr_1.7.0 sassy_1.2.5 dplyr_1.1.4 macro_0.1.2 testthat_3.2.1.1 common_1.1.3
+Log Start Time: 2025-10-14 21:25:20.920926
 =========================================================================
 
 =========================================================================
@@ -204,7 +203,7 @@ datastep: columns decreased from 5 to 4
 15 Age Group 40 to 49 ARM D  0 (  0.0%)
 16 Age Group    >= 50 ARM D  0 (  0.0%)
 
-Sort by lvar. factor
+Sort by ageg factor
 
 proc_sort: input data set 16 rows and 4 columns
            by: BY LABEL
@@ -230,7 +229,7 @@ proc_sort: input data set 16 rows and 4 columns
 15 Age Group 40 to 49 ARM D  0 (  0.0%)
 16 Age Group    >= 50 ARM D  0 (  0.0%)
 
-Tranpose lvar. block
+Tranpose ageg block
 
 proc_transpose: input data set 16 rows and 4 columns
                 by: LABEL
@@ -282,7 +281,7 @@ datastep: columns decreased from 5 to 4
 7 Sex Female ARM D  2 ( 66.7%)
 8 Sex   Male ARM D  1 ( 33.3%)
 
-Sort by lvar. factor
+Sort by sex factor
 
 proc_sort: input data set 8 rows and 4 columns
            by: BY LABEL
@@ -300,7 +299,7 @@ proc_sort: input data set 8 rows and 4 columns
 8 Sex   Male ARM D  1 ( 33.3%)
 7 Sex Female ARM D  2 ( 66.7%)
 
-Tranpose lvar. block
+Tranpose sex block
 
 proc_transpose: input data set 8 rows and 4 columns
                 by: LABEL
@@ -358,7 +357,7 @@ datastep: columns decreased from 5 to 4
 11 Race Black or African American ARM D  1 ( 33.3%)
 12 Race                     White ARM D  2 ( 66.7%)
 
-Sort by lvar. factor
+Sort by race factor
 
 proc_sort: input data set 12 rows and 4 columns
            by: BY LABEL
@@ -380,7 +379,7 @@ proc_sort: input data set 12 rows and 4 columns
 11 Race Black or African American ARM D  1 ( 33.3%)
 10 Race Asian or Pacific Islander ARM D  0 (  0.0%)
 
-Tranpose lvar. block
+Tranpose race block
 
 proc_transpose: input data set 12 rows and 4 columns
                 by: LABEL
@@ -409,7 +408,7 @@ Write out the report
 - margins: top 1 bottom 1 left 1 right 1
 - line size/count: 9/41
 - page_header: left=Sponsor: Acme, Inc. right=Study: ABC
-- page_footer: left=Date Produced: 2025OCT13 center= right=Page [pg] of [tpg]
+- page_footer: left=Date Produced: 2025OCT14 center= right=Page [pg] of [tpg]
 - content: 
 # A table specification:
 - data: data.frame 'final' 14 rows 6 cols
@@ -435,6 +434,6 @@ Clean Up
 Close log
 
 =========================================================================
-Log End Time: 2025-10-13 20:43:11.688214
-Log Elapsed Time: 0 00:00:08
+Log End Time: 2025-10-14 21:25:24.88824
+Log Elapsed Time: 0 00:00:03
 =========================================================================

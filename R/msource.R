@@ -77,10 +77,11 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'   exists in the macro symbol table.}
 #'   \item{\strong{%symput(&lt;expression&gt;)}: Assigns the result of
 #'   an expression in the execution environment to a macro variable.}
+#'   \item{\strong{#%macro &lt;name&gt;(&lt;parm1&gt;, &lt;parm2&gt;, ...)}:
+#'   Declares the start of a macro function, identifies the function name,
+#'   and defines any parameters.}
+#'   \item{\strong{#%mend}: Ends a macro function definition.}
 #' }
-#'
-#' Note that there are no user-defined macro functions in the R macro language.
-#' Use regular R function definitions instead.
 #'
 #' You can find extensive documentation for the above macro commands in the
 #' the Macro Language vignette. To access the vignette, run
@@ -160,7 +161,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' @param debug_out A path to a file to be used for debugging.  If a path
 #' is supplied, debug output will be written to the file instead of the
 #' console. Default is NULL.
-#' @param symbolgen If debugger is on, will display the name and value
+#' @param symbolgen If debugger is on, this option will display the name and value
 #' of any macro variables encountered during resolution. Default is FALSE.
 #' @param ... Follow-on parameters to the \code{source} function. See
 #' the \code{\link{source}} function for additional information.

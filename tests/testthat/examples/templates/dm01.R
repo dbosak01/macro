@@ -131,12 +131,12 @@ put("Call means procedure to get summary statistics for &lvar.")
 proc_means(dm_f, var = `&var.`,
            stats = v(n, mean, std, median, q1, q3, min, max),
            by = ARM,
-           options = v(notype, nofreq)) -> `&lvar._stats`
+           options = v(notype, nofreq)) -> stats_&lvar
 
 put("Combine stats")
-datastep(`&lvar._stats`,
+datastep(stats_&lvar,
          format = fc,
-         drop = find.names(`&lvar._stats`, start = 4),
+         drop = find.names(stats_&lvar, start = 4),
          {
            VAR <- "lbl."
            `Mean (SD)` <- fapply2(MEAN, STD)
@@ -145,13 +145,13 @@ datastep(`&lvar._stats`,
            `Min - Max` <- fapply2(MIN, MAX, sep = " - ")
 
 
-         }) -> `&lvar._comb`
+         }) -> comb_&lvar
 
 put("Transpose ARMs into columns")
-proc_transpose(`&lvar._comb`,
-               var = names(`&lvar._comb`),
+proc_transpose(comb_&lvar,
+               var = names(comb_&lvar),
                copy = VAR, id = BY,
-               name = LABEL) -> `&lvar._block`
+               name = LABEL) -> block_&lvar
 #%end
 #%if ("&anal." == "cat")
 
@@ -163,10 +163,10 @@ put("Get &lvar. frequency counts")
 proc_freq(dm_f,
           table = `&var.`,
           by = ARM,
-          options = nonobs) -> `&lvar._freq`
+          options = nonobs) -> freq_&lvar
 
 put("Combine counts and percents and assign age group factor for sorting")
-datastep(`&lvar._freq`,
+datastep(freq_&lvar,
          format = fc,
          keep = v(VAR, LABEL, BY, CNTPCT),
          {
@@ -177,26 +177,26 @@ datastep(`&lvar._freq`,
            #%else
            LABEL <- fapply(CAT, fc$`&var.`)
            #%end
-         }) -> `&lvar._comb`
+         }) -> comb_&lvar
 
 
-put("Sort by lvar. factor")
-proc_sort(`&lvar._comb`, by = v(BY, LABEL)) -> `&lvar._sort`
+put("Sort by &lvar. factor")
+proc_sort(comb_&lvar, by = v(BY, LABEL)) -> sort_&lvar
 
-put("Tranpose lvar. block")
-proc_transpose(`&lvar._sort`,
+put("Tranpose &lvar. block")
+proc_transpose(sort_&lvar,
                var = CNTPCT,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> `&lvar._block`
+               options = noname) -> block_&lvar
 #%end
 #%end
 
 # Create final data frame -------------------------------------------------
 
 
-#%let blocks <- %sysfunc(paste0(tolower(&vars.), "_block", collapse = ", "))
+#%let blocks <- %sysfunc(paste0("block_", tolower(&vars.), collapse = ", "))
 
 final <- rbind(`&blocks.`)
 

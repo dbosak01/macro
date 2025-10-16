@@ -117,12 +117,12 @@ put("Call means procedure to get summary statistics for age")
 proc_means(dm_f, var = AGE,
            stats = v(n, mean, std, median, q1, q3, min, max),
            by = ARM,
-           options = v(notype, nofreq)) -> `age_stats`
+           options = v(notype, nofreq)) -> stats_age
 
 put("Combine stats")
-datastep(`age_stats`,
+datastep(stats_age,
          format = fc,
-         drop = find.names(`age_stats`, start = 4),
+         drop = find.names(stats_age, start = 4),
          {
            VAR <- "lbl."
            `Mean (SD)` <- fapply2(MEAN, STD)
@@ -131,13 +131,13 @@ datastep(`age_stats`,
            `Min - Max` <- fapply2(MIN, MAX, sep = " - ")
 
 
-         }) -> `age_comb`
+         }) -> comb_age
 
 put("Transpose ARMs into columns")
-proc_transpose(`age_comb`,
-               var = names(`age_comb`),
+proc_transpose(comb_age,
+               var = names(comb_age),
                copy = VAR, id = BY,
-               name = LABEL) -> `age_block`
+               name = LABEL) -> block_age
 
 # Age Group Block ---------------------------------------------------------------
 
@@ -147,29 +147,29 @@ put("Get ageg frequency counts")
 proc_freq(dm_f,
           table = AGEG,
           by = ARM,
-          options = nonobs) -> `ageg_freq`
+          options = nonobs) -> freq_ageg
 
 put("Combine counts and percents and assign age group factor for sorting")
-datastep(`ageg_freq`,
+datastep(freq_ageg,
          format = fc,
          keep = v(VAR, LABEL, BY, CNTPCT),
          {
            VAR <- "Age Group"
            CNTPCT <- fapply2(CNT, PCT)
            LABEL <- CAT
-         }) -> `ageg_comb`
+         }) -> comb_ageg
 
 
-put("Sort by lvar. factor")
-proc_sort(`ageg_comb`, by = v(BY, LABEL)) -> `ageg_sort`
+put("Sort by ageg factor")
+proc_sort(comb_ageg, by = v(BY, LABEL)) -> sort_ageg
 
-put("Tranpose lvar. block")
-proc_transpose(`ageg_sort`,
+put("Tranpose ageg block")
+proc_transpose(sort_ageg,
                var = CNTPCT,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> `ageg_block`
+               options = noname) -> block_ageg
 
 # Sex Block ---------------------------------------------------------------
 
@@ -179,29 +179,29 @@ put("Get sex frequency counts")
 proc_freq(dm_f,
           table = SEX,
           by = ARM,
-          options = nonobs) -> `sex_freq`
+          options = nonobs) -> freq_sex
 
 put("Combine counts and percents and assign age group factor for sorting")
-datastep(`sex_freq`,
+datastep(freq_sex,
          format = fc,
          keep = v(VAR, LABEL, BY, CNTPCT),
          {
            VAR <- "Sex"
            CNTPCT <- fapply2(CNT, PCT)
            LABEL <- fapply(CAT, fc$SEX)
-         }) -> `sex_comb`
+         }) -> comb_sex
 
 
-put("Sort by lvar. factor")
-proc_sort(`sex_comb`, by = v(BY, LABEL)) -> `sex_sort`
+put("Sort by sex factor")
+proc_sort(comb_sex, by = v(BY, LABEL)) -> sort_sex
 
-put("Tranpose lvar. block")
-proc_transpose(`sex_sort`,
+put("Tranpose sex block")
+proc_transpose(sort_sex,
                var = CNTPCT,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> `sex_block`
+               options = noname) -> block_sex
 
 # Race Block ---------------------------------------------------------------
 
@@ -211,35 +211,35 @@ put("Get race frequency counts")
 proc_freq(dm_f,
           table = RACE,
           by = ARM,
-          options = nonobs) -> `race_freq`
+          options = nonobs) -> freq_race
 
 put("Combine counts and percents and assign age group factor for sorting")
-datastep(`race_freq`,
+datastep(freq_race,
          format = fc,
          keep = v(VAR, LABEL, BY, CNTPCT),
          {
            VAR <- "Race"
            CNTPCT <- fapply2(CNT, PCT)
            LABEL <- fapply(CAT, fc$RACE)
-         }) -> `race_comb`
+         }) -> comb_race
 
 
-put("Sort by lvar. factor")
-proc_sort(`race_comb`, by = v(BY, LABEL)) -> `race_sort`
+put("Sort by race factor")
+proc_sort(comb_race, by = v(BY, LABEL)) -> sort_race
 
-put("Tranpose lvar. block")
-proc_transpose(`race_sort`,
+put("Tranpose race block")
+proc_transpose(sort_race,
                var = CNTPCT,
                copy = VAR,
                id = BY,
                by = LABEL,
-               options = noname) -> `race_block`
+               options = noname) -> block_race
 
 # Create final data frame -------------------------------------------------
 
 
 
-final <- rbind(age_block, ageg_block, sex_block, race_block)
+final <- rbind(block_age, block_ageg, block_sex, block_race)
 
 # Report ------------------------------------------------------------------
 

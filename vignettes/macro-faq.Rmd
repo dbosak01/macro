@@ -28,6 +28,7 @@ on the links below to navigate to the full question and answer content.
 * [Can I create macro functions and do loops?](#functions)
 * [Can I nest macro conditionals?](#nest)
 * [How does %include work?](#include)
+* [Why are the debug line numbers off?](#lines)
 * [How can I use this package to generate code?](#generate)
 * [Why should I use this package for code generation?](#benefits)
 
@@ -138,6 +139,24 @@ resolved normally.
 
 ******
 
+### Why are the debug line numbers off? {#lines}
+
+**Q:** I'm trying to debug a macro. But the line numbers on the "In#" column 
+don't seem to match my program.  What is going on?
+
+
+**A:** The line numbers shown on the "In#" column represent every input
+line processed.  These lines can come from different sources: the original
+program, any included code, any macro functions, and code inside do loops.  
+That is why the line
+numbers do not necessarily match the original program one for one.  
+When trying to find the line that is causing an error, take these 
+additional sources into consideration.
+
+[top](#top) 
+
+******
+
 ### How can I use this package to generate code? {#generate}
 
 **Q:** In the documentation you mention that the **macro** package can
@@ -176,6 +195,8 @@ makes the generated code self-contained, portable, and totally transparent.
 [top](#top) 
 
 ******
+
+
 <!-- ### Question 1? {#q1} -->
 
 <!-- **Q:** I have a question? -->

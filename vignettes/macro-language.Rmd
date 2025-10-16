@@ -143,7 +143,7 @@ Observe that when macro variables appear inside text strings, comments,
 or macro commands, they do not need to be escaped with backticks.  
 
 Also observe with the macro variable "&b" that single or double quotes 
-have no effect on macro variable resolution. Both are resolved normally.  
+have no effect on macro variable resolution. Both are resolved normally.
 This behavior is different from SAS.
 
 If you do not quote the macro variable value, and do not quote the macro variable

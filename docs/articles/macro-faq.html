@@ -71,9 +71,6 @@
       <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
-      <a href="../articles/macro-generated.html">Generalized vs. Generated</a>
-    </li>
-    <li>
       <a href="../articles/macro-disclaimer.html">Disclaimer</a>
     </li>
     <li>
@@ -134,6 +131,7 @@ provide?</a></li>
 loops?</a></li>
 <li><a href="#nest">Can I nest macro conditionals?</a></li>
 <li><a href="#include">How does %include work?</a></li>
+<li><a href="#lines">Why are the debug line numbers off?</a></li>
 <li><a href="#generate">How can I use this package to generate
 code?</a></li>
 <li><a href="#benefits">Why should I use this package for code
@@ -237,6 +235,23 @@ There is no limit on the number of nested levels.</p>
 the basic functionality of SAS “%include”. Text from the included file
 will be extracted and inserted into the generated file. Any macro
 statements in the included code will be resolved normally.</p>
+<p><a href="#top">top</a></p>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="lines">Why are the debug line numbers off?<a class="anchor" aria-label="anchor" href="#lines"></a>
+</h3>
+<p><strong>Q:</strong> I’m trying to debug a macro. But the line numbers
+on the “In#” column don’t seem to match my program. What is going
+on?</p>
+<p><strong>A:</strong> The line numbers shown on the “In#” column
+represent every input line processed. These lines can come from
+different sources: the original program, any included code, any macro
+functions, and code inside do loops.<br>
+That is why the line numbers do not necessarily match the original
+program one for one.<br>
+When trying to find the line that is causing an error, take these
+additional sources into consideration.</p>
 <p><a href="#top">top</a></p>
 <hr>
 </div>

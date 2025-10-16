@@ -21,7 +21,7 @@ let's first discuss the macro concept at a high level.
 
 A macro language is like a meta-language for code.  The meta-language runs first,
 generates the regular code, and then the regular code is executed to produce 
-some sort of output. It is, at heart, a text replacement/generation system.
+some sort of output. It is, at heart, a text manipulation system.
 
 The SAS® macro language is commonly used in SAS programs. The R **macro** package 
 was inspired by SAS. Specifically, the **macro** package aims to replicate
@@ -135,7 +135,7 @@ execute a chunk of code.
 5. **Built-in Macro Functions**: A small number of macro functions
 to make the system more practical.
 6. **Macro Do Loops**: Copies code inside the do block for each iteration of the loop.
-7. **User-Defined Macro Functions**: The ability to create a user-defined  
+7. **User-Defined Macro Functions**: The ability to create a user-defined 
 text-replacement function, with or without parameters.
 
 ### Macro Comments and Variables
@@ -237,7 +237,7 @@ text replacement.
 
 ### Simple Macro Conditionals
 
-Macro conditionals allows you to conditionally execute a chunk of code.  If
+Macro conditionals allow you to conditionally execute a chunk of code.  If
 a macro condition is TRUE, the code inside that condition will be output
 to the generated code file and executed.  Otherwise, the code will not be
 emitted. This feature makes the generated code file more compact.
@@ -532,7 +532,7 @@ to avoid copying the code, but still want a resolved and transparent output file
 
 ### User-defined Macro Functions
 
-User-defined macro functions allows you to wrap up a set up statements,
+User-defined macro functions allow you to wrap up a set up statements,
 assign a name to it, and call these functions as needed. Calling the function
 will insert the contents of the function into the generated file. It is 
 important to note the difference between a regular R function and an R

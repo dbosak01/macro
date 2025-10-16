@@ -388,7 +388,7 @@ test_that("msource14: test debug_out.", {
   e1 <- new.env()
 
   res <- msource(fl1, envir = e1, debug = TRUE,
-                 debug_out = fl2)
+                 debug_out = fl2, symbolgen = TRUE)
 
   eres <- file.exists(fl2)
 
