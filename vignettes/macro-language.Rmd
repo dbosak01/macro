@@ -89,6 +89,9 @@ as a string, and replaced exactly as assigned.  That means if the value is
 assigned without quotes, it will be replaced without quotes.  If the value
 is quoted, the quotes will be retained during replacement.  
 
+Macro variable resolution can be delayed using multiple ampersands.  See 
+example below.
+
 ### Examples
 
 #### Basic Assignment
