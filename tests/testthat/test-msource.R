@@ -532,6 +532,23 @@ test_that("msource20: mreplace() nested and double replacements.", {
 
   expect_equal(res, "mvar1 is fork and fork")
 
+  is_let("#%let x = 1", TRUE)
+  is_let("#%let mvar = spork", TRUE)
+  is_let("#%let mvar1 = fork", TRUE)
+
+
+  ln <- "mvar1 is &&mvar&x.."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "mvar1 is fork")
+
+  ln <- "mvar1 is &&mvar&x.. and &&mvar&x.."
+
+  res <- mreplace(ln)
+
+  expect_equal(res, "mvar1 is fork and fork")
+
 })
 
 

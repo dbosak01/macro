@@ -239,6 +239,34 @@ macro processor first found the variable "&x" and replaced it with the value
 "&mvar1" was also a macro variable, and made the replacement. The system
 allows up to 10 levels of nesting.  This feature can be useful in some situations.
 
+
+#### Delayed Resolution
+
+If needed, macro variable assignment can be delayed using additional ampersands.
+For example, let's say there was another macro variable `mvar` and we don't want
+to conflict with it.  In that case, you can add another ampersand and delay
+resolution to get the proper assignment to `mvar1`:
+
+```{r eval=FALSE, echo=TRUE}
+#%let x <- 1
+#%let mvar <- Goodbye!
+#%let mvar1 <- Hello!
+
+print("&mvar&x")
+print("&&mvar&x")
+```
+The above code resolved as follows:
+```
+print("Goodbye!1")
+print("Hello!")
+```
+Notice the difference in the resolution between `&mvar` and `&&mvar`.  Since `&mvar`
+was a valid macro variable, it performed the replacement when encountered.  The 
+same with `&x`.  But for `&&mvar`, the double ampersand delayed resolution until after
+`&x` had been replaced.  At that point, `&&mvar` becomes `&mvar1`, and the replacement
+is made for `&mvar1`.  In this way,
+you have fine-grained control over how and when macro variables resolve.
+
 #### Advanced Assignment
 
 The examples above use R macro variables much like regular variables. However,

@@ -722,64 +722,68 @@ mreplace <- function(ln) {
           # Do replacements for found variables
           for (vr in fvrs) {
 
-            # Get value
-            if (is.null(gbl$env)) {
-              vl <- e[[vr]]
-            } else {
-              vl <- gbl$env[[vr]]
-            }
+            if (sub_ready(ret, vr, itr)) {
 
-            # Ensure value is suitable for replacement
-            if (length(vl) > 1) {
-
-              if (is.vector(vl)) {
-                # Deal with vectors
-                # Need to be converted to a string suitable for replacement
-                if (length(names(vl)) > 0) {
-                  # browser()
-                  nms <- names(vl)
-                  nmstr <- paste0("'", nms, "'")
-
-                  if (is.character(vl)) {
-                    vlstr <- paste0("'", vl, "'")
-
-                  } else {
-                    vlstr <- vl
-                  }
-                  vl <- paste0("c(", paste0(nmstr, " = ", vlstr, collapse = ", "), ")")
-                } else {
-                  if (is.character(vl)) {
-                    vl <- paste0("c('", paste0(vl, collapse = "', '"), "')")
-                  } else {
-                    vl <- paste0("c(", paste0(vl, collapse = ', '), ")")
-                  }
-                }
+              # Get value
+              if (is.null(gbl$env)) {
+                vl <- e[[vr]]
               } else {
-                vl <- as.character(vl)
-
+                vl <- gbl$env[[vr]]
               }
-            } else if ("Date" %in% class(vl)) {
-              vl <- paste0("as.Date('", vl, "')")
-            } else if ("POSIXct" %in% class(vl)) {
-              vl <- paste0("as.POSIXct('", vl, "')")
-            } else if ("POSIXlt" %in% class(vl)) {
-              vl <- paste0("as.POSIXlt('", vl, "')")
-            } else if (is.character(vl) == FALSE) {
-              vl <- as.character(vl)
-            }
 
-            # Perform replacement if valid character value
-            if (length(vl) == 1 & is.character(vl) == TRUE) {
-              if (!is.null(gbl$symbolgen)) {
-                if (gbl$symbolgen) {
+              # Ensure value is suitable for replacement
+              if (length(vl) > 1) {
 
-                  log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
+                if (is.vector(vl)) {
+                  # Deal with vectors
+                  # Need to be converted to a string suitable for replacement
+                  if (length(names(vl)) > 0) {
+                    # browser()
+                    nms <- names(vl)
+                    nmstr <- paste0("'", nms, "'")
+
+                    if (is.character(vl)) {
+                      vlstr <- paste0("'", vl, "'")
+
+                    } else {
+                      vlstr <- vl
+                    }
+                    vl <- paste0("c(", paste0(nmstr, " = ", vlstr, collapse = ", "), ")")
+                  } else {
+                    if (is.character(vl)) {
+                      vl <- paste0("c('", paste0(vl, collapse = "', '"), "')")
+                    } else {
+                      vl <- paste0("c(", paste0(vl, collapse = ', '), ")")
+                    }
+                  }
+                } else {
+                  vl <- as.character(vl)
+
                 }
+              } else if ("Date" %in% class(vl)) {
+                vl <- paste0("as.Date('", vl, "')")
+              } else if ("POSIXct" %in% class(vl)) {
+                vl <- paste0("as.POSIXct('", vl, "')")
+              } else if ("POSIXlt" %in% class(vl)) {
+                vl <- paste0("as.POSIXlt('", vl, "')")
+              } else if (is.character(vl) == FALSE) {
+                vl <- as.character(vl)
               }
-              # ret <- gsub(vr, vl, ret, fixed = TRUE)
-              ret <- sub_mvar(ret, vr, vl)
-            } else {
-              stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
+
+              # Perform replacement if valid character value
+              if (length(vl) == 1 & is.character(vl) == TRUE) {
+                if (!is.null(gbl$symbolgen)) {
+                  if (gbl$symbolgen) {
+
+                    log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
+                  }
+                }
+                # ret <- gsub(vr, vl, ret, fixed = TRUE)
+                ret <- sub_mvar(ret, vr, vl)
+              } else {
+                stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
+              }
+
             }
           }
         }

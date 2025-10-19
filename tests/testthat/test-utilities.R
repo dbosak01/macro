@@ -606,5 +606,18 @@ test_that("utils18: find_mvar() basic functionality.", {
 
   expect_equal(res, "my 1 and more stuff")
 
+  res <- sub_mvar("my &a and &a", "&a", "1")
+
+  expect_equal(res, "my 1 and 1")
+
+})
+
+test_that("utils19: sub_ready() basic functionality.", {
+
+  expect_equal(sub_ready("my &&&a", "&a", 1), FALSE)
+  expect_equal(sub_ready("my &&&a", "&a", 2), FALSE)
+  expect_equal(sub_ready("my &&&a", "&a", 3), TRUE)
+  expect_equal(sub_ready("my &&&a", "&a", 4), TRUE)
+
 })
 

@@ -415,42 +415,86 @@ process_do <- function(lns, idx, lvl, ido) {
 #' @noRd
 sub_mvar <- function(ln, varnm, varvl) {
 
-  rvl <- varnm
-  pos <- regexpr(rvl, ln, fixed = TRUE)
-  epos <- pos + nchar(rvl) - 1
-  ftick <- FALSE
+  ret <- ln
 
-  if (pos > 1) {
-    if (substring(ln, pos - 1, pos - 1) == "`") {
-      ftick <- TRUE
+  cnt <- gregexpr(varnm, ret, fixed = TRUE)[[1]]
+
+  if (length(cnt) > 0) {
+    for (itr in seq(1, length(cnt))) {
+
+      rvl <- varnm
+      pos <- regexpr(rvl, ret, fixed = TRUE)
+      epos <- pos + nchar(rvl) - 1
+      ftick <- FALSE
+
+      if (pos > 1) {
+
+        # Find end of ampersands
+        for (idx in seq(1, 9)) {
+           if (substring(ret, pos - idx, pos - idx) != "&") {
+             if (idx > 1) {
+               rvl <- paste0("&", rvl)
+               pos <- pos - idx + 1
+             }
+             break
+           }
+        }
+
+        # Identify leading tick
+        if (substring(ret, pos - 1, pos - 1) == "`") {
+          ftick <- TRUE
+        }
+      }
+
+      if (epos < nchar(ret)) {
+
+        # Replace trailing dot if found
+        if (substring(ret, epos, epos) != ".") {
+          if (substring(ret, epos + 1, epos + 1) == ".") {
+            rvl <- paste0(rvl, ".")
+          }
+        }
+
+        # Replace trailing tick if found
+        if (substring(ret, epos + 1, epos + 1) == "`") {
+          if (ftick) {
+            rvl <- paste0("`", rvl, "`")
+          }
+        }
+      }
+
+      if (epos + 1 < nchar(ret)) {
+
+        # Replace trailing tick when no trailing dot
+        if (substring(ret, epos + 2, epos + 2) == "`") {
+          if (ftick) {
+            rvl <- paste0("`", rvl, "`")
+          }
+        }
+      }
+
+      ret <- sub(rvl, varvl, ret, fixed = TRUE)
+
     }
   }
-
-  if (epos < nchar(ln)) {
-    if (substring(ln, epos, epos) != ".") {
-      if (substring(ln, epos + 1, epos + 1) == ".") {
-        rvl <- paste0(rvl, ".")
-      }
-    }
-
-    if (substring(ln, epos + 1, epos + 1) == "`") {
-      if (ftick) {
-        rvl <- paste0("`", rvl, "`")
-      }
-    }
-  }
-
-  if (epos + 1 < nchar(ln)) {
-    if (substring(ln, epos + 2, epos + 2) == "`") {
-      if (ftick) {
-        rvl <- paste0("`", rvl, "`")
-      }
-    }
-  }
-
-  ret <- sub(rvl, varvl, ln, fixed = TRUE)
 
   return(ret)
+
+}
+
+sub_ready <- function(ln, varnm, itr) {
+
+  ret <- TRUE
+  pos <- regexpr(varnm, ln, fixed = TRUE)
+  ofst <- itr
+
+  if (pos > ofst) {
+    if (substring(ln, pos - ofst, pos - ofst) == "&") {
+      ret <- FALSE
+    }
+  }
+
+ return(ret)
 
 }
 
