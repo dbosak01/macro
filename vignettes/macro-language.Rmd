@@ -332,7 +332,7 @@ unexpected behavior.
 Parenthesis around the conditional expressions are optional but recommended.
 
 The syntax of R conditionals is somewhat different from SAS. One difference is
-that the `%then %do` directives in SAS has been entirely eliminated from
+that the `%then %do` directives in SAS have been entirely eliminated from
 the **macro** package syntax.
 Another difference is that the `#%ifelse` command is one word instead of two.  
 A third difference
@@ -515,14 +515,23 @@ The **macro** package currently supports three built-in macro functions:
 Where "&lt;expression&gt;" is an R expression,
 and "&lt;format&gt;" is an optional format code.  The expression may
 contain R functions, operators, hard-coded values, and macro variables.
+
 If "&lt;format&gt;" is supplied, the function will apply the format after 
 the expression is resolved, and return the formatted value.  The format code does 
 not need to be quoted.  If the format is unquoted, the output of the 
 `%sysfunc()` function will be unquoted. If the format is quoted, the output of the 
 `%sysfunc()` function will be quoted.
 
+Formats specified on the `%sysfunc()` function may be any format code supported
+by the `fapply()` function from the **fmtr** package.  See the 
+[fapply](https://fmtr.r-sassy.org/reference/fapply.html) reference page and the 
+[FormattingStrings](https://fmtr.r-sassy.org/reference/FormattingStrings.html) 
+page for further information.
+
 Note that the R `%sysfunc()` is a general evaluation function.  It can evaluate
-any R expression, even those that do not resolve to a numeric value.  
+any R expression, even those that do not resolve to a numeric value. Likewise,
+the optional format can be any type of format supported by `fapply()`, even
+those that take text input.
 
 ```
 %symexist(<name>)
@@ -700,7 +709,7 @@ b <- c('one', 'two', 'three')
 print(a)
 print(b)
 ```
-You can see the length and value of vector 'v1' has been pulled from the normal
+You can see the length and value of vector 'v1' has been pulled from normal
 R code into macro variables.  These macro variables can then be used with
 other macro commands to control what happens during pre-processing.
 
@@ -847,7 +856,7 @@ If a macro variable inside the function is defined with the same name
 as a macro variable defined outside the function, a new variable is created
 within the scope of the macro function.  
 
-Macro function can be created inside other macro functions.  The scope of the 
+Macro functions can be created inside other macro functions.  The scope of the 
 inner function will be nested inside the outer function.  Any macro variables
 not passed into the inner function will be looked up first in the outer function,
 and then in the global environment.
@@ -873,7 +882,7 @@ And the generated code is this:
 print("Print the text: Hello!")
 ```
 Note that the macro definition and call have both been removed.  Only the 
-code inside the macro function has been emitted to the generated code.
+code inside the macro function has been emitted.
 
 Here is a more interesting example:
 ```{r eval=FALSE, echo=TRUE}
@@ -899,7 +908,7 @@ cat("\n")
 ```
 The above example loops through some variables on the `iris` dataset and 
 prints an analysis for each to the console.  The macro function `print_analysis()`
-uses the **dplyr** package, and accepts parameters for the dataset, by variable, 
+uses the **dplyr** package, and accepts parameters for the dataset name, by variable, 
 and analysis variable. 
 
 Here is the console output:
