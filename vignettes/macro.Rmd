@@ -231,7 +231,7 @@ c <- mean(c(1, 2, 3, 4, 5))
 print(c)
 
 ```
-Notice in the above generated code that the macro variables '&v3' and '&v5' were
+Notice in the above generated code that the macro variables `&v3` and `&v5` were
 replaced exactly as they were assigned.  All macro variable resolution is 
 text replacement.
 
@@ -486,7 +486,9 @@ a <- 3
 # Assign vector values with macro variable
 b <- c('one', 'two', 'three')
 ```
-This feature gives you the capability to make decisions in pre-processing
+As you can see, the `%symput()` function provides a way to pass values back and
+forth between Base R and the macro language seamlessly.  This feature gives you 
+the capability to make decisions in pre-processing
 based on what is happening during execution.
 
 ### Macro Do Loops
@@ -622,6 +624,5 @@ Here are some more articles for further exploration of the **macro** package:
 - [Example 1: Listing](macro-example1.html)
 - [Example 2: Another Listing](macro-example2.html)
 - [Example 3: Table](macro-example3.html)
-- [Generalized vs. Generated](macro-generated.html)
 - [Disclaimer](macro-disclaimer.html)
 - [Frequently Asked Questions](macro-faq.html)

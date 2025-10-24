@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Macro Language">
+<script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="Macro Language">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -116,12 +116,25 @@
 
     
     
-<p>Below is a glossary for all macro commands in the
-<strong>macro</strong> package. The glossary contains the syntax, a
+<p>Below is the documentation for all macro commands in the
+<strong>macro</strong> package. The documentation contains the syntax, a
 detailed explanation, and examples for each of the available
 commands.</p>
 <div class="section level2">
-<h2 id="macro-comments">Macro Comments<a class="anchor" aria-label="anchor" href="#macro-comments"></a>
+<h2 id="top">Index<a class="anchor" aria-label="anchor" href="#top"></a>
+</h2>
+<ul>
+<li><a href="#comments">Macro Comments</a></li>
+<li><a href="#variables">Macro Variables</a></li>
+<li><a href="#conditionals">Macro Conditionals</a></li>
+<li><a href="#include">Macro Include</a></li>
+<li><a href="#builtin">Built-in Macro Functions</a></li>
+<li><a href="#doloop">Macro Do Loops</a></li>
+<li><a href="#functions">User-Defined Macro Functions</a></li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="comments">Macro Comments<a class="anchor" aria-label="anchor" href="#comments"></a>
 </h2>
 <div class="section level3">
 <h3 id="syntax">Syntax<a class="anchor" aria-label="anchor" href="#syntax"></a>
@@ -152,10 +165,11 @@ regular comment is retained:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Here is a regular comment</span></span></code></pre></div>
+<p><a href="#top">top</a></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="macro-variables">Macro Variables<a class="anchor" aria-label="anchor" href="#macro-variables"></a>
+<h2 id="variables">Macro Variables<a class="anchor" aria-label="anchor" href="#variables"></a>
 </h2>
 <div class="section level3">
 <h3 id="syntax-1">Syntax<a class="anchor" aria-label="anchor" href="#syntax-1"></a>
@@ -237,9 +251,13 @@ variable name, and allow it to contain any character.</p>
 <p>Observe that when macro variables appear inside text strings,
 comments, or macro commands, they do not need to be escaped with
 backticks.</p>
-<p>Also observe with the macro variable “&amp;b” that single or double
-quotes have no effect on macro variable resolution. Both are resolved
-normally. This behavior is different from SAS.</p>
+<p>Also observe with the macro variable <code>&amp;b</code> that single
+or double quotes have no effect on macro variable resolution. Both are
+resolved normally. This behavior is different from SAS.</p>
+</div>
+<div class="section level4">
+<h4 id="unquoted-assignment-errors">Unquoted Assignment Errors<a class="anchor" aria-label="anchor" href="#unquoted-assignment-errors"></a>
+</h4>
 <p>If you do not quote the macro variable value, and do not quote the
 macro variable to be replaced, it will result in an error:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -268,9 +286,9 @@ table, leave it unassigned. Like this:</p>
 <span><span class="co">#% Clear assignment</span></span>
 <span><span class="co">#%let b</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">`&amp;b`</span></span></code></pre></div>
-<p>The above code will generate an error, as the “y” assignment runs
-after the “&amp;b” macro variable has been cleared. Here is the error
-that is generated:</p>
+<p>The above code will generate an error, as the <code>y</code>
+assignment runs after the <code>&amp;b</code> macro variable has been
+cleared. Here is the error that is generated:</p>
 <pre><code>Error in mreplace(ln) : 
   Macro variable '&amp;b' not valid for text replacement.</code></pre>
 </div>
@@ -389,10 +407,51 @@ illustrate that the R macro language views all code as text. You can
 construct comments, lines of code, variable names, function calls,
 parameters, or anything else using the macro language.</p>
 </div>
+<div class="section level4">
+<h4 id="dynamic-variable-creation">Dynamic Variable Creation<a class="anchor" aria-label="anchor" href="#dynamic-variable-creation"></a>
+</h4>
+<p>You can create the names of regular R variables dynamically using
+macro variables. There are different ways to do it. Here are some of the
+different ways:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Assign variable name to macro</span></span>
+<span><span class="co">#%let x &lt;- cyl</span></span>
+<span></span>
+<span><span class="co"># Leading macro replacement</span></span>
+<span><span class="va">`&amp;x._mean`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"&amp;x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Trailing macro replacement</span></span>
+<span><span class="va">mean_</span><span class="op">&amp;</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"&amp;x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Middle macro replacement</span></span>
+<span><span class="va">my_</span><span class="op">&amp;</span><span class="va">x_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"&amp;x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Intermediate macro replacement</span></span>
+<span><span class="co">#%let myvar &lt;- &amp;x_mean</span></span>
+<span><span class="va">`&amp;myvar`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"&amp;x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>                </span></code></pre></div>
+<p>Here is the resolved code:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Leading macro replacement</span></span>
+<span><span class="va">`cyl_mean`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Trailing macro replacement</span></span>
+<span><span class="va">mean_cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Middle macro replacement</span></span>
+<span><span class="va">my_cyl_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Intermediate macro replacement</span></span>
+<span><span class="va">cyl_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>Notice that you only need backtick escapes when you have a leading
+macro variable.</p>
+<p><a href="#top">top</a></p>
+</div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="macro-conditionals">Macro Conditionals<a class="anchor" aria-label="anchor" href="#macro-conditionals"></a>
+<h2 id="conditionals">Macro Conditionals<a class="anchor" aria-label="anchor" href="#conditionals"></a>
 </h2>
 <div class="section level3">
 <h3 id="syntax-2">Syntax<a class="anchor" aria-label="anchor" href="#syntax-2"></a>
@@ -455,7 +514,7 @@ on the number of nested levels.</p>
 </h4>
 <p>Here is a simple condition to construct a path. The source directory
 can change depending on the environment.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%let dev_path &lt;- ./dev/data</span></span>
 <span><span class="co">#%let prod_path &lt;- ./prod/data</span></span>
 <span><span class="co">#%let env &lt;- dev</span></span>
@@ -468,7 +527,7 @@ can change depending on the environment.</p>
 <span><span class="co">#%end</span></span></code></pre></div>
 <p>When run through the macro processor, the above code will generate
 the following:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Path to data</span></span>
 <span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="st">"./dev/data/dm.sas7bdat"</span></span></code></pre></div>
@@ -480,7 +539,7 @@ the path appropriately, and removed all macro statements.</p>
 </h4>
 <p>Macro conditionals may also be nested inside one another. Nesting
 allows you to construct more complicated logic. Here is an example:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Data source SAS or RDS</span></span>
 <span><span class="co">#%let src &lt;- SAS</span></span>
 <span></span>
@@ -513,7 +572,7 @@ allows you to construct more complicated logic. Here is an example:</p>
 <span></span>
 <span><span class="co">#%end</span></span></code></pre></div>
 <p>When the nested conditionals resolve, they will look like this:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">######################</span></span>
 <span><span class="co"># Get data</span></span>
 <span><span class="co">######################</span></span>
@@ -526,11 +585,12 @@ allows you to construct more complicated logic. Here is an example:</p>
 <span>  <span class="va">advs</span> <span class="op">&lt;-</span> <span class="fu">haven</span><span class="op">(</span><span class="st">"./data/ADVS.sas7bdat"</span><span class="op">)</span></span></code></pre></div>
 <p>In this way, you can perform complex logic in the macro
 pre-processor, and still produce a concise output.</p>
+<p><a href="#top">top</a></p>
 </div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="macro-include">Macro Include<a class="anchor" aria-label="anchor" href="#macro-include"></a>
+<h2 id="include">Macro Include<a class="anchor" aria-label="anchor" href="#include"></a>
 </h2>
 <div class="section level3">
 <h3 id="syntax-3">Syntax<a class="anchor" aria-label="anchor" href="#syntax-3"></a>
@@ -558,14 +618,14 @@ other included code.</p>
 </h3>
 <p>The below example includes code from the file “dat01.R”. This file
 contains a snippet of sample data:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create sample data</span></span>
 <span><span class="co">#%include "./templates/dat01.R"</span></span>
 <span></span>
 <span><span class="co"># Print sample data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
 <p>The resolved macro will look like this:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create sample data</span></span>
 <span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header <span class="op">=</span> <span class="cn">TRUE</span>, text <span class="op">=</span> <span class="st">'</span></span>
 <span><span class="st">       SUBJID  ARM    SEX  RACE    AGE</span></span>
@@ -591,10 +651,11 @@ contains a snippet of sample data:</p>
 <p>Notice that the included code is integrated with the surrounding code
 from the macro-enabled program. In this way, you can collate a program
 from multiple code snippets into a unified result.</p>
+<p><a href="#top">top</a></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="built-in-macro-functions">Built-in Macro Functions<a class="anchor" aria-label="anchor" href="#built-in-macro-functions"></a>
+<h2 id="builtin">Built-in Macro Functions<a class="anchor" aria-label="anchor" href="#builtin"></a>
 </h2>
 <p>The <strong>macro</strong> package currently supports three built-in
 macro functions: <code>%sysfunc()</code>, <code>%symexist()</code>, and
@@ -672,7 +733,7 @@ goal.</p>
 </h4>
 <p>Here are some examples illustrating the basic operation of
 <code>%sysfunc()</code>:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Unevaluated assignment</span></span>
 <span><span class="co">#%let a &lt;- 2 + 2</span></span>
 <span><span class="va">w</span> <span class="op">&lt;-</span> <span class="va">`&amp;a`</span></span>
@@ -690,7 +751,7 @@ goal.</p>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">`&amp;d`</span></span>
 <span>  </span></code></pre></div>
 <p>The above code resolves as follows:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">4</span></span>
@@ -698,7 +759,7 @@ goal.</p>
 <p>Observe the different ways each expression resolves depending on the
 usage <code>%sysfunc()</code>.</p>
 <p>Here is another example:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%let a &lt;- c(1.205, 4.683, 3.812, 6.281, 9.467)</span></span>
 <span></span>
 <span><span class="co">#%if (%sysfunc(mean(&amp;a.)) &gt; 5)</span></span>
@@ -713,7 +774,7 @@ compares to the hard-coded value 5, and then sets the value of
 <code>x</code>. The <code>%sysfunc()</code> macro function allows for
 immediate evaluation of the Base R <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> function.</p>
 <p>Here is the resolved code:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"&gt;5"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"The mean of 'a' is 5.09"</span><span class="op">)</span></span></code></pre></div>
@@ -730,7 +791,7 @@ evaluate as desired.</p>
 </h4>
 <p>Below is a simple example checking for the existence of some macro
 variables before using them in a calculation:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Check for existance of a</span></span>
 <span><span class="co">#%if (%symexist(a) == FALSE)</span></span>
 <span>  <span class="co">#%let a &lt;- 2</span></span>
@@ -744,7 +805,7 @@ variables before using them in a calculation:</p>
 <span><span class="co"># Calculate a * b</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">`&amp;a`</span> <span class="op">*</span> <span class="va">`&amp;b`</span></span></code></pre></div>
 <p>And here is the resolved version:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate a * b</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span></span></code></pre></div>
 <p>Notice that the variable name inside the <code>%symexist()</code>
@@ -757,7 +818,7 @@ name.</p>
 </h4>
 <p>Examine the following code. In this code, we are trying to get the
 length of a vector into a macro variable:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assign vector</span></span>
 <span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span></span>
 <span></span>
@@ -776,7 +837,7 @@ following output:</p>
 [1] 3
 [1] "one"   "two"   "three"</code></pre>
 <p>And the generated code looks like this:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assign vector</span></span>
 <span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"one"</span>, <span class="st">"two"</span>, <span class="st">"three"</span><span class="op">)</span></span>
 <span></span>
@@ -791,11 +852,12 @@ following output:</p>
 normal R code into macro variables. These macro variables can then be
 used with other macro commands to control what happens during
 pre-processing.</p>
+<p><a href="#top">top</a></p>
 </div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="macro-do-loops">Macro Do Loops<a class="anchor" aria-label="anchor" href="#macro-do-loops"></a>
+<h2 id="doloop">Macro Do Loops<a class="anchor" aria-label="anchor" href="#doloop"></a>
 </h2>
 <div class="section level3">
 <h3 id="syntax-5">Syntax<a class="anchor" aria-label="anchor" href="#syntax-5"></a>
@@ -823,24 +885,24 @@ copied for each iteration of the loop.</p>
 <h3 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a>
 </h3>
 <p>Here is a simple example of a macro do loop:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%do x = 1 %to 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #&amp;x."</span><span class="op">)</span></span>
 <span><span class="co">#%end</span></span></code></pre></div>
 <p>The console output from the above macro do loop is as follows:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">msource</span>()</span>
-<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #1"</span></span>
-<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #2"</span></span>
-<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #3"</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">msource</span>()</span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #1"</span></span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #2"</span></span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Hello #3"</span></span></code></pre></div>
 <p>And the generated code is as follows:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #2"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Hello #3"</span><span class="op">)</span></span></code></pre></div>
 <p>Observe that the code inside the macro do loop was copied for each
 iteration of the loop.</p>
 <p>Here is a more interesting example:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%let vars &lt;- c("mpg", "disp", "hp", "drat")</span></span>
 <span><span class="co"># Get data</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">mtcars</span></span>
@@ -864,7 +926,7 @@ variables and constructs a code block for each variable.</p>
 [1] "Mean of 'hp' is 146.69"
 [1] "Mean of 'drat' is 3.60"</code></pre>
 <p>And here is the generated code:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get data</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">mtcars</span></span>
 <span></span>
@@ -887,10 +949,11 @@ variables and constructs a code block for each variable.</p>
 names dynamically. The macro system can also produce comments and other
 statements dynamically. Because the macro language is a text replacement
 language, any part of the code is available for manipulation.</p>
+<p><a href="#top">top</a></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="user-defined-macro-functions">User-Defined Macro Functions<a class="anchor" aria-label="anchor" href="#user-defined-macro-functions"></a>
+<h2 id="functions">User-Defined Macro Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
 </h2>
 <div class="section level3">
 <h3 id="syntax-6">Syntax<a class="anchor" aria-label="anchor" href="#syntax-6"></a>
@@ -942,7 +1005,7 @@ first in the outer function, and then in the global environment.</p>
 </h3>
 <p>First, let’s declare a simple function, just to see how the
 <strong>macro</strong> function definitions work:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#%macro printit(txt)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Print the text: &amp;txt."</span><span class="op">)</span></span>
 <span><span class="co">#%mend</span></span>
@@ -951,12 +1014,12 @@ first in the outer function, and then in the global environment.</p>
 <pre><code>&gt; msource()
 [1] "Print the text: Hello!"</code></pre>
 <p>And the generated code is this:</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Print the text: Hello!"</span><span class="op">)</span></span></code></pre></div>
 <p>Note that the macro definition and call have both been removed. Only
 the code inside the macro function has been emitted.</p>
 <p>Here is a more interesting example:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#%macro print_analysis(dat, byvar, var)</span></span>
@@ -1008,7 +1071,7 @@ Analysis for Petal.Width
 3  virginica 2.026 0.2746501      1.8
 </code></pre>
 <p>And here is the generated code:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Analysis for Sepal.Length\n"</span><span class="op">)</span></span>
@@ -1059,6 +1122,7 @@ as the absence of a grouping variable.</p>
 convenient because <strong>tidyverse</strong> statements make heavy use
 of non-standard evaluation, which sometimes make them difficult to use
 inside functions, loops, or other dynamic situations.</p>
+<p><a href="#top">top</a></p>
 <p>Next: <a href="macro-debug.html">Debugging</a></p>
 </div>
 </div>

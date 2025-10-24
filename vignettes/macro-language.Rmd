@@ -14,11 +14,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-Below is a glossary for all macro commands in the **macro** package.
-The glossary contains the syntax, a detailed explanation, and examples for
+Below is the documentation for all macro commands in the **macro** package.
+The documentation contains the syntax, a detailed explanation, and examples for
 each of the available commands. 
 
-## Macro Comments
+## Index{#top}
+
+* [Macro Comments](#comments)
+* [Macro Variables](#variables)
+* [Macro Conditionals](#conditionals)
+* [Macro Include](#include)
+* [Built-in Macro Functions](#builtin)
+* [Macro Do Loops](#doloop)
+* [User-Defined Macro Functions](#functions)
+
+## Macro Comments {#comments}
 
 ### Syntax
 
@@ -53,7 +63,9 @@ is retained:
 
 ```
 
-## Macro Variables 
+[top](#top) 
+
+## Macro Variables {#variables}
 
 ### Syntax
 ```
@@ -145,9 +157,11 @@ z <- 'Two'
 Observe that when macro variables appear inside text strings, comments, 
 or macro commands, they do not need to be escaped with backticks.  
 
-Also observe with the macro variable "&b" that single or double quotes 
+Also observe with the macro variable `&b` that single or double quotes 
 have no effect on macro variable resolution. Both are resolved normally.
 This behavior is different from SAS.
+
+#### Unquoted Assignment Errors
 
 If you do not quote the macro variable value, and do not quote the macro variable
 to be replaced, it will result in an error:
@@ -182,8 +196,8 @@ x <- `&b`
 y <- `&b`
 
 ```
-The above code will generate an error, as the "y" assignment runs
-after the "&b" macro variable has been cleared.  Here is the 
+The above code will generate an error, as the `y` assignment runs
+after the `&b` macro variable has been cleared.  Here is the 
 error that is generated:
 ```
 Error in mreplace(ln) : 
@@ -308,7 +322,50 @@ that the R macro language views all code as text.  You can construct
 comments, lines of code, variable names, function calls, parameters, or 
 anything else using the macro language. 
 
-## Macro Conditionals
+#### Dynamic Variable Creation
+
+You can create the names of regular R variables dynamically using macro variables.
+There are different ways to do it.
+Here are some of the different ways:
+```{r eval=FALSE, echo=TRUE}
+#% Assign variable name to macro
+#%let x <- cyl
+
+# Leading macro replacement
+`&x._mean` <- mean(mtcars[["&x"]])
+
+# Trailing macro replacement
+mean_&x <- mean(mtcars[["&x"]])
+
+# Middle macro replacement
+my_&x_mean <- mean(mtcars[["&x"]])
+
+# Intermediate macro replacement
+#%let myvar <- &x_mean
+`&myvar` <- mean(mtcars[["&x"]])
+                
+```
+Here is the resolved code:
+```{r eval=FALSE, echo=TRUE}
+
+# Leading macro replacement
+`cyl_mean` <- mean(mtcars[["cyl"]])
+
+# Trailing macro replacement
+mean_cyl <- mean(mtcars[["cyl"]])
+
+# Middle macro replacement
+my_cyl_mean <- mean(mtcars[["cyl"]])
+
+# Intermediate macro replacement
+cyl_mean <- mean(mtcars[["cyl"]])
+```
+Notice that you only need backtick escapes when you have a leading macro
+variable.
+
+[top](#top) 
+
+## Macro Conditionals {#conditionals}
 
 ### Syntax
 ```
@@ -443,7 +500,9 @@ When the nested conditionals resolve, they will look like this:
 In this way, you can perform complex logic in the macro pre-processor, and 
 still produce a concise output.
 
-## Macro Include
+[top](#top) 
+
+## Macro Include {#include}
 
 ### Syntax
 ```
@@ -503,7 +562,9 @@ Notice that the included code is integrated with the surrounding code
 from the macro-enabled program.  In this way, you can collate a program
 from multiple code snippets into a unified result.
 
-## Built-in Macro Functions
+[top](#top) 
+
+## Built-in Macro Functions {#builtin}
 
 The **macro** package currently supports three built-in macro functions: 
 `%sysfunc()`, `%symexist()`, and `%symput()`.  
@@ -713,7 +774,9 @@ You can see the length and value of vector 'v1' has been pulled from normal
 R code into macro variables.  These macro variables can then be used with
 other macro commands to control what happens during pre-processing.
 
-## Macro Do Loops
+[top](#top) 
+
+## Macro Do Loops {#doloop}
 
 ### Syntax
 ```
@@ -814,7 +877,9 @@ The macro system can also produce comments and other statements dynamically.
 Because the macro language is a text replacement language, any part of the code
 is available for manipulation.
 
-## User-Defined Macro Functions
+[top](#top) 
+
+## User-Defined Macro Functions {#functions}
 
 ### Syntax
 ```
@@ -995,5 +1060,6 @@ statements dynamically.  This feature is convenient because **tidyverse**
 statements make heavy use of non-standard evaluation, which sometimes
 make them difficult to use inside functions, loops, or other dynamic situations.
 
+[top](#top) 
 
 Next: [Debugging](macro-debug.html)

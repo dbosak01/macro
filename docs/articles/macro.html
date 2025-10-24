@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="macro">
+<script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="macro">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -343,9 +343,10 @@ the following result:</p>
 <span><span class="co"># Resolve in a function</span></span>
 <span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span></code></pre></div>
-<p>Notice in the above generated code that the macro variables ‘&amp;v3’
-and ‘&amp;v5’ were replaced exactly as they were assigned. All macro
-variable resolution is text replacement.</p>
+<p>Notice in the above generated code that the macro variables
+<code>&amp;v3</code> and <code>&amp;v5</code> were replaced exactly as
+they were assigned. All macro variable resolution is text
+replacement.</p>
 </div>
 <div class="section level4">
 <h4 id="simple-macro-conditionals">Simple Macro Conditionals<a class="anchor" aria-label="anchor" href="#simple-macro-conditionals"></a>
@@ -585,7 +586,9 @@ expressions:</p>
 <span></span>
 <span><span class="co"># Assign vector values with macro variable</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'one'</span>, <span class="st">'two'</span>, <span class="st">'three'</span><span class="op">)</span></span></code></pre></div>
-<p>This feature gives you the capability to make decisions in
+<p>As you can see, the <code>%symput()</code> function provides a way to
+pass values back and forth between Base R and the macro language
+seamlessly. This feature gives you the capability to make decisions in
 pre-processing based on what is happening during execution.</p>
 </div>
 <div class="section level4">
@@ -717,7 +720,6 @@ programs.</p>
 <li><a href="macro-example1.html">Example 1: Listing</a></li>
 <li><a href="macro-example2.html">Example 2: Another Listing</a></li>
 <li><a href="macro-example3.html">Example 3: Table</a></li>
-<li><a href="macro-generated.html">Generalized vs. Generated</a></li>
 <li><a href="macro-disclaimer.html">Disclaimer</a></li>
 <li><a href="macro-faq.html">Frequently Asked Questions</a></li>
 </ul>

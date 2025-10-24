@@ -99,7 +99,7 @@ proc_freq(dm_f, tables = ARM,
           options = v(nopercent, nonobs)) -> arm_pop
 
 put("Log treatment groups variable")
-trt_grps <- `&trt_grps`
+trt_grps <- `&trt_grps.`
 put(trt_grps)
 
 #%if ("AGEG" %in% &vars.)
@@ -120,7 +120,7 @@ put("Call means procedure to get summary statistics for &lvar.")
 proc_means(dm_f, var = `&var.`,
            stats = v(n, mean, std, median, q1, q3, min, max),
            by = ARM,
-           options = v(notype, nofreq)) -> stats_&lvar
+           options = v(notype, nofreq)) -> `stats_&lvar.`
 
 put("Combine stats")
 datastep(stats_&lvar,
