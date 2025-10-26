@@ -31,24 +31,24 @@ is written in standard R code:
 #***********************************#
 #* Define Macro Variables
 #***********************************#
-sponsor_name. <- "Acme"
-study_name. <- "ABC"
-prog_name. <- "l_dm"
-base_dir. <- "./examples"
-output_dir. <- file.path(base_dir., "output")
-data_dir. <- file.path(base_dir., "data")
-data_file. <- "dm.rda"
-data_name. <- "dm"
-titles. <- c("Listing 1.0", "SDTM Demographics")
-footnotes. <- paste0("'Program: ", prog_name., ".R'")
-output_type. <- "PDF"
-preview. <- TRUE
+`&sponsor_name` <- "Acme"
+`&study_name` <- "ABC"
+`&prog_name` <- "l_dm"
+`&base_dir` <- "c:/packages/macro/tests/testthat/examples"
+`&output_dir` <- file.path(`&base_dir`, "output")
+`&data_dir` <- file.path(`&base_dir`, "data")
+`&data_file` <- "dm.rda"
+`&data_name` <- "dm"
+`&titles` <- c("Listing 1.0", "SDTM Demographics")
+`&footnotes` <- paste0("'Program: ", `&prog_name`, ".R'")
+`&output_type` <- "PDF"
+`&preview` <- TRUE
 
 #***********************************#
 #* Macro Source Listing Template Code
 #***********************************#
-msource(file.path(base_dir., "templates/lst02.R"),
-        file.path(base_dir., "code/l_dm2.R"), 
+msource(file.path(`&base_dir`, "templates/lst02.R"),
+        file.path(`&base_dir`, "code/l_dm2.R"),
         debug = TRUE)
 ```
 Note the following in the above driver:
@@ -132,50 +132,50 @@ you can source the script normally in RStudio or another editor.  When executed,
 the script will write the following to the console:
 ```
 ******************************************************************************** 
-**  Pre-Processing
+**  Pre-Processing 
 ******************************************************************************** 
--    File In:  ./examples/templates/lst02.R 
--   File Out:  ./examples/code/l_dm2.R 
+-    File In: c:/packages/macro/tests/testthat/examples/templates/lst02.R 
+-   File Out: c:/packages/macro/tests/testthat/examples/code/l_dm2.R 
 ******************************************************************************** 
-[ In#][Out#]:
-[   1][   1]: #####################################################################
-[   2][   2]: # Program Name: l_dm
-[   3][   3]: # Study: ABC
-[   4][   4]: #####################################################################
-[   5][   5]: 
-[   6][   6]: library(reporter)
-[   7][   7]: 
-[   8][   8]: # Output path
-[   9][   9]: out_pth <- "./examples/output/l_dm"
-[  10][  10]: 
-[  11][  11]: # Get listing data
-[  12][  12]: load("./examples/data/dm.rda")
-[  13][  13]: 
-[  14][  14]: # Create table object
-[  15][  15]: tbl <- create_table(dm) |>
-[  16][  16]:   define(USUBJID, id_var = TRUE)
-[  17][    ]: 
-[  18][    ]: #% Assign default output type
-[  19][    ]: #%if (TRUE == FALSE)
-[  20][    ]: #%let output_type <- RTF
-[  21][    ]: #%end
-[  22][  17]: 
-[  23][  18]: # Create report object
-[  24][  19]: rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
-[  25][  20]:   page_header("Sponsor: Acme", "Study: ABC") |>
-[  26][  21]:   titles(c('Listing 1.0', 'SDTM Demographics')) |>
-[  27][  22]:   add_content(tbl, align = "left") |>
-[  28][  23]:   footnotes('Program: l_dm.R') |>
-[  29][  24]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
-[  30][  25]: 
-[  31][  26]: # Write report to file
-[  32][    ]: #%if (preview. == TRUE)
-[  33][  27]: write_report(rpt, preview = 1)
-[  34][    ]: #%else
-[  35][    ]: write_report(rpt)
-[  36][    ]: #%end
+[ In#][Out#]: 
+[   1][   1]: ##################################################################### 
+[   2][   2]: # Program Name: l_dm 
+[   3][   3]: # Study: ABC 
+[   4][   4]: ##################################################################### 
+[   5][   5]:  
+[   6][   6]: library(reporter) 
+[   7][   7]:  
+[   8][   8]: # Output path 
+[   9][   9]: out_pth <- "c:/packages/macro/tests/testthat/examples/output/l_dm" 
+[  10][  10]:  
+[  11][  11]: # Get listing data 
+[  12][  12]: load("c:/packages/macro/tests/testthat/examples/data/dm.rda") 
+[  13][  13]:  
+[  14][  14]: # Create table object 
+[  15][  15]: tbl <- create_table(dm) |> 
+[  16][  16]:   define(USUBJID, id_var = TRUE) 
+[  17][  17]:  
+[  18][    ]: #% Assign default output type 
+[  19][    ]: #%if (TRUE == FALSE) 
+[  20][    ]: #%let output_type <- RTF 
+[  21][    ]: #%end 
+[  22][  18]:  
+[  23][  19]: # Create report object 
+[  24][  20]: rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |> 
+[  25][  21]:   page_header("Sponsor: Acme", "Study: ABC") |> 
+[  26][  22]:   titles(c('Listing 1.0', 'SDTM Demographics')) |> 
+[  27][  23]:   add_content(tbl, align = "left") |> 
+[  28][  24]:   footnotes('Program: l_dm.R') |> 
+[  29][  25]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]") 
+[  30][  26]:  
+[  31][  27]: # Write report to file 
+[  32][    ]: #%if (&preview. == TRUE) 
+[  33][  28]: write_report(rpt, preview = 1) 
+[  34][    ]: #%else 
+[  35][    ]: write_report(rpt) 
+[  36][    ]: #%end 
 ******************************************************************************** 
-**  Execution
+**  Execution 
 ******************************************************************************** 
 
 > #####################################################################
@@ -184,10 +184,10 @@ the script will write the following to the console:
 > ###################################### .... [TRUNCATED] 
 
 > # Output path
-> out_pth <- "./examples/output/l_dm"
+> out_pth <- "c:/packages/macro/tests/testthat/examples/output/l_dm"
 
 > # Get listing data
-> load("./examples/data/dm.rda")
+> load("c:/packages/macro/tests/testthat/examples/data/dm.rda")
 
 > # Create table object
 > tbl <- create_table(dm) |>
@@ -201,7 +201,7 @@ the script will write the following to the console:
 > # Write report to file
 > write_report(rpt, preview = 1)
 # A report specification: 1 pages  PREVIEW
-- file_path: './examples/output/l_dm.pdf'
+- file_path: 'c:/packages/macro/tests/testthat/examples/output/l_dm.pdf'
 - output_type: PDF
 - units: inches
 - orientation: landscape
@@ -211,16 +211,16 @@ the script will write the following to the console:
 - title 1: 'Listing 1.0'
 - title 2: 'SDTM Demographics'
 - footnote 1: 'Program: l_dm.R'
-- page_footer: left=2025-09-29 15:43:51.038448 center=CONFIDENTIAL right=Page [pg] of [tpg]
+- page_footer: left=2025-10-26 10:36:41.852507 center=CONFIDENTIAL right=Page [pg] of [tpg]
 - content: 
 # A table specification:
 - data: tibble 'dm' 87 rows 24 cols
 - show_cols: all
 - use_attributes: all
 - define: USUBJID id_var='TRUE' 
-
+ 
 ******************************************************************************** 
-**  End
+**  End 
 ******************************************************************************** 
 ```
 The debug information contains a pre-processor section and a section for 
@@ -241,10 +241,10 @@ Upon execution, the generated code file will look like this:
 library(reporter)
 
 # Output path
-out_pth <- "./macro/tests/testthat/examples/output/l_dm"
+out_pth <- "c:/packages/macro/tests/testthat/examples/output/l_dm"
 
 # Get listing data
-load("./macro/tests/testthat/examples/data/dm.rda")
+load("c:/packages/macro/tests/testthat/examples/data/dm.rda")
 
 # Create table object
 tbl <- create_table(dm) |>
@@ -262,7 +262,6 @@ rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
 # Write report to file
 write_report(rpt, preview = 1)
 
-  
 ```
 The listing code above is identical to the previous listing, except
 the output type is "PDF" and the `preview` parameter is set on the call

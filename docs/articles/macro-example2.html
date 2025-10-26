@@ -135,24 +135,24 @@ driver is written in standard R code:</p>
 <code class="sourceCode R"><span><span class="co">#***********************************#</span></span>
 <span><span class="co">#* Define Macro Variables</span></span>
 <span><span class="co">#***********************************#</span></span>
-<span><span class="va">sponsor_name.</span> <span class="op">&lt;-</span> <span class="st">"Acme"</span></span>
-<span><span class="va">study_name.</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
-<span><span class="va">prog_name.</span> <span class="op">&lt;-</span> <span class="st">"l_dm"</span></span>
-<span><span class="va">base_dir.</span> <span class="op">&lt;-</span> <span class="st">"./examples"</span></span>
-<span><span class="va">output_dir.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_dir.</span>, <span class="st">"output"</span><span class="op">)</span></span>
-<span><span class="va">data_dir.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_dir.</span>, <span class="st">"data"</span><span class="op">)</span></span>
-<span><span class="va">data_file.</span> <span class="op">&lt;-</span> <span class="st">"dm.rda"</span></span>
-<span><span class="va">data_name.</span> <span class="op">&lt;-</span> <span class="st">"dm"</span></span>
-<span><span class="va">titles.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span></span>
-<span><span class="va">footnotes.</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"'Program: "</span>, <span class="va">prog_name.</span>, <span class="st">".R'"</span><span class="op">)</span></span>
-<span><span class="va">output_type.</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
-<span><span class="va">preview.</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="va">`&amp;sponsor_name`</span> <span class="op">&lt;-</span> <span class="st">"Acme"</span></span>
+<span><span class="va">`&amp;study_name`</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
+<span><span class="va">`&amp;prog_name`</span> <span class="op">&lt;-</span> <span class="st">"l_dm"</span></span>
+<span><span class="va">`&amp;base_dir`</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/macro/tests/testthat/examples"</span></span>
+<span><span class="va">`&amp;output_dir`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"output"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;data_dir`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"data"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;data_file`</span> <span class="op">&lt;-</span> <span class="st">"dm.rda"</span></span>
+<span><span class="va">`&amp;data_name`</span> <span class="op">&lt;-</span> <span class="st">"dm"</span></span>
+<span><span class="va">`&amp;titles`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;footnotes`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"'Program: "</span>, <span class="va">`&amp;prog_name`</span>, <span class="st">".R'"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;output_type`</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
+<span><span class="va">`&amp;preview`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span></span>
 <span><span class="co">#***********************************#</span></span>
 <span><span class="co">#* Macro Source Listing Template Code</span></span>
 <span><span class="co">#***********************************#</span></span>
-<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_dir.</span>, <span class="st">"templates/lst02.R"</span><span class="op">)</span>,</span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">base_dir.</span>, <span class="st">"code/l_dm2.R"</span><span class="op">)</span>, </span>
+<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"templates/lst02.R"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"code/l_dm2.R"</span><span class="op">)</span>,</span>
 <span>        debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note the following in the above driver:</p>
 <ul>
@@ -238,50 +238,50 @@ macro driver script, you can source the script normally in RStudio or
 another editor. When executed, the script will write the following to
 the console:</p>
 <pre><code>******************************************************************************** 
-**  Pre-Processing
+**  Pre-Processing 
 ******************************************************************************** 
--    File In:  ./examples/templates/lst02.R 
--   File Out:  ./examples/code/l_dm2.R 
+-    File In: c:/packages/macro/tests/testthat/examples/templates/lst02.R 
+-   File Out: c:/packages/macro/tests/testthat/examples/code/l_dm2.R 
 ******************************************************************************** 
-[ In#][Out#]:
-[   1][   1]: #####################################################################
-[   2][   2]: # Program Name: l_dm
-[   3][   3]: # Study: ABC
-[   4][   4]: #####################################################################
-[   5][   5]: 
-[   6][   6]: library(reporter)
-[   7][   7]: 
-[   8][   8]: # Output path
-[   9][   9]: out_pth &lt;- "./examples/output/l_dm"
-[  10][  10]: 
-[  11][  11]: # Get listing data
-[  12][  12]: load("./examples/data/dm.rda")
-[  13][  13]: 
-[  14][  14]: # Create table object
-[  15][  15]: tbl &lt;- create_table(dm) |&gt;
-[  16][  16]:   define(USUBJID, id_var = TRUE)
-[  17][    ]: 
-[  18][    ]: #% Assign default output type
-[  19][    ]: #%if (TRUE == FALSE)
-[  20][    ]: #%let output_type &lt;- RTF
-[  21][    ]: #%end
-[  22][  17]: 
-[  23][  18]: # Create report object
-[  24][  19]: rpt &lt;- create_report(out_pth, font = "Courier", output_type = "PDF") |&gt;
-[  25][  20]:   page_header("Sponsor: Acme", "Study: ABC") |&gt;
-[  26][  21]:   titles(c('Listing 1.0', 'SDTM Demographics')) |&gt;
-[  27][  22]:   add_content(tbl, align = "left") |&gt;
-[  28][  23]:   footnotes('Program: l_dm.R') |&gt;
-[  29][  24]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]")
-[  30][  25]: 
-[  31][  26]: # Write report to file
-[  32][    ]: #%if (preview. == TRUE)
-[  33][  27]: write_report(rpt, preview = 1)
-[  34][    ]: #%else
-[  35][    ]: write_report(rpt)
-[  36][    ]: #%end
+[ In#][Out#]: 
+[   1][   1]: ##################################################################### 
+[   2][   2]: # Program Name: l_dm 
+[   3][   3]: # Study: ABC 
+[   4][   4]: ##################################################################### 
+[   5][   5]:  
+[   6][   6]: library(reporter) 
+[   7][   7]:  
+[   8][   8]: # Output path 
+[   9][   9]: out_pth &lt;- "c:/packages/macro/tests/testthat/examples/output/l_dm" 
+[  10][  10]:  
+[  11][  11]: # Get listing data 
+[  12][  12]: load("c:/packages/macro/tests/testthat/examples/data/dm.rda") 
+[  13][  13]:  
+[  14][  14]: # Create table object 
+[  15][  15]: tbl &lt;- create_table(dm) |&gt; 
+[  16][  16]:   define(USUBJID, id_var = TRUE) 
+[  17][  17]:  
+[  18][    ]: #% Assign default output type 
+[  19][    ]: #%if (TRUE == FALSE) 
+[  20][    ]: #%let output_type &lt;- RTF 
+[  21][    ]: #%end 
+[  22][  18]:  
+[  23][  19]: # Create report object 
+[  24][  20]: rpt &lt;- create_report(out_pth, font = "Courier", output_type = "PDF") |&gt; 
+[  25][  21]:   page_header("Sponsor: Acme", "Study: ABC") |&gt; 
+[  26][  22]:   titles(c('Listing 1.0', 'SDTM Demographics')) |&gt; 
+[  27][  23]:   add_content(tbl, align = "left") |&gt; 
+[  28][  24]:   footnotes('Program: l_dm.R') |&gt; 
+[  29][  25]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]") 
+[  30][  26]:  
+[  31][  27]: # Write report to file 
+[  32][    ]: #%if (&amp;preview. == TRUE) 
+[  33][  28]: write_report(rpt, preview = 1) 
+[  34][    ]: #%else 
+[  35][    ]: write_report(rpt) 
+[  36][    ]: #%end 
 ******************************************************************************** 
-**  Execution
+**  Execution 
 ******************************************************************************** 
 
 &gt; #####################################################################
@@ -290,10 +290,10 @@ the console:</p>
 &gt; ###################################### .... [TRUNCATED] 
 
 &gt; # Output path
-&gt; out_pth &lt;- "./examples/output/l_dm"
+&gt; out_pth &lt;- "c:/packages/macro/tests/testthat/examples/output/l_dm"
 
 &gt; # Get listing data
-&gt; load("./examples/data/dm.rda")
+&gt; load("c:/packages/macro/tests/testthat/examples/data/dm.rda")
 
 &gt; # Create table object
 &gt; tbl &lt;- create_table(dm) |&gt;
@@ -307,7 +307,7 @@ the console:</p>
 &gt; # Write report to file
 &gt; write_report(rpt, preview = 1)
 # A report specification: 1 pages  PREVIEW
-- file_path: './examples/output/l_dm.pdf'
+- file_path: 'c:/packages/macro/tests/testthat/examples/output/l_dm.pdf'
 - output_type: PDF
 - units: inches
 - orientation: landscape
@@ -317,16 +317,16 @@ the console:</p>
 - title 1: 'Listing 1.0'
 - title 2: 'SDTM Demographics'
 - footnote 1: 'Program: l_dm.R'
-- page_footer: left=2025-09-29 15:43:51.038448 center=CONFIDENTIAL right=Page [pg] of [tpg]
+- page_footer: left=2025-10-26 10:36:41.852507 center=CONFIDENTIAL right=Page [pg] of [tpg]
 - content: 
 # A table specification:
 - data: tibble 'dm' 87 rows 24 cols
 - show_cols: all
 - use_attributes: all
 - define: USUBJID id_var='TRUE' 
-
+ 
 ******************************************************************************** 
-**  End
+**  End 
 ******************************************************************************** </code></pre>
 <p>The debug information contains a pre-processor section and a section
 for execution of the generated code. These two sections can help you
@@ -345,10 +345,10 @@ isolate problems with your program.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://reporter.r-sassy.org" class="external-link">reporter</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Output path</span></span>
-<span><span class="va">out_pth</span> <span class="op">&lt;-</span> <span class="st">"./macro/tests/testthat/examples/output/l_dm"</span></span>
+<span><span class="va">out_pth</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/macro/tests/testthat/examples/output/l_dm"</span></span>
 <span></span>
 <span><span class="co"># Get listing data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"./macro/tests/testthat/examples/data/dm.rda"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"c:/packages/macro/tests/testthat/examples/data/dm.rda"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create table object</span></span>
 <span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -364,9 +364,7 @@ isolate problems with your program.</p>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/page_footer.html" class="external-link">page_footer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"CONFIDENTIAL"</span>, <span class="st">"Page [pg] of [tpg]"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Write report to file</span></span>
-<span><span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span>, preview <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span></span>
-<span>  </span></code></pre></div>
+<span><span class="fu"><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report</a></span><span class="op">(</span><span class="va">rpt</span>, preview <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p>The listing code above is identical to the previous listing, except
 the output type is “PDF” and the <code>preview</code> parameter is set
 on the call to <code><a href="https://reporter.r-sassy.org/reference/write_report.html" class="external-link">write_report()</a></code>.</p>

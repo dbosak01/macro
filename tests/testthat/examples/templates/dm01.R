@@ -127,7 +127,7 @@ datastep(stats_&lvar,
          format = fc,
          drop = find.names(stats_&lvar, start = 4),
          {
-           VAR <- "lbl."
+           VAR <- "&lbl."
            `Mean (SD)` <- fapply2(MEAN, STD)
            Median <- MEDIAN
            `Q1 - Q3` <- fapply2(Q1, Q3, sep = " - ")

@@ -80,7 +80,9 @@ That technique will be used again here:
 
 # Preprocess and Run Example3
 macro::msource(paste0(`&base_path`, "/templates/dm01.R"),
-               paste0(`&base_path`, "/code/t_dm.R"))
+               paste0(`&base_path`, "/code/t_dm.R"),
+               debug = TRUE, symbolgen = TRUE)
+
 ```
 Observe that there are four possible analysis variables for this demographics
 table: "age", "ageg", "sex", and "race".  The program allows the user
@@ -193,7 +195,7 @@ proc_freq(dm_f, tables = ARM,
           options = v(nopercent, nonobs)) -> arm_pop
 
 put("Log treatment groups variable")
-trt_grps <- `&trt_grps`
+trt_grps <- `&trt_grps.`
 put(trt_grps)
 
 #%if ("AGEG" %in% &vars.)
@@ -214,14 +216,14 @@ put("Call means procedure to get summary statistics for &lvar.")
 proc_means(dm_f, var = `&var.`,
            stats = v(n, mean, std, median, q1, q3, min, max),
            by = ARM,
-           options = v(notype, nofreq)) -> stats_&lvar
+           options = v(notype, nofreq)) -> `stats_&lvar.`
 
 put("Combine stats")
 datastep(stats_&lvar,
          format = fc,
          drop = find.names(stats_&lvar, start = 4),
          {
-           VAR <- "lbl."
+           VAR <- "&lbl."
            `Mean (SD)` <- fapply2(MEAN, STD)
            Median <- MEDIAN
            `Q1 - Q3` <- fapply2(Q1, Q3, sep = " - ")
@@ -411,6 +413,7 @@ rpt <- create_report(o_path,
 put("Write out the report")
 res <- write_report(rpt&preview.)
 
+
 ```
 In the above reporting code, notice the following:
 
@@ -551,14 +554,14 @@ put("Call means procedure to get summary statistics for age")
 proc_means(dm_f, var = AGE,
            stats = v(n, mean, std, median, q1, q3, min, max),
            by = ARM,
-           options = v(notype, nofreq)) -> stats_age
+           options = v(notype, nofreq)) -> `stats_age`
 
 put("Combine stats")
 datastep(stats_age,
          format = fc,
          drop = find.names(stats_age, start = 4),
          {
-           VAR <- "lbl."
+           VAR <- "Age"
            `Mean (SD)` <- fapply2(MEAN, STD)
            Median <- MEDIAN
            `Q1 - Q3` <- fapply2(Q1, Q3, sep = " - ")
@@ -728,6 +731,7 @@ log_close()
 
 # Uncomment to view log
 # file.show(lf)
+
 
 
 ```

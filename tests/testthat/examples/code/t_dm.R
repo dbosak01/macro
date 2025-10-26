@@ -122,14 +122,14 @@ put("Call means procedure to get summary statistics for age")
 proc_means(dm_f, var = AGE,
            stats = v(n, mean, std, median, q1, q3, min, max),
            by = ARM,
-           options = v(notype, nofreq)) -> stats_age
+           options = v(notype, nofreq)) -> `stats_age`
 
 put("Combine stats")
 datastep(stats_age,
          format = fc,
          drop = find.names(stats_age, start = 4),
          {
-           VAR <- "lbl."
+           VAR <- "Age"
            `Mean (SD)` <- fapply2(MEAN, STD)
            Median <- MEDIAN
            `Q1 - Q3` <- fapply2(Q1, Q3, sep = " - ")

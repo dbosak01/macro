@@ -37,7 +37,7 @@ Here is the macro driver script:
 #%let sponsor_name <- Acme
 #%let study_name <- ABC
 #%let prog_name <- l_dm
-#%let base_dir <- ./macro/tests/testthat/examples
+#%let base_dir <- c:/packages/macro/tests/testthat/examples
 #%let output_dir <- &base_dir./output
 #%let data_dir <- &base_dir./data
 #%let data_file <- dm.rda
@@ -116,10 +116,10 @@ Upon execution, the generated code file will look like this:
 library(reporter)
 
 # Output path
-out_pth <- "./macro/tests/testthat/examples/output/l_dm"
+out_pth <- "c:/packages/macro/tests/testthat/examples/output/l_dm"
 
 # Get listing data
-load("./macro/tests/testthat/examples/data/dm.rda")
+load("c:/packages/macro/tests/testthat/examples/data/dm.rda")
 
 # Create table object
 tbl <- create_table(dm) |>

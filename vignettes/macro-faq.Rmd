@@ -147,9 +147,9 @@ don't seem to match my program.  What is going on?
 
 **A:** The line numbers shown on the "In#" column represent every input
 line processed.  These lines can come from different sources: the original
-program, any included code, any macro functions, and code inside do loops.  
+program, any included code, any macro functions, and code inside do loops.
 That is why the line
-numbers do not necessarily match the original program one for one.  
+numbers do not necessarily match the original program one for one.
 When trying to find the line that is causing an error, take these 
 additional sources into consideration.
 

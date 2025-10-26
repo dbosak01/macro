@@ -14,7 +14,7 @@
 `&titles` <- c("Listing 1.0", "SDTM Demographics")
 `&footnotes` <- paste0("'Program: ", `&prog_name`, ".R'")
 `&output_type` <- "PDF"
-`&preview` <- ", preview = 1"
+`&preview` <- TRUE
 
 #***********************************#
 #* Macro Source Listing Template Code

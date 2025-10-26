@@ -184,6 +184,8 @@ to turn off execution.
 
 \examples{
 
+library(macro)
+
 # Create temp file names
 tmp <- file.path(tempdir(), "test.R")
 out <- file.path(tempdir(), "test_mod.R")
@@ -210,8 +212,8 @@ msource(tmp, out, debug = TRUE)
 # ********************************************************************************
 # **  Pre-Processing
 # ********************************************************************************
-# -    File In: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test.R
-# -   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test_mod.R
+# -    File In: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test.R
+# -   File Out: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test_mod.R
 # ********************************************************************************
 # [ In#][Out#]:
 # [   1][    ]: #\%let a <- 1

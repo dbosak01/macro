@@ -7,9 +7,9 @@ R Version: 4.4.3 (2025-02-28 ucrt)
 Machine: SOCRATES x86-64
 Operating System: Windows 10 x64 build 26100
 Base Packages: stats graphics grDevices utils datasets methods base
-Other Packages: tidylog_1.1.0 macro_0.1.2 procs_1.0.7 reporter_1.4.4 libr_1.3.9
-logr_1.3.9 fmtr_1.7.0 sassy_1.2.5 testthat_3.2.1.1 common_1.1.3
-Log Start Time: 2025-10-16 10:29:29.860297
+Other Packages: tidylog_1.1.0 procs_1.0.7 libr_1.3.9 logr_1.3.9 fmtr_1.7.0
+sassy_1.2.5 reporter_1.4.4 macro_0.1.2 testthat_3.2.1.1 common_1.1.3
+Log Start Time: 2025-10-26 11:10:45.982893
 =========================================================================
 
 =========================================================================
@@ -129,11 +129,11 @@ Combine stats
 
 datastep: columns decreased from 10 to 7
 
-     BY  VAR N   Mean (SD) Median     Q1 - Q3 Min - Max
-1 ARM A lbl. 5 34.4 (8.71)   37.0 37.0 - 39.0   19 - 40
-2 ARM B lbl. 4 30.0 (6.16)   32.5 26.0 - 34.0   21 - 34
-3 ARM C lbl. 4 32.0 (6.16)   34.5 28.0 - 36.0   23 - 36
-4 ARM D lbl. 3 32.0 (5.29)   30.0 28.0 - 38.0   28 - 38
+     BY VAR N   Mean (SD) Median     Q1 - Q3 Min - Max
+1 ARM A Age 5 34.4 (8.71)   37.0 37.0 - 39.0   19 - 40
+2 ARM B Age 4 30.0 (6.16)   32.5 26.0 - 34.0   21 - 34
+3 ARM C Age 4 32.0 (6.16)   34.5 28.0 - 36.0   23 - 36
+4 ARM D Age 3 32.0 (5.29)   30.0 28.0 - 38.0   28 - 38
 
 Transpose ARMs into columns
 
@@ -144,12 +144,12 @@ proc_transpose: input data set 4 rows and 7 columns
                 name: LABEL
                 output dataset 5 rows and 6 columns
 
-   VAR     LABEL       ARM A       ARM B       ARM C       ARM D
-1 lbl.         N           5           4           4           3
-2 lbl. Mean (SD) 34.4 (8.71) 30.0 (6.16) 32.0 (6.16) 32.0 (5.29)
-3 lbl.    Median        37.0        32.5        34.5        30.0
-4 lbl.   Q1 - Q3 37.0 - 39.0 26.0 - 34.0 28.0 - 36.0 28.0 - 38.0
-5 lbl. Min - Max     19 - 40     21 - 34     23 - 36     28 - 38
+  VAR     LABEL       ARM A       ARM B       ARM C       ARM D
+1 Age         N           5           4           4           3
+2 Age Mean (SD) 34.4 (8.71) 30.0 (6.16) 32.0 (6.16) 32.0 (5.29)
+3 Age    Median        37.0        32.5        34.5        30.0
+4 Age   Q1 - Q3 37.0 - 39.0 26.0 - 34.0 28.0 - 36.0 28.0 - 38.0
+5 Age Min - Max     19 - 40     21 - 34     23 - 36     28 - 38
 
 =========================================================================
 Create frequency counts for Age Group
@@ -408,7 +408,7 @@ Write out the report
 - margins: top 1 bottom 1 left 1 right 1
 - line size/count: 9/41
 - page_header: left=Sponsor: Acme, Inc. right=Study: ABC
-- page_footer: left=Date Produced: 2025OCT16 center= right=Page [pg] of [tpg]
+- page_footer: left=Date Produced: 2025OCT26 center= right=Page [pg] of [tpg]
 - content: 
 # A table specification:
 - data: data.frame 'final' 14 rows 6 cols
@@ -434,6 +434,6 @@ Clean Up
 Close log
 
 =========================================================================
-Log End Time: 2025-10-16 10:29:32.112457
-Log Elapsed Time: 0 00:00:02
+Log End Time: 2025-10-26 11:10:57.430784
+Log Elapsed Time: 0 00:00:11
 =========================================================================

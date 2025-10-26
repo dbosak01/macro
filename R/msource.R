@@ -171,6 +171,8 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' of the resolved output file is also included under the "$output" list item.
 #' @examples
 #'
+#' library(macro)
+#'
 #' # Create temp file names
 #' tmp <- file.path(tempdir(), "test.R")
 #' out <- file.path(tempdir(), "test_mod.R")
@@ -197,8 +199,8 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' # ********************************************************************************
 #' # **  Pre-Processing
 #' # ********************************************************************************
-#' # -    File In: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test.R
-#' # -   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpyM9Kep/test_mod.R
+#' # -    File In: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test.R
+#' # -   File Out: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test_mod.R
 #' # ********************************************************************************
 #' # [ In#][Out#]:
 #' # [   1][    ]: #%let a <- 1

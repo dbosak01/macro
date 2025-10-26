@@ -19,7 +19,7 @@ a debug feature in the **macro** package that can make debugging easier.
 
 ## How to Debug a Macro
 
-To enhance debugging, the `msource()` function contains two parameters: 
+To enhance debugging, the `msource()` function contains three parameters: 
 `debug`, `debug_out`, and `symbolgen`.  
 
 ### Baseline
