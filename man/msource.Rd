@@ -186,51 +186,98 @@ to turn off execution.
 
 library(macro)
 
-# Create temp file names
-tmp <- file.path(tempdir(), "test.R")
-out <- file.path(tempdir(), "test_mod.R")
+########################################################################
+# Example 1:  Perform correlation analysis between variables in MTCARS
+########################################################################
 
-# Write macro code to temp file
-cat("#\%let a <- 1\n", file = tmp)
-cat("#\%if (&a. == 1)\n", file = tmp, append = TRUE)
-cat("print('a is one!')\n", file =tmp, append = TRUE)
-cat("#\%else\n", file = tmp, append = TRUE)
-cat("print('a is something else!')\n", file = tmp, append = TRUE)
-cat("#\%end", file = tmp, append = TRUE)
-cat("\n", file = tmp, append = TRUE)
+# Get path to demo macro program
+src <- system.file("extdata/Demo1.R", package = "macro")
 
-# Process temp file
-res <- msource(tmp, out)
-# [1] "a is one!"
+# Create temporary output path
+tmp <- file.path(tempdir(), "Demo1_mod.R")
 
-# Read output file
-readLines(res$output)
-# [1] "print('a is one!')"
+# Display source code
+readLines(src)
+# [1] ""
+# [2] "#\% Macro for Correlation Analysis"
+# [3] "#\%macro get_correlation(dat, xvar, yvars)"
+# [4] ""
+# [5] "# Perform Analysis ------------------------------------"
+# [6] ""
+# [7] "#\%do idx = 1 \%to \%sysfunc(length(&yvars))"
+# [8] ""
+# [9] "#\%let yvar <- \%sysfunc(&yvars[&idx])"
+# [10] "#\%let xdat <- &dat$&xvar"
+# [11] "#\%let ydat <- &dat$&yvar"
+# [12] "# Correlation between &xvar and &yvar"
+# [13] "anl_&yvar <- data.frame(XVAR = \"&xvar\","
+# [14] "                        YVAR = \"&yvar\","
+# [15] "                        COR = cor(`&xdat`, `&ydat`,"
+# [16] "                              method = \"pearson\"))"
+# [17] "#\%end"
+# [18] ""
+# [19] ""
+# [20] "# Bind Results ----------------------------------------"
+# [21] ""
+# [22] "#\%let anl_lst <- \%sysfunc(paste0(\"anl_\", &yvars, collapse = \", \"))"
+# [23] ""
+# [24] "# Combine all analysis data frames"
+# [25] "final <- rbind(`&anl_lst`)"
+# [26] ""
+# [27] "# Print Results"
+# [28] "print(final)"
+# [29] ""
+# [30] "#\%mend"
+# [31] ""
+# [32] "#\% Call Macro"
+# [33] "#\%get_correlation(mtcars, mpg, c(\"cyl\", \"disp\", \"drat\"))"
+# [34] ""
+# [35] ""
 
-# Rerun in debugger
-msource(tmp, out, debug = TRUE)
-# ********************************************************************************
-# **  Pre-Processing
-# ********************************************************************************
-# -    File In: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test.R
-# -   File Out: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test_mod.R
-# ********************************************************************************
-# [ In#][Out#]:
-# [   1][    ]: #\%let a <- 1
-# [   2][    ]: #\%if (&a. == 1)
-# [   3][   1]: print('a is one!')
-# [   4][    ]: #\%else
-# [   5][    ]: print('a is something else!')
-# [   6][    ]: #\%end
-# ********************************************************************************
-# **  Execution
-# ********************************************************************************
-#
-# > print('a is one!')
-# [1] "a is one!"
-#
-# ********************************************************************************
-# **  End
-# ********************************************************************************
+# Macro Execute Source Code
+msource(src, tmp)
+#  XVAR YVAR        COR
+# 1  mpg  cyl -0.8521620
+# 2  mpg disp -0.8475514
+# 3  mpg drat  0.6811719
+
+# View output file
+readLines(tmp)
+# [1] ""
+# [2] ""
+# [3] ""
+# [4] "# Perform Analysis ------------------------------------"
+# [5] ""
+# [6] ""
+# [7] "# Correlation between mpg and cyl"
+# [8] "anl_cyl <- data.frame(XVAR = \"mpg\","
+# [9] "                        YVAR = \"cyl\","
+# [10] "                        COR = cor(mtcars$mpg, mtcars$cyl,"
+# [11] "                              method = \"pearson\"))"
+# [12] ""
+# [13] "# Correlation between mpg and disp"
+# [14] "anl_disp <- data.frame(XVAR = \"mpg\","
+# [15] "                        YVAR = \"disp\","
+# [16] "                        COR = cor(mtcars$mpg, mtcars$disp,"
+# [17] "                              method = \"pearson\"))"
+# [18] ""
+# [19] "# Correlation between mpg and drat"
+# [20] "anl_drat <- data.frame(XVAR = \"mpg\","
+# [21] "                        YVAR = \"drat\","
+# [22] "                        COR = cor(mtcars$mpg, mtcars$drat,"
+# [23] "                              method = \"pearson\"))"
+# [24] ""
+# [25] ""
+# [26] "# Bind Results ----------------------------------------"
+# [27] ""
+# [28] ""
+# [29] "# Combine all analysis data frames"
+# [30] "final <- rbind(anl_cyl, anl_disp, anl_drat)"
+# [31] ""
+# [32] "# Print Results"
+# [33] "print(final)"
+# [34] ""
+# [35] ""
+# [36] ""
 
 }

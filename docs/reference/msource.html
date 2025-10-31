@@ -288,52 +288,99 @@ to turn off execution.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create temp file names</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"test.R"</span><span class="op">)</span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"test_mod.R"</span><span class="op">)</span></span>
+<span><span class="co">########################################################################</span></span>
+<span><span class="co"># Example 1:  Perform correlation analysis between variables in MTCARS</span></span>
+<span><span class="co">########################################################################</span></span>
 <span></span>
-<span><span class="co"># Write macro code to temp file</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%let a &lt;- 1\n"</span>, file <span class="op">=</span> <span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%if (&amp;a. == 1)\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"print('a is one!')\n"</span>, file <span class="op">=</span><span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%else\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"print('a is something else!')\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"#%end"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span>, file <span class="op">=</span> <span class="va">tmp</span>, append <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Get path to demo macro program</span></span>
+<span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo1.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Process temp file</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">msource</span><span class="op">(</span><span class="va">tmp</span>, <span class="va">out</span><span class="op">)</span></span>
-<span><span class="co"># [1] "a is one!"</span></span>
+<span><span class="co"># Create temporary output path</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Demo1_mod.R"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Read output file</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">output</span><span class="op">)</span></span>
-<span><span class="co"># [1] "print('a is one!')"</span></span>
+<span><span class="co"># Display source code</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
+<span><span class="co"># [1] ""</span></span>
+<span><span class="co"># [2] "#% Macro for Correlation Analysis"</span></span>
+<span><span class="co"># [3] "#%macro get_correlation(dat, xvar, yvars)"</span></span>
+<span><span class="co"># [4] ""</span></span>
+<span><span class="co"># [5] "# Perform Analysis ------------------------------------"</span></span>
+<span><span class="co"># [6] ""</span></span>
+<span><span class="co"># [7] "#%do idx = 1 %to %sysfunc(length(&amp;yvars))"</span></span>
+<span><span class="co"># [8] ""</span></span>
+<span><span class="co"># [9] "#%let yvar &lt;- %sysfunc(&amp;yvars[&amp;idx])"</span></span>
+<span><span class="co"># [10] "#%let xdat &lt;- &amp;dat$&amp;xvar"</span></span>
+<span><span class="co"># [11] "#%let ydat &lt;- &amp;dat$&amp;yvar"</span></span>
+<span><span class="co"># [12] "# Correlation between &amp;xvar and &amp;yvar"</span></span>
+<span><span class="co"># [13] "anl_&amp;yvar &lt;- data.frame(XVAR = \"&amp;xvar\","</span></span>
+<span><span class="co"># [14] "                        YVAR = \"&amp;yvar\","</span></span>
+<span><span class="co"># [15] "                        COR = cor(`&amp;xdat`, `&amp;ydat`,"</span></span>
+<span><span class="co"># [16] "                              method = \"pearson\"))"</span></span>
+<span><span class="co"># [17] "#%end"</span></span>
+<span><span class="co"># [18] ""</span></span>
+<span><span class="co"># [19] ""</span></span>
+<span><span class="co"># [20] "# Bind Results ----------------------------------------"</span></span>
+<span><span class="co"># [21] ""</span></span>
+<span><span class="co"># [22] "#%let anl_lst &lt;- %sysfunc(paste0(\"anl_\", &amp;yvars, collapse = \", \"))"</span></span>
+<span><span class="co"># [23] ""</span></span>
+<span><span class="co"># [24] "# Combine all analysis data frames"</span></span>
+<span><span class="co"># [25] "final &lt;- rbind(`&amp;anl_lst`)"</span></span>
+<span><span class="co"># [26] ""</span></span>
+<span><span class="co"># [27] "# Print Results"</span></span>
+<span><span class="co"># [28] "print(final)"</span></span>
+<span><span class="co"># [29] ""</span></span>
+<span><span class="co"># [30] "#%mend"</span></span>
+<span><span class="co"># [31] ""</span></span>
+<span><span class="co"># [32] "#% Call Macro"</span></span>
+<span><span class="co"># [33] "#%get_correlation(mtcars, mpg, c(\"cyl\", \"disp\", \"drat\"))"</span></span>
+<span><span class="co"># [34] ""</span></span>
+<span><span class="co"># [35] ""</span></span>
 <span></span>
-<span><span class="co"># Rerun in debugger</span></span>
-<span><span class="fu">msource</span><span class="op">(</span><span class="va">tmp</span>, <span class="va">out</span>, debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
-<span><span class="co"># **  Pre-Processing</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
-<span><span class="co"># -    File In: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test.R</span></span>
-<span><span class="co"># -   File Out: C:/Users/dbosa/AppData/Local/Temp/RtmpyM9Kep/test_mod.R</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
-<span><span class="co"># [ In#][Out#]:</span></span>
-<span><span class="co"># [   1][    ]: #%let a &lt;- 1</span></span>
-<span><span class="co"># [   2][    ]: #%if (&amp;a. == 1)</span></span>
-<span><span class="co"># [   3][   1]: print('a is one!')</span></span>
-<span><span class="co"># [   4][    ]: #%else</span></span>
-<span><span class="co"># [   5][    ]: print('a is something else!')</span></span>
-<span><span class="co"># [   6][    ]: #%end</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
-<span><span class="co"># **  Execution</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
-<span><span class="co">#</span></span>
-<span><span class="co"># &gt; print('a is one!')</span></span>
-<span><span class="co"># [1] "a is one!"</span></span>
-<span><span class="co">#</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
-<span><span class="co"># **  End</span></span>
-<span><span class="co"># ********************************************************************************</span></span>
+<span><span class="co"># Macro Execute Source Code</span></span>
+<span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span>, <span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="co">#  XVAR YVAR        COR</span></span>
+<span><span class="co"># 1  mpg  cyl -0.8521620</span></span>
+<span><span class="co"># 2  mpg disp -0.8475514</span></span>
+<span><span class="co"># 3  mpg drat  0.6811719</span></span>
+<span></span>
+<span><span class="co"># View output file</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="co"># [1] ""</span></span>
+<span><span class="co"># [2] ""</span></span>
+<span><span class="co"># [3] ""</span></span>
+<span><span class="co"># [4] "# Perform Analysis ------------------------------------"</span></span>
+<span><span class="co"># [5] ""</span></span>
+<span><span class="co"># [6] ""</span></span>
+<span><span class="co"># [7] "# Correlation between mpg and cyl"</span></span>
+<span><span class="co"># [8] "anl_cyl &lt;- data.frame(XVAR = \"mpg\","</span></span>
+<span><span class="co"># [9] "                        YVAR = \"cyl\","</span></span>
+<span><span class="co"># [10] "                        COR = cor(mtcars$mpg, mtcars$cyl,"</span></span>
+<span><span class="co"># [11] "                              method = \"pearson\"))"</span></span>
+<span><span class="co"># [12] ""</span></span>
+<span><span class="co"># [13] "# Correlation between mpg and disp"</span></span>
+<span><span class="co"># [14] "anl_disp &lt;- data.frame(XVAR = \"mpg\","</span></span>
+<span><span class="co"># [15] "                        YVAR = \"disp\","</span></span>
+<span><span class="co"># [16] "                        COR = cor(mtcars$mpg, mtcars$disp,"</span></span>
+<span><span class="co"># [17] "                              method = \"pearson\"))"</span></span>
+<span><span class="co"># [18] ""</span></span>
+<span><span class="co"># [19] "# Correlation between mpg and drat"</span></span>
+<span><span class="co"># [20] "anl_drat &lt;- data.frame(XVAR = \"mpg\","</span></span>
+<span><span class="co"># [21] "                        YVAR = \"drat\","</span></span>
+<span><span class="co"># [22] "                        COR = cor(mtcars$mpg, mtcars$drat,"</span></span>
+<span><span class="co"># [23] "                              method = \"pearson\"))"</span></span>
+<span><span class="co"># [24] ""</span></span>
+<span><span class="co"># [25] ""</span></span>
+<span><span class="co"># [26] "# Bind Results ----------------------------------------"</span></span>
+<span><span class="co"># [27] ""</span></span>
+<span><span class="co"># [28] ""</span></span>
+<span><span class="co"># [29] "# Combine all analysis data frames"</span></span>
+<span><span class="co"># [30] "final &lt;- rbind(anl_cyl, anl_disp, anl_drat)"</span></span>
+<span><span class="co"># [31] ""</span></span>
+<span><span class="co"># [32] "# Print Results"</span></span>
+<span><span class="co"># [33] "print(final)"</span></span>
+<span><span class="co"># [34] ""</span></span>
+<span><span class="co"># [35] ""</span></span>
+<span><span class="co"># [36] ""</span></span>
 <span></span></code></pre></div>
     </div>
   </div>
