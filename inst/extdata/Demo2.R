@@ -1,26 +1,25 @@
 
+#% Macro for Correlation Analysis
+#%macro get_correlation(dat, xvar, yvars)
 
-#%macro get_analysis(dat, vrs)
+# Perform Analysis ------------------------------------
 
-# Perform Analysis ----------------------------------------
+#%do idx = 1 %to %sysfunc(length(&yvars))
 
-#%do idx = 1 %to %sysfunc(length(&vrs))
-
-#%let vr <- %sysfunc(&vrs[&idx])
-#%let dt <- &dat$&vr
-# Analysis for &vr
-anl_&vr <- data.frame(VAR = "&vr",
-                      MEAN = mean(`&dt`, na.rm = TRUE),
-                      MEDIAN = median(`&dt`, na.rm = TRUE),
-                      SD = sd(`&dt`, na.rm = TRUE),
-                      MIN = min(`&dt`, na.rm = TRUE),
-                      MAX = min(`&dt`, na.rm = TRUE))
+#%let yvar <- %sysfunc(&yvars[&idx])
+#%let xdat <- &dat$&xvar
+#%let ydat <- &dat$&yvar
+# Correlation between &xvar and &yvar
+anl_&yvar <- data.frame(XVAR = "&xvar",
+                        YVAR = "&yvar",
+                        COR = cor(`&xdat`, `&ydat`,
+                              method = "pearson"))
 #%end
 
 
 # Bind Results ----------------------------------------
 
-#%let anl_lst <- %sysfunc(paste0("anl_", &vrs, collapse = ", "))
+#%let anl_lst <- %sysfunc(paste0("anl_", &yvars, collapse = ", "))
 
 # Combine all analysis data frames
 final <- rbind(`&anl_lst`)
@@ -30,4 +29,7 @@ print(final)
 
 #%mend
 
-#%get_analysis(mtcars, c("mpg", "cyl", "disp"))
+#% Call Macro
+#%get_correlation(mtcars, mpg, c("cyl", "disp", "drat"))
+
+

@@ -174,7 +174,7 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' library(macro)
 #'
 #' ########################################################################
-#' # Example 1:  Perform correlation analysis between variables in MTCARS
+#' # Example 1:  Hello World Macro
 #' ########################################################################
 #'
 #' # Get path to demo macro program
@@ -184,42 +184,72 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' tmp <- file.path(tempdir(), "Demo1_mod.R")
 #'
 #' # Display source code
-#' readLines(src)
-#' # [1] ""
-#' # [2] "#% Macro for Correlation Analysis"
-#' # [3] "#%macro get_correlation(dat, xvar, yvars)"
-#' # [4] ""
-#' # [5] "# Perform Analysis ------------------------------------"
-#' # [6] ""
-#' # [7] "#%do idx = 1 %to %sysfunc(length(&yvars))"
-#' # [8] ""
-#' # [9] "#%let yvar <- %sysfunc(&yvars[&idx])"
-#' # [10] "#%let xdat <- &dat$&xvar"
-#' # [11] "#%let ydat <- &dat$&yvar"
-#' # [12] "# Correlation between &xvar and &yvar"
-#' # [13] "anl_&yvar <- data.frame(XVAR = \"&xvar\","
-#' # [14] "                        YVAR = \"&yvar\","
-#' # [15] "                        COR = cor(`&xdat`, `&ydat`,"
-#' # [16] "                              method = \"pearson\"))"
-#' # [17] "#%end"
-#' # [18] ""
-#' # [19] ""
-#' # [20] "# Bind Results ----------------------------------------"
-#' # [21] ""
-#' # [22] "#%let anl_lst <- %sysfunc(paste0(\"anl_\", &yvars, collapse = \", \"))"
-#' # [23] ""
-#' # [24] "# Combine all analysis data frames"
-#' # [25] "final <- rbind(`&anl_lst`)"
-#' # [26] ""
-#' # [27] "# Print Results"
-#' # [28] "print(final)"
-#' # [29] ""
-#' # [30] "#%mend"
-#' # [31] ""
-#' # [32] "#% Call Macro"
-#' # [33] "#%get_correlation(mtcars, mpg, c(\"cyl\", \"disp\", \"drat\"))"
-#' # [34] ""
-#' # [35] ""
+#' # - This is the macro input code
+#' cd <-readLines(src)
+#' cat(paste(cd, "\n"))
+#' # #%let a <- 1
+#' # #%if (&a. == 1)
+#' # print("Hello World!")
+#' # #%else
+#' # print("Goodbye!")
+#' # #%end
+#'
+#' # Macro Execute Source Code
+#' # - Results displayed below
+#' msource(src, tmp)
+#' # [1] "Hello World!"
+#'
+#' # View output file
+#' # - This is the generated code
+#' tcd <- readLines(tmp)
+#' cat(paste(tcd, "\n"))
+#' # print("Hello World!")
+#'
+#' ########################################################################
+#' # Example 2:  Perform correlation analysis between variables in MTCARS
+#' ########################################################################
+#'
+#' # Get path to demo macro program
+#' src <- system.file("extdata/Demo2.R", package = "macro")
+#'
+#' # Create temporary output path
+#' tmp <- file.path(tempdir(), "Demo2_mod.R")
+#'
+#' # Display source code
+#' cd <- readLines(src)
+#' cat(paste(cd, "\n"))
+#' # #% Macro for Correlation Analysis
+#' # #%macro get_correlation(dat, xvar, yvars)
+#' #
+#' # # Perform Analysis ------------------------------------
+#' #
+#' # #%do idx = 1 %to %sysfunc(length(&yvars))
+#' #
+#' # #%let yvar <- %sysfunc(&yvars[&idx])
+#' # #%let xdat <- &dat$&xvar
+#' # #%let ydat <- &dat$&yvar
+#' # # Correlation between &xvar and &yvar
+#' # anl_&yvar <- data.frame(XVAR = "&xvar",
+#' #                         YVAR = "&yvar",
+#' #                         COR = cor(`&xdat`, `&ydat`,
+#' #                                   method = "pearson"))
+#' # #%end
+#' #
+#' #
+#' # # Bind Results ----------------------------------------
+#' #
+#' # #%let anl_lst <- %sysfunc(paste0("anl_", &yvars, collapse = ", "))
+#' #
+#' # # Combine all analysis data frames
+#' # final <- rbind(`&anl_lst`)
+#' #
+#' # # Print Results
+#' # print(final)
+#' #
+#' # #%mend
+#' #
+#' # #% Call Macro
+#' # #%get_correlation(mtcars, mpg, c("cyl", "disp", "drat"))
 #'
 #' # Macro Execute Source Code
 #' msource(src, tmp)
@@ -229,44 +259,40 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' # 3  mpg drat  0.6811719
 #'
 #' # View output file
-#' readLines(tmp)
-#' # [1] ""
-#' # [2] ""
-#' # [3] ""
-#' # [4] "# Perform Analysis ------------------------------------"
-#' # [5] ""
-#' # [6] ""
-#' # [7] "# Correlation between mpg and cyl"
-#' # [8] "anl_cyl <- data.frame(XVAR = \"mpg\","
-#' # [9] "                        YVAR = \"cyl\","
-#' # [10] "                        COR = cor(mtcars$mpg, mtcars$cyl,"
-#' # [11] "                              method = \"pearson\"))"
-#' # [12] ""
-#' # [13] "# Correlation between mpg and disp"
-#' # [14] "anl_disp <- data.frame(XVAR = \"mpg\","
-#' # [15] "                        YVAR = \"disp\","
-#' # [16] "                        COR = cor(mtcars$mpg, mtcars$disp,"
-#' # [17] "                              method = \"pearson\"))"
-#' # [18] ""
-#' # [19] "# Correlation between mpg and drat"
-#' # [20] "anl_drat <- data.frame(XVAR = \"mpg\","
-#' # [21] "                        YVAR = \"drat\","
-#' # [22] "                        COR = cor(mtcars$mpg, mtcars$drat,"
-#' # [23] "                              method = \"pearson\"))"
-#' # [24] ""
-#' # [25] ""
-#' # [26] "# Bind Results ----------------------------------------"
-#' # [27] ""
-#' # [28] ""
-#' # [29] "# Combine all analysis data frames"
-#' # [30] "final <- rbind(anl_cyl, anl_disp, anl_drat)"
-#' # [31] ""
-#' # [32] "# Print Results"
-#' # [33] "print(final)"
-#' # [34] ""
-#' # [35] ""
-#' # [36] ""
-#'
+#' tcd <- readLines(tmp)
+#' cat(paste0(tcd, "\n"))
+#' #
+#' # # Perform Analysis ------------------------------------
+#' #
+#' #
+#' # # Correlation between mpg and cyl
+#' # anl_cyl <- data.frame(XVAR = "mpg",
+#' #                       YVAR = "cyl",
+#' #                       COR = cor(mtcars$mpg, mtcars$cyl,
+#' #                                 method = "pearson"))
+#' #
+#' # # Correlation between mpg and disp
+#' # anl_disp <- data.frame(XVAR = "mpg",
+#' #                        YVAR = "disp",
+#' #                        COR = cor(mtcars$mpg, mtcars$disp,
+#' #                                  method = "pearson"))
+#' #
+#' # # Correlation between mpg and drat
+#' # anl_drat <- data.frame(XVAR = "mpg",
+#' #                        YVAR = "drat",
+#' #                        COR = cor(mtcars$mpg, mtcars$drat,
+#' #                                  method = "pearson"))
+#' #
+#' #
+#' # # Bind Results ----------------------------------------
+#' #
+#' #
+#' # # Combine all analysis data frames
+#' # final <- rbind(anl_cyl, anl_disp, anl_drat)
+#' #
+#' # # Print Results
+#' # print(final)
+#' #
 #' @export
 msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
                     exec = TRUE, debug = FALSE, debug_out = NULL, symbolgen = FALSE,

@@ -289,7 +289,7 @@ to turn off execution.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">########################################################################</span></span>
-<span><span class="co"># Example 1:  Perform correlation analysis between variables in MTCARS</span></span>
+<span><span class="co"># Example 1:  Hello World Macro</span></span>
 <span><span class="co">########################################################################</span></span>
 <span></span>
 <span><span class="co"># Get path to demo macro program</span></span>
@@ -299,42 +299,72 @@ to turn off execution.</p>
 <span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Demo1_mod.R"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Display source code</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
-<span><span class="co"># [1] ""</span></span>
-<span><span class="co"># [2] "#% Macro for Correlation Analysis"</span></span>
-<span><span class="co"># [3] "#%macro get_correlation(dat, xvar, yvars)"</span></span>
-<span><span class="co"># [4] ""</span></span>
-<span><span class="co"># [5] "# Perform Analysis ------------------------------------"</span></span>
-<span><span class="co"># [6] ""</span></span>
-<span><span class="co"># [7] "#%do idx = 1 %to %sysfunc(length(&amp;yvars))"</span></span>
-<span><span class="co"># [8] ""</span></span>
-<span><span class="co"># [9] "#%let yvar &lt;- %sysfunc(&amp;yvars[&amp;idx])"</span></span>
-<span><span class="co"># [10] "#%let xdat &lt;- &amp;dat$&amp;xvar"</span></span>
-<span><span class="co"># [11] "#%let ydat &lt;- &amp;dat$&amp;yvar"</span></span>
-<span><span class="co"># [12] "# Correlation between &amp;xvar and &amp;yvar"</span></span>
-<span><span class="co"># [13] "anl_&amp;yvar &lt;- data.frame(XVAR = \"&amp;xvar\","</span></span>
-<span><span class="co"># [14] "                        YVAR = \"&amp;yvar\","</span></span>
-<span><span class="co"># [15] "                        COR = cor(`&amp;xdat`, `&amp;ydat`,"</span></span>
-<span><span class="co"># [16] "                              method = \"pearson\"))"</span></span>
-<span><span class="co"># [17] "#%end"</span></span>
-<span><span class="co"># [18] ""</span></span>
-<span><span class="co"># [19] ""</span></span>
-<span><span class="co"># [20] "# Bind Results ----------------------------------------"</span></span>
-<span><span class="co"># [21] ""</span></span>
-<span><span class="co"># [22] "#%let anl_lst &lt;- %sysfunc(paste0(\"anl_\", &amp;yvars, collapse = \", \"))"</span></span>
-<span><span class="co"># [23] ""</span></span>
-<span><span class="co"># [24] "# Combine all analysis data frames"</span></span>
-<span><span class="co"># [25] "final &lt;- rbind(`&amp;anl_lst`)"</span></span>
-<span><span class="co"># [26] ""</span></span>
-<span><span class="co"># [27] "# Print Results"</span></span>
-<span><span class="co"># [28] "print(final)"</span></span>
-<span><span class="co"># [29] ""</span></span>
-<span><span class="co"># [30] "#%mend"</span></span>
-<span><span class="co"># [31] ""</span></span>
-<span><span class="co"># [32] "#% Call Macro"</span></span>
-<span><span class="co"># [33] "#%get_correlation(mtcars, mpg, c(\"cyl\", \"disp\", \"drat\"))"</span></span>
-<span><span class="co"># [34] ""</span></span>
-<span><span class="co"># [35] ""</span></span>
+<span><span class="co"># - This is the macro input code</span></span>
+<span><span class="va">cd</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">cd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># #%let a &lt;- 1</span></span>
+<span><span class="co"># #%if (&amp;a. == 1)</span></span>
+<span><span class="co"># print("Hello World!")</span></span>
+<span><span class="co"># #%else</span></span>
+<span><span class="co"># print("Goodbye!")</span></span>
+<span><span class="co"># #%end</span></span>
+<span></span>
+<span><span class="co"># Macro Execute Source Code</span></span>
+<span><span class="co"># - Results displayed below</span></span>
+<span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span>, <span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="co"># [1] "Hello World!"</span></span>
+<span></span>
+<span><span class="co"># View output file</span></span>
+<span><span class="co"># - This is the generated code</span></span>
+<span><span class="va">tcd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">tcd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># print("Hello World!")</span></span>
+<span></span>
+<span><span class="co">########################################################################</span></span>
+<span><span class="co"># Example 2:  Perform correlation analysis between variables in MTCARS</span></span>
+<span><span class="co">########################################################################</span></span>
+<span></span>
+<span><span class="co"># Get path to demo macro program</span></span>
+<span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo2.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create temporary output path</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Demo2_mod.R"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display source code</span></span>
+<span><span class="va">cd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">cd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># #% Macro for Correlation Analysis</span></span>
+<span><span class="co"># #%macro get_correlation(dat, xvar, yvars)</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Perform Analysis ------------------------------------</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># #%do idx = 1 %to %sysfunc(length(&amp;yvars))</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># #%let yvar &lt;- %sysfunc(&amp;yvars[&amp;idx])</span></span>
+<span><span class="co"># #%let xdat &lt;- &amp;dat$&amp;xvar</span></span>
+<span><span class="co"># #%let ydat &lt;- &amp;dat$&amp;yvar</span></span>
+<span><span class="co"># # Correlation between &amp;xvar and &amp;yvar</span></span>
+<span><span class="co"># anl_&amp;yvar &lt;- data.frame(XVAR = "&amp;xvar",</span></span>
+<span><span class="co">#                         YVAR = "&amp;yvar",</span></span>
+<span><span class="co">#                         COR = cor(`&amp;xdat`, `&amp;ydat`,</span></span>
+<span><span class="co">#                                   method = "pearson"))</span></span>
+<span><span class="co"># #%end</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Bind Results ----------------------------------------</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># #%let anl_lst &lt;- %sysfunc(paste0("anl_", &amp;yvars, collapse = ", "))</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Combine all analysis data frames</span></span>
+<span><span class="co"># final &lt;- rbind(`&amp;anl_lst`)</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Print Results</span></span>
+<span><span class="co"># print(final)</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># #%mend</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># #% Call Macro</span></span>
+<span><span class="co"># #%get_correlation(mtcars, mpg, c("cyl", "disp", "drat"))</span></span>
 <span></span>
 <span><span class="co"># Macro Execute Source Code</span></span>
 <span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span>, <span class="va">tmp</span><span class="op">)</span></span>
@@ -344,44 +374,40 @@ to turn off execution.</p>
 <span><span class="co"># 3  mpg drat  0.6811719</span></span>
 <span></span>
 <span><span class="co"># View output file</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co"># [1] ""</span></span>
-<span><span class="co"># [2] ""</span></span>
-<span><span class="co"># [3] ""</span></span>
-<span><span class="co"># [4] "# Perform Analysis ------------------------------------"</span></span>
-<span><span class="co"># [5] ""</span></span>
-<span><span class="co"># [6] ""</span></span>
-<span><span class="co"># [7] "# Correlation between mpg and cyl"</span></span>
-<span><span class="co"># [8] "anl_cyl &lt;- data.frame(XVAR = \"mpg\","</span></span>
-<span><span class="co"># [9] "                        YVAR = \"cyl\","</span></span>
-<span><span class="co"># [10] "                        COR = cor(mtcars$mpg, mtcars$cyl,"</span></span>
-<span><span class="co"># [11] "                              method = \"pearson\"))"</span></span>
-<span><span class="co"># [12] ""</span></span>
-<span><span class="co"># [13] "# Correlation between mpg and disp"</span></span>
-<span><span class="co"># [14] "anl_disp &lt;- data.frame(XVAR = \"mpg\","</span></span>
-<span><span class="co"># [15] "                        YVAR = \"disp\","</span></span>
-<span><span class="co"># [16] "                        COR = cor(mtcars$mpg, mtcars$disp,"</span></span>
-<span><span class="co"># [17] "                              method = \"pearson\"))"</span></span>
-<span><span class="co"># [18] ""</span></span>
-<span><span class="co"># [19] "# Correlation between mpg and drat"</span></span>
-<span><span class="co"># [20] "anl_drat &lt;- data.frame(XVAR = \"mpg\","</span></span>
-<span><span class="co"># [21] "                        YVAR = \"drat\","</span></span>
-<span><span class="co"># [22] "                        COR = cor(mtcars$mpg, mtcars$drat,"</span></span>
-<span><span class="co"># [23] "                              method = \"pearson\"))"</span></span>
-<span><span class="co"># [24] ""</span></span>
-<span><span class="co"># [25] ""</span></span>
-<span><span class="co"># [26] "# Bind Results ----------------------------------------"</span></span>
-<span><span class="co"># [27] ""</span></span>
-<span><span class="co"># [28] ""</span></span>
-<span><span class="co"># [29] "# Combine all analysis data frames"</span></span>
-<span><span class="co"># [30] "final &lt;- rbind(anl_cyl, anl_disp, anl_drat)"</span></span>
-<span><span class="co"># [31] ""</span></span>
-<span><span class="co"># [32] "# Print Results"</span></span>
-<span><span class="co"># [33] "print(final)"</span></span>
-<span><span class="co"># [34] ""</span></span>
-<span><span class="co"># [35] ""</span></span>
-<span><span class="co"># [36] ""</span></span>
-<span></span></code></pre></div>
+<span><span class="va">tcd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">tcd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Perform Analysis ------------------------------------</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Correlation between mpg and cyl</span></span>
+<span><span class="co"># anl_cyl &lt;- data.frame(XVAR = "mpg",</span></span>
+<span><span class="co">#                       YVAR = "cyl",</span></span>
+<span><span class="co">#                       COR = cor(mtcars$mpg, mtcars$cyl,</span></span>
+<span><span class="co">#                                 method = "pearson"))</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Correlation between mpg and disp</span></span>
+<span><span class="co"># anl_disp &lt;- data.frame(XVAR = "mpg",</span></span>
+<span><span class="co">#                        YVAR = "disp",</span></span>
+<span><span class="co">#                        COR = cor(mtcars$mpg, mtcars$disp,</span></span>
+<span><span class="co">#                                  method = "pearson"))</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Correlation between mpg and drat</span></span>
+<span><span class="co"># anl_drat &lt;- data.frame(XVAR = "mpg",</span></span>
+<span><span class="co">#                        YVAR = "drat",</span></span>
+<span><span class="co">#                        COR = cor(mtcars$mpg, mtcars$drat,</span></span>
+<span><span class="co">#                                  method = "pearson"))</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Bind Results ----------------------------------------</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Combine all analysis data frames</span></span>
+<span><span class="co"># final &lt;- rbind(anl_cyl, anl_disp, anl_drat)</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Print Results</span></span>
+<span><span class="co"># print(final)</span></span>
+<span><span class="co">#</span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
