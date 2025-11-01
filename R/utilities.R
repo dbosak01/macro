@@ -2,12 +2,14 @@
 
 # Detection Utilities -----------------------------------------------------
 
-
-
+# Determines if line is a #%let and, if so, make assignment
+# into symbol table.
+#' @noRd
 is_let <- function(ln, opn = TRUE) {
 
   ret <- FALSE
 
+  # Look for #%let
   dtct <- grepl("#%let", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
@@ -17,6 +19,8 @@ is_let <- function(ln, opn = TRUE) {
       nl <- trimws(sub("#%let", "", ln, fixed = TRUE))
 
       spl <- c()
+
+      # Assignment operator can be <- or =
       if (grepl("<-", nl, fixed = TRUE)[[1]]) {
         # Split on first <- found
         pos <- regexpr("<-", nl, fixed = TRUE)[[1]]
@@ -37,6 +41,9 @@ is_let <- function(ln, opn = TRUE) {
         # Deal with %symput
         has_symput <- grepl("%symput", spl[2], fixed = TRUE)[1]
         if (has_symput) {
+
+          # Buffer collects lines since beginning of program
+          # or last %symput evaluation.  Code below manages it.
 
           # Collapse buffer
           buffcd <- paste0(gbl$buffer, collapse = "\n")
@@ -82,7 +89,7 @@ is_let <- function(ln, opn = TRUE) {
   return(ret)
 }
 
-
+# This function deals with sysfunc and symexist
 #' @noRd
 #' @import fmtr
 sub_funcs <- function(ln) {
@@ -91,6 +98,7 @@ sub_funcs <- function(ln) {
 
   ret <- ln
 
+  # Look for %sysfunc
   pos <- regexpr("%sysfunc(", ln, fixed = TRUE)[[1]]
   if (pos > 0) {
 
@@ -99,10 +107,12 @@ sub_funcs <- function(ln) {
     epos <- nchar(ln)
     splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
     open <- 0
-    sysex <- ""
+    sysex <- ""   # expression
     idx <- spos
     cma <- NA
     fmt <- NA
+
+    # Have to traverse character by character
     for (chr in splt) {
       if (chr == "(") {
         open <- open + 1
@@ -129,18 +139,22 @@ sub_funcs <- function(ln) {
     }
     if (sysex != "") {
 
+      # Evaluate expression
       tres <- eval(str2expression(mreplace(sysex)), envir = gbl$env)
 
+      # Format if requested
       if (!is.na(fmt)) {
 
          tres <- fapply(tres, fmt)
       }
+      # Return evaluated result in context
       ret <- paste0(substring(ln, 1, pos -1),
                     as.character(tres),
                     substring(ln, epos + 1))
     }
   }
 
+  # Look for %symexist
   pos2 <- regexpr("%symexist(", ret, fixed = TRUE)[[1]]
   if (pos2 > 0) {
 
@@ -151,6 +165,8 @@ sub_funcs <- function(ln) {
     open <- 0
     sysex <- ""
     idx <- spos
+
+    # Traverse character by character
     for (chr in splt) {
       if (chr == "(") {
         open <- open + 1
@@ -166,8 +182,11 @@ sub_funcs <- function(ln) {
       idx <- idx + 1
     }
     if (sysex != "") {
-      # tres <- exists(paste0(sysex, "."), envir = gbl$env)
+
+      # Make sure it exists in symbol table
       tres <- exists(paste0("&", sysex), envir = gbl$env)
+
+      # Return in context
       ret <- paste0(substring(ret, 1, pos2 -1),
                     as.character(tres),
                     substring(ret, epos + 1))
@@ -182,15 +201,21 @@ is_if <- function(ln, evaluate = TRUE) {
 
   ret <- FALSE
   # browser()
+
+  # Look for #%if
   dtct <- grepl("#%if", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
 
     if (evaluate) {
+
+      # Remove #%if text to isolation condition
       nl <- trimws(sub("#%if", "", ln, fixed = TRUE))
 
+      # Resolve any macro variables in condition
       nr <- mreplace(nl)
 
+      # Evaluate condition
       vl <- eval(str2expression(trimws(nr)), envir = gbl$env)
 
     } else {
@@ -198,6 +223,7 @@ is_if <- function(ln, evaluate = TRUE) {
       vl <- NA
     }
 
+    # Return evaluation as attribute
     attr(ret, "value") <- vl
   }
 
@@ -210,6 +236,9 @@ is_end <- function(ln) {
 
   ret <- FALSE
 
+  # Look for #%end.
+  # No way of knowing whether it is an if block end
+  # or a do block end.  Calling function will make that determination.
   dtct <- grepl("#%end", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
@@ -218,11 +247,14 @@ is_end <- function(ln) {
   return(ret)
 }
 
+# Collapsed "else" and "if" into one word to make
+# parsing easier.
 #' @noRd
 is_elseif <- function(ln) {
 
   ret <- FALSE
 
+  # Look for #%elseif
   dtct <- grepl("#%elseif", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
@@ -257,6 +289,10 @@ is_comment <- function(ln) {
 
   ret <- FALSE
 
+  # Look for #%
+  # Does not necessarily mean it is a real comment.
+  # Other choices have to be eliminated.
+  # Calling function will perform the elimination.
   dtct <- grepl("#%", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
@@ -271,6 +307,7 @@ is_include <- function(ln) {
 
   ret <- FALSE
 
+  # Look for #%include
   dtct <- grepl("#%include ", ln, fixed = TRUE)[[1]]
   if (dtct) {
     ret <- TRUE
@@ -296,6 +333,7 @@ get_include <- function(pth) {
 
   }
 
+  # Open path and pull out lines
   f <- file(pth, encoding = "UTF-8")
 
   ret <- readLines(f, warn = FALSE)
@@ -336,9 +374,13 @@ is_do <- function(ln) {
     end <- tryCatch({eval(str2expression(trimws(cnl[2])), envir = gbl$env)},
                      error = function(cond) {NA})
 
+    # If messed up, give a good message
     if (is.na(strt) | is.na(end)) {
-      stop("Macro do loop improperly formed.")
-
+      msg <- paste0("Macro do loop improperly formed:\n",
+                    "-Variable: ", vr, "\n",
+                    "-From: ", trimws(cnl[1]), "\n",
+                    "-To: ", trimws(cnl[2]))
+      stop(msg)
     }
 
     attr(ret, "variable") <- vr
@@ -412,6 +454,8 @@ process_do <- function(lns, idx, lvl, ido) {
   return(ret)
 }
 
+# This function performs macro variable substitution,
+# taking into account the optional dot and the backticks.
 #' @noRd
 sub_mvar <- function(ln, varnm, varvl) {
 
@@ -473,6 +517,7 @@ sub_mvar <- function(ln, varnm, varvl) {
         }
       }
 
+      # Perform substitution
       ret <- sub(rvl, varvl, ret, fixed = TRUE)
 
     }
@@ -482,12 +527,17 @@ sub_mvar <- function(ln, varnm, varvl) {
 
 }
 
+# This function deals with delayed variable resolution.
+# Looks and sees if number of ampersands is equal to the
+# number of iterations.
+#' @noRd
 sub_ready <- function(ln, varnm, itr) {
 
   ret <- TRUE
   pos <- regexpr(varnm, ln, fixed = TRUE)
   ofst <- itr
 
+  # If there are more ampersands than the iteration count, return FALSE
   if (pos > ofst) {
     if (substring(ln, pos - ofst, pos - ofst) == "&") {
       ret <- FALSE
@@ -507,6 +557,7 @@ is_macro <- function(ln) {
 
   ret <- FALSE
 
+  # Look for #%macro
   dtct <- grepl("#%macro ", ln, fixed = TRUE)[[1]]
   if (dtct) {
 
@@ -534,6 +585,7 @@ is_mend <- function(ln) {
 
   ret <- FALSE
 
+  # Look for #%mend
   dtct <- grepl("#%mend", ln, fixed = TRUE)[[1]]
   if (dtct) {
 
@@ -551,6 +603,7 @@ is_mend <- function(ln) {
 
 
 # Used for both macro definitions and calls
+# def = TRUE is a definition
 #' @noRd
 get_parms <- function(ln, nm, def = TRUE) {
 
@@ -592,14 +645,18 @@ get_parms <- function(ln, nm, def = TRUE) {
   sprms <- strsplit(prms, "")[[1]]
 
   # Return list
-  ret <- list()
-  lvl <- 1
-  pnm <- c()
-  vl <- c()
-  nmflg <- TRUE
+  ret <- list()  # Return list of named values
+  lvl <- 1    # Level indicator
+  pnm <- c()  # Parameter name vector
+  vl <- c()   # Value vector
+  nmflg <- TRUE  # If on the left side of equals sign
 
+  # Loop through parameter string character by character
   for (ch in sprms) {
     if (lvl == 1) {
+
+      # There can be nested functions in parameter string
+      # If encountered, increase the level
       if (ch == "(") {
         lvl <- lvl + 1
 
@@ -609,16 +666,20 @@ get_parms <- function(ln, nm, def = TRUE) {
           vl <- append(vl, ch)
         }
 
-      }  else if (ch == "=") {
+      }  else if (ch == "=") {   # equals sign is separator between name and value
 
         nmflg <- FALSE
         pnm <- trimws(paste0(pnm, collapse = ""))
 
-      } else if (ch == ",") {
+      } else if (ch == ",") {  # Comma starts new parameter
 
         nmflg <- TRUE
+
+        # At this point, name is done and can be concatenated
         pnm <- trimws(paste0(pnm, collapse = ""))
         ret[[pnm]] <- trimws(paste0(vl, collapse = ""))
+
+        # Reset name and value vectors
         pnm <- c()
         vl <- c()
 
@@ -629,13 +690,14 @@ get_parms <- function(ln, nm, def = TRUE) {
           vl <- append(vl, ch)
         }
       }
-    } else {
+    } else {  # Deal with nested functions
       if (ch == "(") {
         lvl <- lvl + 1
       } else if (ch == ")") {
         lvl <- lvl - 1
       }
 
+      # Append character appropriately
       if (nmflg) {
         pnm <- append(pnm, ch)
       } else {
@@ -674,14 +736,19 @@ get_parms <- function(ln, nm, def = TRUE) {
 get_macro_code <- function(lns, idx, imacro) {
 
   ret <- c()
-  lvl <- 1
-  bdx <- idx + 1
-  edx <- length(lns)
+  lvl <- 1         # level indicator
+  bdx <- idx + 1   # Code begin line index
+  edx <- length(lns) # Code ending line index
 
+  # Scan all remaining lines
   for (sdx in seq(bdx, length(lns))) {
 
+    # Get a line
     ln <- lns[sdx]
 
+    # Determine if line is a macro call
+    # This is necessary because there can
+    # be nested macro definitions
     ismacro <- is_macro(ln)
 
     if (as.logical(ismacro)) {
@@ -689,18 +756,24 @@ get_macro_code <- function(lns, idx, imacro) {
     } else if (as.logical(is_mend(ln))) {
       lvl <- lvl - 1
 
+      # Only reach end if levels are lined up
       if (lvl == 0) {
         edx <- sdx - 1
         break
       }
     }
+
+    # Otherwise, append the line to the output
     ret <- append(ret, ln)
   }
 
+  # If got to the end and still no #%mend, throw error
   if (edx == length(lns)) {
     stop(paste0("Macro '", attr(ismacro, "name"), "' not closed. Did you forget a '#%mend'?"))
   }
 
+  # Return start and end positions, which are used by calling function
+  # to pull out the macro from the input lines so they are not re-scanned
   attr(ret, "start") <- bdx
   attr(ret, "end") <- edx
 
@@ -715,10 +788,14 @@ is_macro_call <- function(ln) {
 
   ret <- FALSE
 
+  # If no begin with #%, skip
   dtct <- grepl("#%", ln, fixed = TRUE)[[1]]
   if (dtct) {
 
+    # Remove the #%
     nl <- trimws(sub("#%", "", ln, fixed = TRUE)[[1]])
+
+    # Find the (
     pos <- regexpr("(", nl, fixed = TRUE)[[1]]
 
     if (pos > 0) {
@@ -733,10 +810,13 @@ is_macro_call <- function(ln) {
       if (nm %in% mnames) {
         ret <- TRUE
 
+        # Get parameter string
         prmstr <- substring(ln, pos)
 
+        # Separate parameters
         prms <- get_parms(prmstr, nm, FALSE)
 
+        # Return name and parameters as attributes
         attr(ret, "name") <- nm
         attr(ret, "parameters") <- prms
       }
@@ -749,8 +829,12 @@ is_macro_call <- function(ln) {
 
 # Gets consolidated macro code for a macro call
 # Accepts results of is_macro_call()
+# mnm is macro name
+# mfunc is the function definition
+# cpm is the calling parameters from is_macro_call()
+# ln is the line, in case we need to display for error handling
 #' @noRd
-get_macro_call <- function(mnm, mfunc, cpm) {
+get_macro_call <- function(mnm, mfunc, cpm, ln) {
 
   ret <- c()
 
@@ -779,15 +863,24 @@ get_macro_call <- function(mnm, mfunc, cpm) {
       if (nm %in% cnms) {
          vl <- cpm[[nm]]
       } else {
-        if (cnms[idx] == nm | cnms[idx] == "") {
-          vl <- cpm[[idx]]
+        # NA means the parameter was not passed.
+        # Not a problem if there is a default.
+        if (!is.na(cnms[idx])) {
+
+          # Blank means the parameter was not named.
+          # Also not a problem.
+          if (cnms[idx] == nm | cnms[idx] == "") {
+            vl <- cpm[[idx]]
+          }
         }
       }
 
+      # If there is no default value and no called value, throw error.
       if (dvl == "" & is.null(vl)) {
         stop(paste0("Required parameter '", nm, "' for macro '", mnm, "' not found."))
       }
 
+      # If there is a default value, use it
       if (is.null(vl) & dvl != "") {
         vl <- dvl
       }
@@ -810,9 +903,11 @@ get_macro_call <- function(mnm, mfunc, cpm) {
 
 # Logging Utilities -------------------------------------------------------
 
+# Writes a line of debug output
 #' @noRd
 log_debug <- function(vl, file_path = NULL, appnd = TRUE) {
 
+  # See if there is a debug file or not
   if (is.null(file_path)) {
     pth <- gbl$debug_out
   } else {
@@ -824,6 +919,8 @@ log_debug <- function(vl, file_path = NULL, appnd = TRUE) {
 
 }
 
+# Captures error when debug is on
+# Set up in msource()
 #' @noRd
 log_error <- function(msg = NULL) {
 

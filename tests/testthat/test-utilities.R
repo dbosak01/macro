@@ -401,7 +401,6 @@ test_that("utils11: is_do() basic functionality.", {
 
   expect_error(is_do(l1))
 
-
 })
 
 
@@ -572,10 +571,24 @@ test_that("utils17: get_macro_call() basic functionality.", {
 
   res2 <- get_macro_code(lns, 2, res)
 
-  expect_equal(length(res2), 3)
-  expect_equal(res2[1], "print(&x.)")
-  expect_equal(res2[2], "print(&y.)")
-  expect_equal(res2[3], "print(&z.)")
+  mfnc <- list(parameters = attr(res, "parameters"),
+               code = res2)
+
+  # Macro call
+  ln <- "#%fork(1, 2)"
+
+  prms <- get_parms(ln, def = FALSE)
+
+  res3 <- get_macro_call("fork", mfnc, prms, ln)
+
+  expect_equal(length(res3), 7)
+  expect_equal(res3[1], "#%let x <- 1")
+  expect_equal(res3[2], "#%let y <- 2")
+  expect_equal(res3[3], "#%let z <- 'Two'")
+  expect_equal(res3[4], "print(&x.)")
+  expect_equal(res3[5], "print(&y.)")
+  expect_equal(res3[6], "print(&z.)")
+  expect_equal(res3[7], "#%mend fork")
 
 
 })

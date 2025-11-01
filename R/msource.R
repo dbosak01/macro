@@ -667,7 +667,7 @@ mprocess <- function(lns, debug, debug_out) {
         mfnc <- gbl$macros[[mnm]]
 
         # Get prepared macro call lines
-        mlns <- get_macro_call(mnm, mfnc, mpm)
+        mlns <- get_macro_call(mnm, mfnc, mpm, ln)
 
         # Insert into lns vector
         lns <- c(lns[seq(1, idx)], mlns, lns[seq(idx + 1, lncnt)])
@@ -766,7 +766,6 @@ mreplace <- function(ln) {
     vrs <- ls(gbl$env)
 
     # Filter macro variables
-    # mv <- grepl("\\.$", vrs)
     mv <- grepl("^&", vrs)
     mvrs <- vrs[mv]
 
@@ -853,7 +852,8 @@ mreplace <- function(ln) {
                     log_debug(paste0("SYMBOLGEN: ", vr, " = ", vl, collapse = ""))
                   }
                 }
-                # ret <- gsub(vr, vl, ret, fixed = TRUE)
+
+                # Perform substitution
                 ret <- sub_mvar(ret, vr, vl)
               } else {
                 stop(paste0("Macro variable '", vr, "' not valid for text replacement."))
