@@ -125,8 +125,12 @@ file will be deleted when processing is complete.</p></dd>
 
 
 <dt id="arg-envir">envir<a class="anchor" aria-label="anchor" href="#arg-envir"></a></dt>
-<dd><p>The environment to be used for program execution.
-Default is the parent frame.</p></dd>
+<dd><p>The environment to be used for program execution, or the
+keyword "local". Default is the parent frame.  If the parent frame is used,
+all variables and data initialized in the executed program will be available in
+the parent frame.  If you do not want variables created in the parent frame,
+pass the quoted string "local" to have the function execute in a local
+environment.</p></dd>
 
 
 <dt id="arg-exec">exec<a class="anchor" aria-label="anchor" href="#arg-exec"></a></dt>

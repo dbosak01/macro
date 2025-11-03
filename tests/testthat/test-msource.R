@@ -109,7 +109,7 @@ test_that("msource2: basic functionality.", {
 
   ne <- new.env()
 
-  # No environment passed
+  # New environment
   res <- msource(fl, file_out = fl2, envir = ne, debug = TRUE, symbolgen = TRUE)
 
   eres <- file.exists(fl2)
@@ -682,4 +682,31 @@ test_that("msource26: test symput error handling", {
 
 
 })
+
+test_that("msource27: local environment usage.", {
+
+  fl <- file.path(base_path, "programs/test24.R")
+  fl2 <- file.path(base_path, "programs/test24_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  `&x` <- 1
+
+  # Local environment
+  res <- msource(fl, file_out = fl2, envir = "local",
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  # z should not be populated in this frame
+  # but you will see the print out
+  hasa <- exists("z")
+
+  expect_equal(eres, TRUE)
+  expect_equal(hasa, FALSE)
+
+})
+
+
 

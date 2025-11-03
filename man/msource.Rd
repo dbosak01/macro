@@ -25,8 +25,12 @@ file name on this parameter. Default is NULL. When NULL,
 the function will create a temp file for the generated code. The temp
 file will be deleted when processing is complete.}
 
-\item{envir}{The environment to be used for program execution.
-Default is the parent frame.}
+\item{envir}{The environment to be used for program execution, or the
+keyword "local". Default is the parent frame.  If the parent frame is used,
+all variables and data initialized in the executed program will be available in
+the parent frame.  If you do not want variables created in the parent frame,
+pass the quoted string "local" to have the function execute in a local
+environment.}
 
 \item{exec}{Whether or not to execute the output file after pre-processing.
 Default is TRUE. When FALSE, only the pre-processing step is performed.

@@ -149,8 +149,12 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' file name on this parameter. Default is NULL. When NULL,
 #' the function will create a temp file for the generated code. The temp
 #' file will be deleted when processing is complete.
-#' @param envir The environment to be used for program execution.
-#' Default is the parent frame.
+#' @param envir The environment to be used for program execution, or the
+#' keyword "local". Default is the parent frame.  If the parent frame is used,
+#' all variables and data initialized in the executed program will be available in
+#' the parent frame.  If you do not want variables created in the parent frame,
+#' pass the quoted string "local" to have the function execute in a local
+#' environment.
 #' @param exec Whether or not to execute the output file after pre-processing.
 #' Default is TRUE. When FALSE, only the pre-processing step is performed.
 #' If a \code{file_out} parameter is supplied, the generated code file
@@ -307,7 +311,13 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
   if (is.null(envir)) {
     stop("Environment cannot be null.")
   } else {
-    e <- envir
+    if (is.environment(envir)) {
+      e <- envir
+    } else if (envir == "local") {
+      e <- new.env()
+    } else {
+      stop("Invalid 'envir' parameter value.")
+    }
   }
 
   # To write cat() to the console,
@@ -432,15 +442,36 @@ preprocess <- function(pth, file_out, envir, debug, debug_out) {
     rm(list = enms, envir = e)
   }
 
-  # Copy any macro variables to new environment
-  vrs <- ls(envir)
-  # mvrs <- grepl("\\.$", vrs)
-  mvrs <- grepl("^&", vrs)
-  vrs <- vrs[mvrs]
+  if (is.environment(envir) == FALSE) {
 
-  for (nm in vrs) {
-    #ne[[nm]] <- envir[[nm]]
-    assign(nm, envir[[nm]], envir = e)
+    if (envir == "local") {
+
+      # user environment is two levels up
+      penv <- parent.frame(2)
+
+      # Copy any macro variables to new environment
+      vrs <- ls(penv)
+      mvrs <- grepl("^&", vrs)
+      vrs <- vrs[mvrs]
+
+      for (nm in vrs) {
+        assign(nm, penv[[nm]], envir = e)
+      }
+    } else {
+
+      stop("Invalid 'envir' parameter value.")
+    }
+
+  } else {
+
+    # Copy any macro variables to new environment
+    vrs <- ls(envir)
+    mvrs <- grepl("^&", vrs)
+    vrs <- vrs[mvrs]
+
+    for (nm in vrs) {
+      assign(nm, envir[[nm]], envir = e)
+    }
   }
 
   # Clear out local environment
