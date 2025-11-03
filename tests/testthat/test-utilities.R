@@ -168,6 +168,11 @@ test_that("utils3: is_if() basic functionality.", {
 
   expect_equal(as.logical(res), FALSE)
 
+  l5 <- "#%if 1 == &bork."
+
+  expect_error(is_if(l5))
+
+
 
 })
 
@@ -281,11 +286,16 @@ test_that("utils6: is_elseif() basic functionality.", {
   expect_equal(as.logical(res), TRUE)
   expect_equal(attr(res, "value"), FALSE)
 
+  l5 <- "#%elseif 1 == &bork."
+
+  expect_error(is_elseif(l5))
+
+
 })
 
 
 
-test_that("utils7: sub_funcs() basic functionality.", {
+test_that("utils7: sysfunc() basic functionality.", {
 
   ln <- "%let x <- %sysfunc(1 + 4)"
 
@@ -296,13 +306,17 @@ test_that("utils7: sub_funcs() basic functionality.", {
   expect_equal(res, "%let x <- 5")
 
 
-  ln <- "%let x <- 1"
+  ln2 <- "%let x <- 1"
 
-  res <- sub_funcs(ln)
+  res <- sub_funcs(ln2)
 
   res
 
   expect_equal(res, "%let x <- 1")
+
+  ln3 <- "%let x <- %sysfunc(1 + &bork)"
+
+  expect_error(sub_funcs(ln3))
 
 })
 
@@ -633,4 +647,8 @@ test_that("utils19: sub_ready() basic functionality.", {
   expect_equal(sub_ready("my &&&a", "&a", 4), TRUE)
 
 })
+
+
+
+
 

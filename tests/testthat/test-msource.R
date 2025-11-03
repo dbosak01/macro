@@ -95,6 +95,7 @@ test_that("msource1: mreplace() basic functionality.", {
 
   expect_equal(res, "Z is c('A' = 'One', 'B' = 'Two', 'C' = 'Three')")
 
+
 })
 
 
@@ -624,5 +625,61 @@ test_that("msource23: test nested macro scope", {
 
 })
 
+test_that("msource24: test symbolgen unresolved variable message", {
 
+  fl1 <- file.path(base_path, "programs/test21.R")
+  fl2 <- file.path(base_path, "programs/test21_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$x1, "&bork.")
+
+})
+
+
+test_that("msource25: test symput basic functionality", {
+
+  fl1 <- file.path(base_path, "programs/test22.R")
+  fl2 <- file.path(base_path, "programs/test22_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  res <- msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+  expect_equal(e1$y, 1)
+
+})
+
+test_that("msource26: test symput error handling", {
+
+  fl1 <- file.path(base_path, "programs/test23.R")
+  fl2 <- file.path(base_path, "programs/test23_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  e1 <- new.env()
+
+  expect_error(msource(fl1, fl2, envir = e1,
+                 debug = TRUE, symbolgen = TRUE))
+
+
+
+})
 

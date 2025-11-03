@@ -60,7 +60,15 @@ is_let <- function(ln, opn = TRUE) {
           nvl <- trimws(mreplace(nvl))
 
           # Evaluate expression
-          vl <- eval(str2expression(nvl), envir = lcl)
+          vl <- tryCatch({eval(str2expression(nvl), envir = lcl)},
+                         error = function(cond) { return(cond) })
+
+          if ("error" %in% class(vl)) {
+            msg <- paste0("Failed to evaluate\nmacro %symput expression: '",
+                          nvl, "'\n", "-Message: ", vl$message)
+            stop(msg)
+          }
+
           # assign(paste0(trimws(spl[1]), "."), vl, envir = gbl$env)
           assign(paste0("&", trimws(spl[1])), vl, envir = gbl$env)
 
@@ -139,8 +147,17 @@ sub_funcs <- function(ln) {
     }
     if (sysex != "") {
 
+      nsysex <- mreplace(sysex)
+
       # Evaluate expression
-      tres <- eval(str2expression(mreplace(sysex)), envir = gbl$env)
+      tres <- tryCatch({eval(str2expression(nsysex), envir = gbl$env)},
+                       error = function(cond) { return(cond) })
+
+      if ("error" %in% class(tres)) {
+        msg <- paste0("Failed to evaluate \n%sysfunc expression: '",
+                      nsysex, "'\n", "-Message: ", tres$message)
+        stop(msg)
+      }
 
       # Format if requested
       if (!is.na(fmt)) {
@@ -216,7 +233,14 @@ is_if <- function(ln, evaluate = TRUE) {
       nr <- mreplace(nl)
 
       # Evaluate condition
-      vl <- eval(str2expression(trimws(nr)), envir = gbl$env)
+      vl <- tryCatch({eval(str2expression(trimws(nr)), envir = gbl$env)},
+                     error = function(cond) { cond })
+
+      if ("error" %in% class(vl)) {
+        msg <- paste0("Failed to evaluate\nmacro %if condition: '",
+                      nr, "'\n", "-Message: ", vl$message)
+        stop(msg)
+      }
 
     } else {
 
@@ -263,7 +287,14 @@ is_elseif <- function(ln) {
 
     nr <- mreplace(nl)
 
-    vl <- eval(str2expression(trimws(nr)), envir = gbl$env)
+    vl <- tryCatch({eval(str2expression(trimws(nr)), envir = gbl$env)},
+                   error = function(cond) { return(cond) })
+
+    if ("error" %in% class(vl)) {
+      msg <- paste0("Failed to evaluate\nmacro %elseif condition: '",
+                    nr, "'\n", "-Message: ", vl$message)
+      stop(msg)
+    }
 
     attr(ret, "value") <- vl
   }
@@ -376,7 +407,7 @@ is_do <- function(ln) {
 
     # If messed up, give a good message
     if (is.na(strt) | is.na(end)) {
-      msg <- paste0("Macro do loop improperly formed:\n",
+      msg <- paste0("Macro %do loop improperly formed:\n",
                     "-Variable: ", vr, "\n",
                     "-From: ", trimws(cnl[1]), "\n",
                     "-To: ", trimws(cnl[2]))

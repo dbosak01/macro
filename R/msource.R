@@ -789,6 +789,21 @@ mreplace <- function(ln) {
         }
 
         if (length(fvrs) == 0) {
+
+          # Check for possible unresolved macro variables
+          if (!is.null(gbl$symbolgen)) {
+            if (gbl$symbolgen) {
+              if (grepl("&\\S+", ret)[[1]]) {
+
+                vpos <- regexpr("&\\S+", ret)
+
+                vr <- substring(ret, vpos, vpos + attr(vpos, "match.length"))
+
+                log_debug(paste0("SYMBOLGEN: Possible unresolved variable: ", vr))
+              }
+            }
+          }
+
           # Bail if nothing found
           break
         } else {
