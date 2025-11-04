@@ -966,3 +966,40 @@ log_error <- function(msg = NULL) {
 
 }
 
+
+
+# Other Utilities ---------------------------------------------------------
+
+
+
+# Function to get selected text
+#' @noRd
+get_selection <- function() {
+
+  ret <- ""
+
+  if (.Platform$GUI == "RStudio") {
+
+    id <- rstudioapi::documentId(FALSE)
+
+    # Get the current selection
+    sel <- rstudioapi::selectionGet(id)
+
+    ret <- sel$value
+
+  } else if (Sys.getenv("TERM_PROGRAM") == "vscode") {
+
+    id <- rstudioapi::documentId(FALSE)
+
+    # Get the current selection
+    sel <- rstudioapi::selectionGet(id)
+
+    ret <- sel$value
+
+  }
+
+  return(ret)
+}
+
+
+

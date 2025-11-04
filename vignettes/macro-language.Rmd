@@ -1,8 +1,8 @@
 ---
-title: "Macro Language"
+title: "Macro Language Reference"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Macro Language}
+  %\VignetteIndexEntry{Macro Language Reference}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
