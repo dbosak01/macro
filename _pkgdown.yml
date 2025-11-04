@@ -19,6 +19,11 @@ reference:
   desc: Functions to preprocess code.
   contents:
   - msource
+- title: Addin Functions
+  desc: Functions to support addin usage.
+  contents:
+  - runMSource
+  - runMSourceDebug
 
 navbar:
   type: inverse

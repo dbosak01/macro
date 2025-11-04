@@ -998,6 +998,13 @@ get_selection <- function() {
 
   }
 
+  if (nchar(ret) > 0) {
+
+    ret <- strsplit(ret, "\n", fixed = TRUE)[[1]]
+
+
+  }
+
   return(ret)
 }
 

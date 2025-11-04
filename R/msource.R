@@ -298,11 +298,27 @@ strs <- paste0(rep("*", 80), collapse = "")
 #' # print(final)
 #' #
 #' @export
-msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
+msource <- function(pth = NULL, file_out = NULL, envir = parent.frame(),
                     exec = TRUE, debug = FALSE, debug_out = NULL, symbolgen = FALSE,
                     ...) {
 
   #browser()
+  tmpPath <- FALSE
+
+  # Deal with NULL pth value
+  if (is.null(pth)) {
+    sel <- get_selection()
+    if (any(sel != "")) {
+      tmpPath <- TRUE
+      pth <- file.path(tempdir(), "_selected.R")
+      f <- file(pth, open = "w", encoding = "UTF-8")
+      writeLines(sel, con = f)
+      close(f)
+
+    } else {
+      pth <- Sys.path()
+    }
+  }
 
   if (!file.exists(pth)) {
     stop(paste0("File '", pth, "' not found."))
@@ -390,6 +406,11 @@ msource <- function(pth = Sys.path(), file_out = NULL, envir = parent.frame(),
     ret$output <- ppth
   }
 
+  # Clean up selected file
+  if (tmpPath) {
+    file.remove(pth)
+  }
+
   if (debug) {
     # Write log end indicator
     log_debug("")
@@ -415,7 +436,12 @@ preprocess <- function(pth, file_out, envir, debug, debug_out) {
   # Create output file name
   if (is.null(file_out)) {
     bs <- basename(pth)
-    npth <- file.path(tempdir(), bs)
+
+    if (bs == "_selected.R") {
+      npth <- file.path(tempdir(), paste0("out", bs))
+    } else {
+      npth <- file.path(tempdir(), bs)
+    }
   } else {
     npth <- file_out
   }

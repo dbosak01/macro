@@ -44,3 +44,35 @@
 #' @aliases macro-package
 #' @keywords internal
 "_PACKAGE"
+
+
+#' @title Addin Function to Run msource()
+#' @description
+#' This function is exposed to the addin menu to run \code{msource()}.
+#' @return NULL
+#' @export
+runMSource <- function() {
+
+  msource()
+
+  return(NULL)
+}
+
+
+
+#' @title Addin Function to Run msource() in Debug Mode
+#' @description
+#' This function is exposed to the addin menu to run \code{msource()}
+#' in debug mode.
+#' @return NULL
+#' @export
+runMSourceDebug <- function() {
+
+
+  msource(debug = TRUE, symbolgen = TRUE)
+
+  return(NULL)
+
+}
+
+

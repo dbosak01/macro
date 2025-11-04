@@ -5,7 +5,7 @@
 \title{Pre-process and Source}
 \usage{
 msource(
-  pth = Sys.path(),
+  pth = NULL,
   file_out = NULL,
   envir = parent.frame(),
   exec = TRUE,

@@ -710,3 +710,27 @@ test_that("msource27: local environment usage.", {
 
 
 
+test_that("msource28: selected code works as expected.", {
+
+  fl <- file.path(base_path, "programs/test24.R")
+  fl2 <- file.path(base_path, "programs/test24_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  `&x` <- 1
+
+  # Local environment
+  res <- msource(fl, file_out = fl2, envir = "local",
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  # z should not be populated in this frame
+  # but you will see the print out
+  hasa <- exists("z")
+
+  expect_equal(eres, TRUE)
+  expect_equal(hasa, FALSE)
+
+})
