@@ -1,9 +1,9 @@
 Name: Macro Source
 Description: Execute a macro-enabled program.
 Binding: runMSource
-Interactive: false
+Interactive: true
 
 Name: Macro Source with Debug
 Description: Execute a macro-enabled program in debug mode.
 Binding: runMSourceDebug
-Interactive: false
+Interactive: true

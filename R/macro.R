@@ -50,12 +50,19 @@
 #' @description
 #' This function is exposed to the addin menu to run \code{msource()}.
 #' @return NULL
-#' @export
+#' @noRd
 runMSource <- function() {
 
-  msource()
+  res <- tryCatch({msource(envir = globalenv())},
+                  warning = function(cond) {
+                    print("here!")
+                    return(cond)
+                    },
+                  error = function(cond) {return(cond)})
 
-  return(NULL)
+  ret <- processMessages(res)
+
+  invisible(ret)
 }
 
 
@@ -65,14 +72,50 @@ runMSource <- function() {
 #' This function is exposed to the addin menu to run \code{msource()}
 #' in debug mode.
 #' @return NULL
-#' @export
+#' @noRd
 runMSourceDebug <- function() {
 
+  res <- tryCatch({msource(debug = TRUE, symbolgen = TRUE,
+                           envir = globalenv())},
+                  warning = function(cond) {
+                    print("here!")
+                    return(cond)
+                    },
+                  error = function(cond) { return(cond) })
 
-  msource(debug = TRUE, symbolgen = TRUE)
+  ret <- processMessages(res)
 
-  return(NULL)
+  invisible(ret)
 
 }
 
+#' @noRd
+processMessages <- function(res) {
+
+  ret <- res
+
+  print(ret)
+
+  if ("warning" %in% class(res)) {
+
+    print(warnings())
+
+  }
+
+  if ("error" %in% class(res)) {
+
+    if (length(res$call) > 1) {
+      cl <- res$call[1]
+    } else {
+      cl <- res$call
+    }
+
+    msg <- paste0("Error in ", cl, ": ", res$message, "\n", collapse = "\n")
+
+    cat(msg)
+  }
+
+  return(ret)
+
+}
 
