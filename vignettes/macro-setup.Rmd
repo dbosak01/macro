@@ -1,0 +1,17 @@
+---
+title: "IDE Setup"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{IDE Setup}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The **macro** package can be used interactively in your favorite IDE...

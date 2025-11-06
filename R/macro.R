@@ -62,6 +62,8 @@
 #' @export
 runMSource <- function() {
 
+  autoSave()
+
   res <- tryCatch({msource(envir = globalenv(), echo = TRUE)},
                   warning = function(cond) {
                     print("here!")
@@ -92,6 +94,8 @@ runMSource <- function() {
 #' # runMSourceDebug()
 #' @export
 runMSourceDebug <- function() {
+
+  autoSave()
 
   res <- tryCatch({msource(debug = TRUE, symbolgen = TRUE,
                            envir = globalenv())},
@@ -135,5 +139,44 @@ processMessages <- function(res) {
 
   return(ret)
 
+}
+
+# Deal with autosave choices. Behavior is to automatically save the opened
+# document if the user is executing the entire document.  If there are unsaved
+# changes, those changes have to be saved because msource() looks at the file
+# on disk.  On the other hand, if the user is only selecting a few lines of
+# code to execute, there is no need to save the entire document.  Desired behavior
+# is similar to RStudio source button.
+#' @noRd
+autoSave <- function() {
+
+  # Basic requirement
+  if (length(find.package('rstudioapi', quiet=TRUE)) > 0) {
+
+    # If user is selecting something, don't save the document
+    if (get_selection() == "") {
+
+
+      if (is.null(options()[["macro.autosave"]]) == FALSE) {
+
+        opt <- options("macro.autosave")
+
+        # Only save if TRUE
+        if (all(opt[[1]] == TRUE)) {
+          id <- rstudioapi::documentId(FALSE)
+
+          rstudioapi::documentSave(id)
+        }
+
+      } else {  # Default is to save document
+        id <- rstudioapi::documentId(FALSE)
+
+        rstudioapi::documentSave(id)
+      }
+
+
+
+    }
+  }
 }
 

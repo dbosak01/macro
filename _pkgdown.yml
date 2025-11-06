@@ -6,8 +6,11 @@ articles:
 - title: Examples
   navbar: ~
   contents:
+  - macro-setup
   - macro-language
+  - macro-symtable
   - macro-debug
+  - macro-globals
   - macro-example1
   - macro-example2
   - macro-example3

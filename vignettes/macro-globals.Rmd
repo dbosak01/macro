@@ -1,0 +1,25 @@
+---
+title: "Global Options"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Global Options}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The **macro** package includes several global options...
+
+
+macro.autosave
+
+macro.autoclear
+
+macro.echo
+

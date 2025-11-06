@@ -978,6 +978,7 @@ get_selection <- function() {
 
   ret <- ""
 
+
   if (.Platform$GUI == "RStudio") {
 
     id <- rstudioapi::documentId(FALSE)
@@ -989,12 +990,15 @@ get_selection <- function() {
 
   } else if (Sys.getenv("TERM_PROGRAM") == "vscode") {
 
-    id <- rstudioapi::documentId(FALSE)
+    if (length(find.package('rstudioapi', quiet=TRUE)) > 0) {
 
-    # Get the current selection
-    sel <- rstudioapi::selectionGet(id)
+      id <- rstudioapi::documentId(FALSE)
 
-    ret <- sel$value
+      # Get the current selection
+      sel <- rstudioapi::selectionGet(id)
+
+      ret <- sel$value
+    }
 
   }
 
