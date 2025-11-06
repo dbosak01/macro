@@ -48,12 +48,21 @@
 
 #' @title Addin Function to Run msource()
 #' @description
-#' This function is exposed to the addin menu to run \code{msource()}.
-#' @return NULL
-#' @noRd
+#' This function is exposed to the addin menu to run \code{msource()}
+#' interactively. The function will run either the
+#' currently selected code, or the currently active program.
+#' The function sets the "envir" parameter
+#' to the global environment and the "clear" parameter to FALSE
+#' to enhance the user experience.  The function
+#' takes no parameters and is only used by the addin menu.
+#' @return The results of \code{msource}, invisibly.
+#' @examples
+#' # Called from addin menu
+#' # runMSource()
+#' @export
 runMSource <- function() {
 
-  res <- tryCatch({msource(envir = globalenv())},
+  res <- tryCatch({msource(envir = globalenv(), echo = TRUE)},
                   warning = function(cond) {
                     print("here!")
                     return(cond)
@@ -70,9 +79,18 @@ runMSource <- function() {
 #' @title Addin Function to Run msource() in Debug Mode
 #' @description
 #' This function is exposed to the addin menu to run \code{msource()}
-#' in debug mode.
-#' @return NULL
-#' @noRd
+#' interactively in debug mode. The function will run either the
+#' currently selected code, or the currently active program.
+#' On the call to \code{msource}, it sets the "debug" and "symbolgen"
+#' parameters to TRUE.  The function also sets the "envir" parameter
+#' to the global environment and the "clear" parameter to FALSE
+#' to enhance the user experience.  The function
+#' takes no parameters and is only used by the addin menu.
+#' @return The results of \code{msource}, invisibly.
+#' @examples
+#' # Called from addin menu
+#' # runMSourceDebug()
+#' @export
 runMSourceDebug <- function() {
 
   res <- tryCatch({msource(debug = TRUE, symbolgen = TRUE,

@@ -16,6 +16,10 @@
 <url><loc>https://macro.r-sassy.org/news/index.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/index.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/macro.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/mclear.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/mget.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/mput.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/mset.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/msource.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/runMSource.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/runMSourceDebug.html</loc></url>

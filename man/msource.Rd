@@ -2,7 +2,7 @@
 % Please edit documentation in R/msource.R
 \name{msource}
 \alias{msource}
-\title{Pre-process and Source}
+\title{Macro Source Function}
 \usage{
 msource(
   pth = NULL,
@@ -12,6 +12,8 @@ msource(
   debug = FALSE,
   debug_out = NULL,
   symbolgen = FALSE,
+  echo = TRUE,
+  clear = TRUE,
   ...
 )
 }
@@ -47,6 +49,12 @@ console. Default is NULL.}
 
 \item{symbolgen}{If debugger is on, this option will display the name and value
 of any macro variables encountered during resolution. Default is FALSE.}
+
+\item{echo}{Whether or not to echo the generated code to the console.
+Default is TRUE.}
+
+\item{clear}{Whether or not to clear the macro symbol table before
+pre-processing begins.  Default is TRUE.}
 
 \item{...}{Follow-on parameters to the \code{source} function. See
 the \code{\link{source}} function for additional information.}
