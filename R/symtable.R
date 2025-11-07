@@ -388,7 +388,7 @@ print.mput <- function(x, ..., verbose = FALSE) {
 #' res <- mget("pth")
 #'
 #' # View results
-#' - Path is set to the "prod" value
+#' # - Path is set to the "prod" value
 #' res
 #' # [1] "/projects/prod/data"
 #'
@@ -452,7 +452,7 @@ mget <- function(name) {
 #' res <- mget("pth")
 #'
 #' # View results
-#' - Path is set to the "prod" value
+#' # - Path is set to the "prod" value
 #' res
 #' # [1] "/projects/prod/data"
 #'

@@ -52,7 +52,7 @@ msource(src, echo = FALSE, clear = FALSE)
 res <- mget("pth")
 
 # View results
-- Path is set to the "prod" value
+# - Path is set to the "prod" value
 res
 # [1] "/projects/prod/data"
 
