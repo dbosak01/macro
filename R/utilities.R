@@ -981,22 +981,26 @@ get_selection <- function() {
 
   if (.Platform$GUI == "RStudio") {
 
+    # Get id of currently open document
     id <- rstudioapi::documentId(FALSE)
 
     # Get the current selection
     sel <- rstudioapi::selectionGet(id)
 
+    # Pull out the selected value
     ret <- sel$value
 
   } else if (Sys.getenv("TERM_PROGRAM") == "vscode") {
 
     if (length(find.package('rstudioapi', quiet=TRUE)) > 0) {
 
+      # Get id of currently open document
       id <- rstudioapi::documentId(FALSE)
 
       # Get the current selection
       sel <- rstudioapi::selectionGet(id)
 
+      # Pull out the selected value
       ret <- sel$value
     }
 
@@ -1004,8 +1008,12 @@ get_selection <- function() {
 
   if (nchar(ret) > 0) {
 
+    # Split selected text into separate lines
     ret <- strsplit(ret, "\n", fixed = TRUE)[[1]]
 
+    # Make sure there is at least one carriage return at end
+    # Or you get an error when trying to msource()
+    ret <- paste0(ret, "\n")
 
   }
 

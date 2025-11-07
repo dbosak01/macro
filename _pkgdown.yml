@@ -25,10 +25,12 @@ reference:
 - title: Symbol Table Functions
   desc: Functions to interact with the Macro Symbol Table.
   contents:
+  - mset
+  - mget
   - mclear
   - mput
-  - mget
-  - mset
+  - print.mput
+
 - title: Addin Functions
   desc: Functions to support interactive usage via addin menu.
   contents:

@@ -37,8 +37,8 @@ test_that("symtable01: mclear() works as expected.", {
 test_that("symtable02: mput() works as expected.", {
 
 
-  fl <- file.path(base_path, "programs/test24.R")
-  fl2 <- file.path(base_path, "programs/test24_mod.R")
+  fl <- file.path(base_path, "programs/test25.R")
+  fl2 <- file.path(base_path, "programs/test25_mod.R")
 
   if (file.exists(fl2))
     file.remove(fl2)
@@ -50,17 +50,20 @@ test_that("symtable02: mput() works as expected.", {
 
   eres <- file.exists(fl2)
 
-  hasa <- exists("z")
-
   expect_equal(eres, TRUE)
-  expect_equal(hasa, TRUE)
 
   res2 <- mput()
 
-  expect_equal(nrow(res2), 2) # clears &x and &y
-  expect_equal(ncol(res2), 2)
-  expect_equal(res2$Value, c('1', '1'))
-  expect_equal(res2$Name, c("&x", "&y"))
+  # Check normal printing
+  print(res2)
+
+  # Check verbose printing
+  print(res2, verbose = TRUE)
+
+  expect_equal(length(res2), 2)
+  expect_equal(length(res2$variables), 3)
+  expect_equal(length(res2$functions), 3)
+  expect_equal(names(res2$functions), c("fork", "bork", "sammy"))
 
 })
 
@@ -116,6 +119,6 @@ test_that("symtable04: mset() works as expected.", {
 
   res3 <- mput()
 
-  expect_equal("&q" %in% res3$Name, TRUE)
+  expect_equal("&q" %in% names(res3$variables), TRUE)
 
 })

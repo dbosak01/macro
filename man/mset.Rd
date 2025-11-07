@@ -30,9 +30,6 @@ library(macro)
 # Get path to demo macro program
 src <- system.file("extdata/Demo3.R", package = "macro")
 
-# Create temporary output path
-tmp <- file.path(tempdir(), "Demo3_mod.R")
-
 # Display source code
 # - This is the macro input code
 cd <- readLines(src)
@@ -49,13 +46,24 @@ mset("env", "prod")
 
 # Macro Execute Source Code
 # - set clear to FALSE to so "env" value is not removed
-msource(src, tmp, clear = FALSE)
+msource(src, echo = FALSE, clear = FALSE)
 
 # View "pth" macro variable
 res <- mget("pth")
 
 # View results
+- Path is set to the "prod" value
 res
 # [1] "/projects/prod/data"
 
 }
+\seealso{
+\code{\link[=msource]{msource()}}
+
+Other symtable: 
+\code{\link{mclear}()},
+\code{\link{mget}()},
+\code{\link{mput}()},
+\code{\link{print.mput}()}
+}
+\concept{symtable}

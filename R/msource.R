@@ -566,6 +566,9 @@ preprocess <- function(pth, file_out, envir, debug, debug_out, clear) {
   # Process lines
   nlns <- mprocess(lns, debug, debug_out)
 
+  # Add final carriage return to avoid errors
+  nlns <- append(nlns, "\n")
+
   # Output program
   fl2 <- file(npth, open = "w", encoding = "native.enc")
   writeLines(nlns, con = fl2, useBytes = TRUE)

@@ -17,3 +17,58 @@ to avoid contamination between one call to \code{msource} and the
 next.  It is called automatically when the "clear" parameter of
 \code{msource} is set to TRUE.  The function takes no parameters.
 }
+\examples{
+library(macro)
+
+# Get path to demo macro program
+src <- system.file("extdata/Demo4.R", package = "macro")
+
+# Display source code
+# - This is the macro input code
+cd <- readLines(src)
+cat(paste(cd, "\n"))
+# #\% Create some macro variables
+# #\%let x <- 1
+# #\%let y <- 2
+# #\%let z <- &x + &y
+#
+# #\% Create a macro function
+# #\%macro test(vl = Hello!)
+# print("&vl")
+# #\%mend
+
+# Execute source code
+msource(src, echo = FALSE)
+
+# View symbol table
+mput()
+# # Macro Symbol Table: 3 macro variables
+#   Name Value
+# 1   &x     1
+# 2   &y     2
+# 3   &z 1 + 2
+# # Macro Function List: 1 macro functions
+#   Name Parameter Default
+# 1 test        vl  Hello!
+
+# Clear symbol table
+mclear()
+# Clearing macro symbol table...
+# 4 items cleared.
+
+# View symbol table again
+mput()
+# # Macro Symbol Table: (empty)
+# # Macro Function List: (empty)
+
+}
+\seealso{
+\code{\link[=msource]{msource()}}
+
+Other symtable: 
+\code{\link{mget}()},
+\code{\link{mput}()},
+\code{\link{mset}()},
+\code{\link{print.mput}()}
+}
+\concept{symtable}

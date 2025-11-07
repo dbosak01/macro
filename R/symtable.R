@@ -12,6 +12,52 @@
 #' @returns
 #' The number of objects cleared, invisibly.  The function also
 #' outputs a message saying how many objects were cleared.
+#' @examples
+#' library(macro)
+#'
+#' # Get path to demo macro program
+#' src <- system.file("extdata/Demo4.R", package = "macro")
+#'
+#' # Display source code
+#' # - This is the macro input code
+#' cd <- readLines(src)
+#' cat(paste(cd, "\n"))
+#' # #% Create some macro variables
+#' # #%let x <- 1
+#' # #%let y <- 2
+#' # #%let z <- &x + &y
+#' #
+#' # #% Create a macro function
+#' # #%macro test(vl = Hello!)
+#' # print("&vl")
+#' # #%mend
+#'
+#' # Execute source code
+#' msource(src, echo = FALSE)
+#'
+#' # View symbol table
+#' mput()
+#' # # Macro Symbol Table: 3 macro variables
+#' #   Name Value
+#' # 1   &x     1
+#' # 2   &y     2
+#' # 3   &z 1 + 2
+#' # # Macro Function List: 1 macro functions
+#' #   Name Parameter Default
+#' # 1 test        vl  Hello!
+#'
+#' # Clear symbol table
+#' mclear()
+#' # Clearing macro symbol table...
+#' # 4 items cleared.
+#'
+#' # View symbol table again
+#' mput()
+#' # # Macro Symbol Table: (empty)
+#' # # Macro Function List: (empty)
+#'
+#' @family symtable
+#' @seealso [msource()]
 #' @export
 mclear <- function() {
 
@@ -24,6 +70,7 @@ mclear <- function() {
     rm(list = enms, envir = gbl$env)
   }
 
+  # Clear out macros
   if (length(gbl$macros) > 0) {
     cnt <- cnt + length(gbl$macros)
     gbl$macros <- list()
@@ -42,21 +89,263 @@ mclear <- function() {
 #' The function can be used to examine the symbol table values.
 #' @returns
 #' A data frame of macro symbols and their values.
+#' @examples
+#' library(macro)
+#'
+#' # Get path to demo macro program
+#' src <- system.file("extdata/Demo4.R", package = "macro")
+#'
+#' # Display source code
+#' # - This is the macro input code
+#' cd <- readLines(src)
+#' cat(paste(cd, "\n"))
+#' # #% Create some macro variables
+#' # #%let x <- 1
+#' # #%let y <- 2
+#' # #%let z <- &x + &y
+#' #
+#' # #% Create a macro function
+#' # #%macro test(vl = Hello!)
+#' # print("&vl")
+#' # #%mend
+#'
+#' # Execute source code
+#' msource(src, echo = FALSE)
+#'
+#' # Examine symbol table
+#' res <- mput()
+#'
+#' # View results
+#' print(res)
+#' # # Macro Symbol Table: 3 macro variables
+#' #   Name Value
+#' # 1   &x     1
+#' # 2   &y     2
+#' # 3   &z 1 + 2
+#' # # Macro Function List: 1 macro functions
+#' #   Name Parameter Default
+#' # 1 test        vl  Hello!
+#'
+#' # View results structure
+#' print(res, verbose = TRUE)
+#' # $variables
+#' # $variables$`&x`
+#' # [1] "1"
+#' #
+#' # $variables$`&y`
+#' # [1] "2"
+#' #
+#' # $variables$`&z`
+#' # [1] "1 + 2"
+#' #
+#' #
+#' # $functions
+#' # $functions$test
+#' # $functions$test$parameters
+#' # $functions$test$parameters$vl
+#' # [1] "Hello!"
+#' #
+#' #
+#' # $functions$test$code
+#' # [1] "print(\"&vl\")"
+#' # attr(,"start")
+#' # [1] 8
+#' # attr(,"end")
+#' # [1] 8
+#'
+#' @family symtable
+#' @seealso [msource()]
 #' @export
 mput <- function() {
 
+
+  ret <- structure(list(), class = c("mput", "list"))
+
   enms <- ls(gbl$env)
-  evl <- c()
+  sret <- list()
   for (nm in enms) {
-    evl <- append(evl, gbl$env[[nm]])
+    sret <- append(sret, gbl$env[[nm]])
   }
 
+  # List of symbols and values
+  if (length(enms) > 0) {
+    names(sret) <- enms
+  }
 
-  ret <- data.frame("Name" = enms,
-                    "Value" = evl)
+  mret <- list()
+  if (length(gbl$macros) > 0) {
+    mret <- gbl$macros
+  }
+
+  # Return list of variables and functions
+  ret$variables <- sret
+  ret$functions <- mret
 
 
   return(ret)
+}
+
+
+#' @title Print the Macro Symbol Table
+#' @description A class-specific instance of the \code{print} function for
+#' a macro symbol table and function list.
+#' Use \code{verbose = TRUE} to print the catalog as a list.
+#' @param x The format catalog to print.
+#' @param ... Any follow-on parameters.
+#' @param verbose Whether or not to print the format catalog in verbose style.
+#' By default, the parameter is FALSE, meaning to print in tabular style.
+#' @return The object, invisibly.
+#' @family fcat
+#' @examples
+#' library(macro)
+#'
+#' # Get path to demo macro program
+#' src <- system.file("extdata/Demo4.R", package = "macro")
+#'
+#' # Display source code
+#' # - This is the macro input code
+#' cd <- readLines(src)
+#' cat(paste(cd, "\n"))
+#' # #% Create some macro variables
+#' # #%let x <- 1
+#' # #%let y <- 2
+#' # #%let z <- &x + &y
+#' #
+#' # #% Create a macro function
+#' # #%macro test(vl = Hello!)
+#' # print("&vl")
+#' # #%mend
+#'
+#' # Execute source code
+#' msource(src, echo = FALSE)
+#'
+#' # Examine symbol table
+#' res <- mput()
+#'
+#' # View results
+#' print(res)
+#' # # Macro Symbol Table: 3 macro variables
+#' #   Name Value
+#' # 1   &x     1
+#' # 2   &y     2
+#' # 3   &z 1 + 2
+#' # # Macro Function List: 1 macro functions
+#' #   Name Parameter Default
+#' # 1 test        vl  Hello!
+#'
+#' # View results structure
+#' print(res, verbose = TRUE)
+#' # $variables
+#' # $variables$`&x`
+#' # [1] "1"
+#' #
+#' # $variables$`&y`
+#' # [1] "2"
+#' #
+#' # $variables$`&z`
+#' # [1] "1 + 2"
+#' #
+#' #
+#' # $functions
+#' # $functions$test
+#' # $functions$test$parameters
+#' # $functions$test$parameters$vl
+#' # [1] "Hello!"
+#' #
+#' #
+#' # $functions$test$code
+#' # [1] "print(\"&vl\")"
+#' # attr(,"start")
+#' # [1] 8
+#' # attr(,"end")
+#' # [1] 8
+#'
+#' @import crayon
+#' @family symtable
+#' @seealso [msource()]
+#' @export
+print.mput <- function(x, ..., verbose = FALSE) {
+
+  if (verbose == TRUE) {
+
+    print(unclass(x))
+
+  } else {
+
+    grey60 <- make_style(grey60 = "#999999")
+
+    if (length(x$variables) == 0) {
+
+      cat(grey60("# Macro Symbol Table: (empty)\n"))
+
+    } else {
+
+      cat(grey60("# Macro Symbol Table: " %+%
+                   as.character(length(x$variables)) %+% " macro variables\n"))
+
+      nms <- names(x$variables)
+      vls <- as.character(x$variables)
+
+      sret <- data.frame(Name = nms, Value = vls)
+
+      print(sret)
+    }
+
+
+    if (length(x$functions) == 0) {
+
+      cat(grey60("# Macro Function List: (empty)\n"))
+
+    } else {
+
+      cat(grey60("# Macro Function List: " %+%
+                   as.character(length(x$functions)) %+% " macro functions\n"))
+
+      nms <- names(x$functions)
+
+      # Variable vectors
+      fnm <- c()
+      pnm <- c()
+      dvl <- c()
+
+      # Row counter
+      rc <- 0
+
+      for (idx in seq(1, length(nms))) {
+
+        nm <- nms[idx]
+        prms <- x$functions[[nm]]$parameters
+        pnms <- names(x$functions[[nm]]$parameters)
+
+        if (length(prms) == 0) {
+
+          rc <- rc + 1
+          fnm[rc] <- nm
+          pnm[rc] <- ""
+          dvl[rc] <- ""
+
+        } else {
+          for (idx2 in seq(1, length(prms))) {
+            rc <- rc + 1
+
+            fnm[rc] <- nm
+            pnm[rc] <- pnms[idx2]
+            dvl[rc] <- ifelse(is.null(prms[[idx2]]), "", prms[[idx2]])
+
+          }
+        }
+      }
+
+      # Create data frame from vectors
+      fret <- data.frame(Name = fnm, Parameter = pnm, Default = dvl,
+                         stringsAsFactors = FALSE)
+      # fret$Name <- ifelse(common::changed(fret$Name), fret$Name, "")
+
+      print(fret)
+    }
+  }
+
+  invisible(x)
 }
 
 
@@ -77,9 +366,6 @@ mput <- function() {
 #' # Get path to demo macro program
 #' src <- system.file("extdata/Demo3.R", package = "macro")
 #'
-#' # Create temporary output path
-#' tmp <- file.path(tempdir(), "Demo3_mod.R")
-#'
 #' # Display source code
 #' # - This is the macro input code
 #' cd <- readLines(src)
@@ -96,15 +382,18 @@ mput <- function() {
 #'
 #' # Macro Execute Source Code
 #' # - set clear to FALSE to so "env" value is not removed
-#' msource(src, tmp, clear = FALSE)
+#' msource(src, echo = FALSE, clear = FALSE)
 #'
 #' # View "pth" macro variable
 #' res <- mget("pth")
 #'
 #' # View results
+#' - Path is set to the "prod" value
 #' res
 #' # [1] "/projects/prod/data"
 #'
+#' @family symtable
+#' @seealso [msource()]
 #' @export
 mget <- function(name) {
 
@@ -141,9 +430,6 @@ mget <- function(name) {
 #' # Get path to demo macro program
 #' src <- system.file("extdata/Demo3.R", package = "macro")
 #'
-#' # Create temporary output path
-#' tmp <- file.path(tempdir(), "Demo3_mod.R")
-#'
 #' # Display source code
 #' # - This is the macro input code
 #' cd <- readLines(src)
@@ -160,15 +446,18 @@ mget <- function(name) {
 #'
 #' # Macro Execute Source Code
 #' # - set clear to FALSE to so "env" value is not removed
-#' msource(src, tmp, clear = FALSE)
+#' msource(src, echo = FALSE, clear = FALSE)
 #'
 #' # View "pth" macro variable
 #' res <- mget("pth")
 #'
 #' # View results
+#' - Path is set to the "prod" value
 #' res
 #' # [1] "/projects/prod/data"
 #'
+#' @family symtable
+#' @seealso [msource()]
 #' @export
 mset <- function(x, value = NULL) {
 

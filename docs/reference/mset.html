@@ -123,42 +123,19 @@ will be removed from the symbol table.</p></dd>
     <h2>Value</h2>
     <p>The macro name, invisibly.</p>
     </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="msource.html">msource()</a></code></p>
+<p>Other symtable:
+<code><a href="mclear.html">mclear</a>()</code>,
+<code><a href="mget.html">mget</a>()</code>,
+<code><a href="mput.html">mput</a>()</code>,
+<code><a href="print.mput.html">print.mput</a>()</code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get path to demo macro program</span></span>
-<span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo3.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create temporary output path</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Demo3_mod.R"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Display source code</span></span>
-<span><span class="co"># - This is the macro input code</span></span>
-<span><span class="va">cd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">cd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co"># #% Determine appropriate data path</span></span>
-<span><span class="co"># #%if ("&amp;env." == "prod")</span></span>
-<span><span class="co">#   #%let pth &lt;- /projects/prod/data</span></span>
-<span><span class="co"># #%else</span></span>
-<span><span class="co">#   #%let pth &lt;- /projects/dev/data</span></span>
-<span><span class="co"># #%end</span></span>
-<span></span>
-<span><span class="co"># Set environment variable using mset()</span></span>
-<span><span class="fu">mset</span><span class="op">(</span><span class="st">"env"</span>, <span class="st">"prod"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Macro Execute Source Code</span></span>
-<span><span class="co"># - set clear to FALSE to so "env" value is not removed</span></span>
-<span><span class="fu"><a href="msource.html">msource</a></span><span class="op">(</span><span class="va">src</span>, <span class="va">tmp</span>, clear <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View "pth" macro variable</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="mget.html">mget</a></span><span class="op">(</span><span class="st">"pth"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View results</span></span>
-<span><span class="va">res</span></span>
-<span><span class="co"># [1] "/projects/prod/data"</span></span>
-<span></span></code></pre></div>
+
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
