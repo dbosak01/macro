@@ -381,6 +381,19 @@ msource <- function(pth = NULL, file_out = NULL, envir = parent.frame(),
   # Stage 1: Run pre-process routine
   ppth <- preprocess(pth, file_out, envir, debug, debug_out, clear)
 
+  # Check for global echo option
+  if (is.null(options()[["macro.echo"]]) == FALSE) {
+
+    opt <- options("macro.echo")
+
+    # Use global value if available
+    if (all(opt[[1]] == TRUE)) {
+      echo <- TRUE
+    } else {
+      echo <- FALSE
+    }
+  }
+
   # Echo code if requested
   if (echo & debug == FALSE) {
     lns <- readLines(ppth)
@@ -484,6 +497,19 @@ preprocess <- function(pth, file_out, envir, debug, debug_out, clear) {
   fl1 <- file(pth, open = "r", encoding = "UTF-8")
   lns <- readLines(fl1, warn = FALSE)
   close(fl1)
+
+  # Check for global clear option
+  if (is.null(options()[["macro.autoclear"]]) == FALSE) {
+
+    opt <- options("macro.autoclear")
+
+    # Use global value if available
+    if (all(opt[[1]] == TRUE)) {
+      clear <- TRUE
+    } else {
+      clear <- FALSE
+    }
+  }
 
   # Clear out macro environment (symbol table)
   if (clear) {

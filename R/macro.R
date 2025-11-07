@@ -62,15 +62,23 @@
 #' @export
 runMSource <- function() {
 
+  # Load macro package if not already loaded
+  if (!"macro" %in% .packages()) {
+    require(macro, quietly = TRUE, warn.conflicts = FALSE)
+  }
+
+  # Save current file if needed
   autoSave()
 
-  res <- tryCatch({msource(envir = globalenv(), echo = TRUE)},
+  # Run msource()
+  res <- tryCatch({msource(envir = globalenv(), echo = TRUE, clear = FALSE)},
                   warning = function(cond) {
-                    print("here!")
+                    # print("here!")
                     return(cond)
                     },
                   error = function(cond) {return(cond)})
 
+  # Deal with error messages
   ret <- processMessages(res)
 
   invisible(ret)
@@ -95,28 +103,38 @@ runMSource <- function() {
 #' @export
 runMSourceDebug <- function() {
 
+  # Load macro package if not already loaded
+  if (!"macro" %in% .packages()) {
+    require(macro, quietly = TRUE, warn.conflicts = FALSE)
+  }
+
+  # Save current file if needed
   autoSave()
 
+  # Run msource() in debug mode
   res <- tryCatch({msource(debug = TRUE, symbolgen = TRUE,
-                           envir = globalenv())},
+                           envir = globalenv(), clear = FALSE)},
                   warning = function(cond) {
-                    print("here!")
+                    # print("here!")
                     return(cond)
                     },
                   error = function(cond) { return(cond) })
 
+  # Deal with error messages
   ret <- processMessages(res)
 
   invisible(ret)
 
 }
 
+# This function is necessary because RStudio wants to pop up
+# a dialog every time a real error occurs.  The only way to get rid
+# of the popup is to trap the error and just send error text to the console.
+# Warnings are a whole different problem.
 #' @noRd
 processMessages <- function(res) {
 
   ret <- res
-
-  print(ret)
 
   if ("warning" %in% class(res)) {
 
@@ -153,8 +171,11 @@ autoSave <- function() {
   # Basic requirement
   if (length(find.package('rstudioapi', quiet=TRUE)) > 0) {
 
+    # See if user is selecting anything
+    sel <- get_selection()
+
     # If user is selecting something, don't save the document
-    if (get_selection() == "") {
+    if (length(sel) == 1 & sel[1] == "") {
 
 
       if (is.null(options()[["macro.autosave"]]) == FALSE) {

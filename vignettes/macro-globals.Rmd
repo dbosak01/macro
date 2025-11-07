@@ -23,3 +23,5 @@ macro.autoclear
 
 macro.echo
 
+
+Global settings will override local for all options.
