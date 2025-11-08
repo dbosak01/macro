@@ -164,12 +164,7 @@ mput <- function() {
   enms <- ls(gbl$env)
   sret <- list()
   for (nm in enms) {
-    sret <- append(sret, gbl$env[[nm]])
-  }
-
-  # List of symbols and values
-  if (length(enms) > 0) {
-    names(sret) <- enms
+    sret[[nm]] <- gbl$env[[nm]]
   }
 
   mret <- list()
@@ -284,7 +279,11 @@ print.mput <- function(x, ..., verbose = FALSE) {
                    as.character(length(x$variables)) %+% " macro variables\n"))
 
       nms <- names(x$variables)
-      vls <- as.character(x$variables)
+
+      vls <- c()
+      for (nm in nms) {
+        vls <- append(vls, paste0(x$variables[[nm]], collapse = ", "))
+      }
 
       sret <- data.frame(Name = nms, Value = vls)
 

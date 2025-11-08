@@ -122,3 +122,36 @@ test_that("symtable04: mset() works as expected.", {
   expect_equal("&q" %in% names(res3$variables), TRUE)
 
 })
+
+test_that("symtable05: mput() with vectors works as expected.", {
+
+
+  fl <- file.path(base_path, "programs/test25.R")
+  fl2 <- file.path(base_path, "programs/test25_mod.R")
+
+  if (file.exists(fl2))
+    file.remove(fl2)
+
+  `&x` <- c(1, 2, 3)
+
+  res <- msource(fl, file_out = fl2,
+                 debug = TRUE, symbolgen = TRUE)
+
+  eres <- file.exists(fl2)
+
+  expect_equal(eres, TRUE)
+
+  res2 <- mput()
+
+  # Check normal printing
+  print(res2)
+
+  # Check verbose printing
+  print(res2, verbose = TRUE)
+
+  expect_equal(length(res2), 2)
+  expect_equal(length(res2$variables), 3)
+  expect_equal(length(res2$functions), 3)
+  expect_equal(names(res2$functions), c("fork", "bork", "sammy"))
+
+})
