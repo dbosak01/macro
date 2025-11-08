@@ -397,6 +397,14 @@ msource <- function(pth = NULL, file_out = NULL, envir = parent.frame(),
   # Echo code if requested
   if (echo & debug == FALSE) {
     lns <- readLines(ppth)
+    if (length(lns) > 1) {
+      if (lns[1] == "") {
+        lns <- lns[seq(2, length(lns))]
+      }
+      if (lns[length(lns)] == "") {
+        lns <- lns[seq(1, length(lns) - 1)]
+      }
+    }
     cat("---------\n")
     cat(paste0(lns, "\n"))
     cat("---------\n")
@@ -571,7 +579,7 @@ preprocess <- function(pth, file_out, envir, debug, debug_out, clear) {
   if (length(nlns) == 0) {
     nlns <- "\n"
   } else {
-    # Get character of last line
+    # Get last character of last line
     lln <- nlns[length(nlns)]
     pos <- nchar(lln)
 

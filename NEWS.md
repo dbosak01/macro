@@ -4,7 +4,7 @@
 * Added symbol table functions: `mput()`, `mclear()`, `mget()` and `mset()`
 * Added global options: "macro.autoclear", "macro.autosave", "macro.echo"
 * Did more real-life testing.
-# Added more documentation.
+* Added more documentation.
 
 
 # macro 0.1.2

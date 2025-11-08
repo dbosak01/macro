@@ -1050,7 +1050,10 @@ get_selection <- function() {
 
     # Make sure there is at least one carriage return at end
     # Or you get an error when trying to msource()
-    ret <- paste0(ret, "\n")
+    # Not sure if I need this or not. Not getting error any more,
+    # and extra line feed is annoying on echoed code.
+    # ret[length(ret)] <- paste0(ret[length(ret)], "\n")
+
 
   }
 
