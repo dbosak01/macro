@@ -649,6 +649,34 @@ test_that("utils19: sub_ready() basic functionality.", {
 })
 
 
+test_that("utils20: is_lc works as expected", {
+
+
+  res1 <- is_lc("#%>    'happy'")
+
+  expect_equal(res1, TRUE)
+
+
+  res2 <- is_lc("#%   >'happy'")
+
+  expect_equal(res2, FALSE)
 
 
 
+})
+
+test_that("utils21: process_lc works as expected", {
+
+
+  lns <- c("#%let x <- 1", "",
+           "#%let y <- c('One',",
+           "#%>          'Two',",
+           "#%>          'Three')", "",
+           "print('&x')",
+           "print('&y')")
+
+  res1 <- process_lc(lns, 3)
+
+  expect_equal(length(res1), 3)
+
+})

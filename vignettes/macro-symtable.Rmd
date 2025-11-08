@@ -15,3 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 The **macro** package includes several functions to manage the macro symbol table...
+
+
+
+Next: [Debugging](macro-debug.html)

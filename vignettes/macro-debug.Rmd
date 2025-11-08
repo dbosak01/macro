@@ -390,4 +390,6 @@ the symbolgen line above, was that the value of the `&env` macro variable
 was "dev" instead of "prod".  This option can help you detect if the value
 of a macro variable is not what you expect.
 
-Next: [Example 1: Listing](macro-example1.html)
+
+Next: [Global Options](macro-globals.html)
+

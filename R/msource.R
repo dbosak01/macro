@@ -567,7 +567,19 @@ preprocess <- function(pth, file_out, envir, debug, debug_out, clear) {
   nlns <- mprocess(lns, debug, debug_out)
 
   # Add final carriage return to avoid errors
-  nlns <- append(nlns, "\n")
+  # If user selection only one line, there is no carriage return.
+  if (length(nlns) == 0) {
+    nlns <- "\n"
+  } else {
+    # Get character of last line
+    lln <- nlns[length(nlns)]
+    pos <- nchar(lln)
+
+    # Make sure there is a carriage return
+    if (substring(lln, pos, pos) != "\n") {
+      nlns[length(nlns)] <- paste0(nlns[length(nlns)], "\n")
+    }
+  }
 
   # Output program
   fl2 <- file(npth, open = "w", encoding = "native.enc")
@@ -615,6 +627,23 @@ mprocess <- function(lns, debug, debug_out) {
     # If gets mismatched
     if (is.na(ln)) {
       break
+    }
+
+    # Deal with line continuations
+    if (idx < lncnt) {
+
+      # Get next line
+      nln <- lns[idx + 1]
+
+      # Process line continuations if found
+      if (is_lc(nln)) {
+        lclns <- process_lc(lns, idx)
+
+        idx <- idx + length(lclns) - 1
+
+        # Combine into one string
+        ln <- paste0(lclns, collapse = "\n")
+      }
     }
 
     # Resolve sysfuncs

@@ -736,3 +736,22 @@ test_that("msource28: selected code works as expected.", {
   }
 
 })
+
+test_that("msource29: Line continuation works as expected.", {
+
+  fl <- file.path(base_path, "programs/test26.R")
+
+
+  res <- msource(fl, debug = TRUE, symbolgen = TRUE)
+
+
+  x <- mget("x")
+  y <- mget("y")
+  z <- mget("z")
+
+  expect_equal(x, "1")
+  expect_equal(y, "c(\"One\",\n          \"Two\",\n          \"Three\")")
+  expect_equal(z, "\"Found it!\"")
+
+})
+

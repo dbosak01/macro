@@ -25,3 +25,8 @@ macro.echo
 
 
 Global settings will override local for all options.
+
+
+
+Next: [Example 1: Listing](macro-example1.html)
+

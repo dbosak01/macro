@@ -41,6 +41,8 @@ Here are the macro features supported by the system:
 \item \strong{Macro Do Loops}: Emits a block of code repeatedly.
 \item \strong{User-Defined Macro Functions}: Custom macro functions to
 enhance reuse and reduce redundancy.
+\item \strong{Macro Line Continuation}: A line continuation operator that
+allows you to write macro commands that span more than one line.
 }
 The above features give you a simple yet flexible way to perform meta-programming.
 In this way, the \strong{macro} package can be useful in several situations,

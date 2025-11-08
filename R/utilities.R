@@ -2,6 +2,43 @@
 
 # Detection Utilities -----------------------------------------------------
 
+# Determines if line is a line continuation
+#' @noRd
+is_lc <- function(ln) {
+
+  ret <- FALSE
+
+  dtct <- grepl("#%>", ln, fixed = TRUE)
+  if (dtct) {
+
+    ret <- TRUE
+  }
+
+  return(ret)
+}
+
+# Create vector of continued lines
+#' @noRd
+process_lc <- function(lns, idx) {
+
+  # Get current line
+  ret <- lns[idx]
+
+  # Find end of continuations
+  for (nidx in seq(idx + 1, length(lns))) {
+    nln <- lns[nidx]
+    if (is_lc(nln)) {
+      ret <- append(ret, nln)
+    } else {
+      break
+    }
+  }
+
+  ret <- gsub("#%>", "", ret, fixed = TRUE)
+
+  return(ret)
+}
+
 # Determines if line is a #%let and, if so, make assignment
 # into symbol table.
 #' @noRd

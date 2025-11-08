@@ -140,6 +140,7 @@ commands.</p>
 <li><a href="#builtin">Built-in Macro Functions</a></li>
 <li><a href="#doloop">Macro Do Loops</a></li>
 <li><a href="#functions">User-Defined Macro Functions</a></li>
+<li><a href="#line">Macro Line Continuation</a></li>
 </ul>
 </div>
 <div class="section level2">
@@ -1132,7 +1133,59 @@ convenient because <strong>tidyverse</strong> statements make heavy use
 of non-standard evaluation, which sometimes make them difficult to use
 inside functions, loops, or other dynamic situations.</p>
 <p><a href="#top">top</a></p>
-<p>Next: <a href="macro-debug.html">Debugging</a></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="line">Macro Line Continuation<a class="anchor" aria-label="anchor" href="#line"></a>
+</h2>
+<div class="section level3">
+<h3 id="syntax-7">Syntax<a class="anchor" aria-label="anchor" href="#syntax-7"></a>
+</h3>
+<pre><code><span><span class="co">#%&gt;  &lt;code&gt;</span></span></code></pre>
+<p>Where “&lt;code&gt;” is a segment of macro code continued from the
+previous line. The line continuation is used in situations where the
+macro command cannot fit on a single line, or is inconvenient to do
+so.</p>
+</div>
+<div class="section level3">
+<h3 id="details-7">Details<a class="anchor" aria-label="anchor" href="#details-7"></a>
+</h3>
+<p>Sometimes it is necessary to wrap a macro call over several lines.
+You may have a macro variable with a vector of several values, or a
+user-define macro function with several parameters. The macro line
+continuation allows you to spread that call over several lines in the
+editor, and still execute the call as expected.</p>
+</div>
+<div class="section level3">
+<h3 id="examples-7">Examples<a class="anchor" aria-label="anchor" href="#examples-7"></a>
+</h3>
+<p>The below example shows a macro assignment with a vector of
+name/value pairs. In such a scenario, the macro line continuation
+operator makes the code much more readable:</p>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%let trt_grps &lt;- c("ARM A" = "Placebo",</span></span>
+<span><span class="co">#%&gt;                 "ARM B" = "Drug 10mg",</span></span>
+<span><span class="co">#%&gt;                 "ARM C" = "Drug 20mg",</span></span>
+<span><span class="co">#%&gt;                 "ARM D" = "Competitor")</span></span>
+<span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">`&amp;trt_grps`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
+<p>The generated code for the above macro is as follows:</p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span> <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>                 <span class="st">"ARM B"</span> <span class="op">=</span> <span class="st">"Drug 10mg"</span>,</span>
+<span>                 <span class="st">"ARM C"</span> <span class="op">=</span> <span class="st">"Drug 20mg"</span>,</span>
+<span>                 <span class="st">"ARM D"</span> <span class="op">=</span> <span class="st">"Competitor"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
+<p>And the printed result is this:</p>
+<pre><code>&gt; msource()
+       ARM A        ARM B        ARM C        ARM D 
+   "Placebo"  "Drug 10mg"  "Drug 20mg" "Competitor" 
+</code></pre>
+<p>As you can see, the <code>trt_grps</code> vector was assigned
+normally, replaced as assigned, and can be used as you would expect.</p>
+<p><a href="#top">top</a></p>
+<p>Next: <a href="macro-symtable.html">Symbol Table Functions</a></p>
 </div>
 </div>
   </div>

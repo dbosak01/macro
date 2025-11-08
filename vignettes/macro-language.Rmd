@@ -27,6 +27,7 @@ each of the available commands.
 * [Built-in Macro Functions](#builtin)
 * [Macro Do Loops](#doloop)
 * [User-Defined Macro Functions](#functions)
+* [Macro Line Continuation](#line)
 
 ## Macro Comments {#comments}
 
@@ -1062,4 +1063,59 @@ make them difficult to use inside functions, loops, or other dynamic situations.
 
 [top](#top) 
 
-Next: [Debugging](macro-debug.html)
+## Macro Line Continuation {#line}
+
+### Syntax
+```
+#%>  <code>
+```
+Where "&lt;code&gt;" is a segment of macro code continued from the previous line.
+The line continuation is used in situations where the macro command cannot
+fit on a single line, or is inconvenient to do so.  
+
+### Details
+
+Sometimes it is necessary to wrap a macro call over several lines. You may
+have a macro variable with a vector of several values, or a user-define macro 
+function with several parameters. The macro line continuation allows you 
+to spread that call over several lines in the editor, and still execute 
+the call as expected.
+
+### Examples
+
+The below example shows a macro assignment with a vector of name/value pairs.
+In such a scenario, the macro line continuation operator makes the code much
+more readable:
+```{r eval=FALSE, echo=TRUE}
+#%let trt_grps <- c("ARM A" = "Placebo",
+#%>                 "ARM B" = "Drug 10mg",
+#%>                 "ARM C" = "Drug 20mg",
+#%>                 "ARM D" = "Competitor")
+
+a <- `&trt_grps`
+print(a)
+
+```
+The generated code for the above macro is as follows:
+```{r eval=FALSE, echo=TRUE}
+a <- c("ARM A" = "Placebo",
+                 "ARM B" = "Drug 10mg",
+                 "ARM C" = "Drug 20mg",
+                 "ARM D" = "Competitor")
+print(a)
+
+```
+And the printed result is this:
+```
+> msource()
+       ARM A        ARM B        ARM C        ARM D 
+   "Placebo"  "Drug 10mg"  "Drug 20mg" "Competitor" 
+
+```
+As you can see, the `trt_grps` vector was assigned normally, replaced
+as assigned, and can be used as you would expect.  
+
+[top](#top) 
+
+
+Next: [Symbol Table Functions](macro-symtable.html)
