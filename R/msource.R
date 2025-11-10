@@ -20,8 +20,9 @@ lcl <- new.env()
 # and macro function list.
 gbl <- new.env()
 
-# Initialize Macro List
+# Initialize Global Objects
 gbl$macros <- list()
+gbl$nrstr <- list()
 gbl$env <- e
 
 # Separator for debug output
@@ -86,6 +87,8 @@ strs <- paste0(rep("*", 80), collapse = "")
 #'   exists in the macro symbol table.}
 #'   \item{\strong{%symput(&lt;expression&gt;)}: Assigns the result of
 #'   an expression in the execution environment to a macro variable.}
+#'   \item{\strong{%nrstr(&lt;expression&gt;)}: A macro quoting function that
+#'   masks the enclosed expression to prevent resolution.}
 #'   \item{\strong{#%macro &lt;name&gt;(&lt;parm1&gt;, &lt;parm2&gt;, ...)}:
 #'   Declares the start of a macro function, identifies the function name,
 #'   and defines any parameters.}
@@ -528,6 +531,9 @@ preprocess <- function(pth, file_out, envir, debug, debug_out, clear) {
 
     # Clear macro list
     gbl$macros <- list()
+
+    # Clear nrstr list
+    gbl$nrstr <- list()
   }
 
   if (is.environment(envir) == FALSE) {
@@ -654,11 +660,16 @@ mprocess <- function(lns, debug, debug_out) {
       }
     }
 
+    isnrstr <- is_nrstr(ln)
+    if (as.logical(isnrstr)) {
+      ln <- attr(isnrstr, "replacement")
+    }
+
     # Resolve sysfuncs
     ln <- sub_funcs(ln)
 
     # Identify let statements
-    islet <- is_let(ln, isopen[lvl])
+    islet <- is_let(ln, isopen[lvl], isnrstr)
 
     if (!islet) {
 
@@ -862,6 +873,9 @@ mprocess <- function(lns, debug, debug_out) {
 
           # Replace macro variables
           nln <- mreplace(ln)
+
+          # Replace protected code
+          nln <- replace_nrstr(nln)
 
           # Increment output index
           idxO <- idxO + 1

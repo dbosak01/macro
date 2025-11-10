@@ -35,8 +35,9 @@ More importantly, the **macro** functionality allows you to perform some operati
 can be messy to perform natively in R. For instance, the macro functions are 
 great for dynamic code generation.  
 
-For additional reading, examples, and a complete function reference, refer to
+To get an overview of the package, refer to
 the **macro** documentation site [here](https://macro.r-sassy.org/articles/macro.html).
+This overview contains links to additional pages to explore the package in depth.
 
 ### Installation
 

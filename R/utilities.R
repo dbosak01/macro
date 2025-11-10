@@ -39,10 +39,11 @@ process_lc <- function(lns, idx) {
   return(ret)
 }
 
+
 # Determines if line is a #%let and, if so, make assignment
 # into symbol table.
 #' @noRd
-is_let <- function(ln, opn = TRUE) {
+is_let <- function(ln, opn = TRUE, isnrstr = FALSE) {
 
   ret <- FALSE
 
@@ -118,6 +119,7 @@ is_let <- function(ln, opn = TRUE) {
 
           # Assign value to macro variable
           vl <- trimws(mreplace(spl[2]))
+
           # assign(paste0(trimws(spl[1]), "."), vl, envir = gbl$env)
           assign(paste0("&", trimws(spl[1])), vl, envir = gbl$env)
         }
@@ -615,6 +617,118 @@ sub_ready <- function(ln, varnm, itr) {
  return(ret)
 
 }
+
+
+# Protection Utilities ----------------------------------------------------
+
+
+is_nrstr <- function(ln) {
+
+  ret <- FALSE
+
+  dtct <- grepl("%nrstr", ln, fixed = TRUE)
+  if (dtct) {
+
+    ret <- TRUE
+    repl <- ln
+    attr(ret, "token") <- c()
+    attr(ret, "protect") <- c()
+
+    # Can be multiple %nrstr per line
+    # 10 seems like safe max
+    for (j in seq(1, 10)) {
+
+      # Look for %nrstr
+      pos <- regexpr("%nrstr(", repl, fixed = TRUE)[[1]]
+      if (pos > 0) {
+
+        spos <- pos + 6
+        tmp <- substring(repl, spos)
+        epos <- nchar(repl)
+        splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
+        open <- 0
+        sysex <- ""
+        idx <- spos
+
+        # Traverse character by character
+        for (chr in splt) {
+          if (chr == "(") {
+            open <- open + 1
+          }
+          if (chr == ")") {
+            open <- open - 1
+          }
+          if (open == 0) {
+            epos <- idx
+            sysex <- substring(repl, spos + 1, epos - 1)
+            break
+          }
+          idx <- idx + 1
+        }
+        if (sysex != "") {
+
+          cntr <- length(gbl$nrstr) + 1
+
+          # Make sure it exists in symbol table
+          tres <- paste0("{nrstr", cntr, "}")
+
+          # Return in context
+          repl <- paste0(substring(repl, 1, pos -1),
+                         tres,
+                         substring(repl, epos + 1))
+
+          # Assign attributes
+          attr(ret, "token") <- append(attr(ret, "token"), tres)
+          attr(ret, "protect") <- append(attr(ret, "protect"), sysex)
+          attr(ret, "replacement") <- repl
+
+          # Assign globals
+          gbl$nrstr[[tres]] <- sysex
+        }
+
+      } else {
+        break
+      }
+    }
+  }
+
+  return(ret)
+
+}
+
+# Perform replacement on any protected variables
+#' @noRd
+replace_nrstr <- function(ln) {
+
+  ret <- ln
+
+  # Look for protected token
+  dtct <- grepl("{nrstr", ln, fixed = TRUE)
+
+  if (dtct) {
+
+    nms <- names(gbl$nrstr)
+
+    # Just try all of them
+    # Probably not too many
+    for (nm in nms) {
+      # Replace any protected code
+      ret <- sub(nm, gbl$nrstr[[nm]], ret, fixed = TRUE)
+    }
+  }
+
+  return(ret)
+
+}
+
+# Replace any protected code
+# if (as.logical(isnrstr)) {
+#   tkns <- attr(isnrstr, "token")
+#   prtct <- attr(isnrstr, "protect")
+#   for (j in seq(1, length(tkns))) {
+#     ret <- sub(tkns[j], prtct[j], ret, fixed = TRUE)
+#   }
+# }
 
 # Macro Utilities ---------------------------------------------------------
 

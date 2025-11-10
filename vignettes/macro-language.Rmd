@@ -611,6 +611,14 @@ from `%symput()` is assigned to a macro variable using a `#%let`
 command.  The `%symput()` function must exist as part of a `#%let` statement.
 It cannot be used with any other R macro command.
 
+```
+%nrstr(<expression>)
+```
+Where "&lt;expression&gt;" is any R expression, specifically one that contains 
+a reference to a macro variable that you do not want to resolve. The `%nrstr()`
+masks the expression to prevent normal resolution, which is desirable in 
+some cases.
+
 
 ### Details
 
@@ -643,6 +651,11 @@ inside the `%symput()`.
 
 SAS programmers will notice that the R `%symput()` function is quite different
 from the SAS version. But they have the same goal.  
+
+Similar to the SAS version, `%nrstr()` is a macro quoting function, and can 
+be used to prevent resolution of a macro variable or other macro expression.
+This function can be used if you are trying to output a macro variable
+name instead of the resolved value, which can be desirable in some cases.
 
 ### Examples
 
@@ -774,6 +787,25 @@ print(b)
 You can see the length and value of vector 'v1' has been pulled from normal
 R code into macro variables.  These macro variables can then be used with
 other macro commands to control what happens during pre-processing.
+
+#### %nrstr()
+
+The following example shows how `%nrstr()` can prevent resolution of a 
+macro variable:
+```{r eval=FALSE, echo=TRUE}
+#% Assign variables
+#%let x <- 1
+#%let y <- %nrstr(&x.)
+print("The value of &y is &x")
+```
+The above code sends the following to the console:
+```
+> msource()
+[1] "The value of &x. is 1"
+```
+Why didn't `&x.` resolve?  Because `%nrstr()` prevented resolution.  This 
+function is useful if you need to reference macro variable names or generate
+macro code.
 
 [top](#top) 
 

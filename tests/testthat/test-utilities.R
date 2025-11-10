@@ -680,3 +680,31 @@ test_that("utils21: process_lc works as expected", {
   expect_equal(length(res1), 3)
 
 })
+
+test_that("utils22: %nrstr() works as expected", {
+
+  ln1 <- "%nothing in this line"
+
+  res1 <- is_nrstr(ln1)
+
+  expect_equal(res1, FALSE)
+
+  ln2 <- "here %nrstr(&is) something to protect."
+
+  res2 <- is_nrstr(ln2)
+
+  expect_equal(as.logical(res2), TRUE)
+  expect_equal(attr(res2, "token"), "{nrstr1}")
+  expect_equal(attr(res2, "protect"), "&is")
+  expect_equal(attr(res2, "replacement"), "here {nrstr1} something to protect.")
+
+  ln3 <- "here %nrstr(&is) something %nrstr(&to) protect."
+
+  res3 <- is_nrstr(ln3)
+
+  expect_equal(as.logical(res3), TRUE)
+  expect_equal(attr(res3, "token"), c("{nrstr2}", "{nrstr3}"))
+  expect_equal(attr(res3, "protect"), c("&is", "&to"))
+  expect_equal(attr(res3, "replacement"), "here {nrstr2} something {nrstr3} protect.")
+
+})

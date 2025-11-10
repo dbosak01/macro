@@ -755,3 +755,21 @@ test_that("msource29: Line continuation works as expected.", {
 
 })
 
+test_that("msource30: %nrstr() works as expected.", {
+
+  fl <- file.path(base_path, "programs/test27.R")
+  fl2 <- file.path(base_path, "programs/test27_mod.R")
+
+  ne <- new.env()
+
+  res <- msource(fl, fl2, debug = TRUE, symbolgen = TRUE, envir = ne)
+
+
+  expect_equal(ne$a, "Here is Hello a regular")
+  expect_equal(ne$b, "Here is &x. a protected")
+  expect_equal(ne$c, "Here is &x. multiple &y. protected")
+  expect_equal(ne$d, "Here is Hello mixed &x.")
+  expect_equal(ne$e, "Here is &x. with unresolved reference")
+})
+
+

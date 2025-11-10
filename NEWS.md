@@ -3,6 +3,7 @@
 * Created addin menus to make package more interactive.
 * Added symbol table functions: `mput()`, `mclear()`, `mget()` and `mset()`
 * Added global options: "macro.autoclear", "macro.autosave", "macro.echo"
+* Added `%nrstr()` to block resolution.
 * Did more real-life testing.
 * Added more documentation.
 

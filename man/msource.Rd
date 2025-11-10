@@ -120,6 +120,8 @@ a macro command.}
 exists in the macro symbol table.}
 \item{\strong{\%symput(<expression>)}: Assigns the result of
 an expression in the execution environment to a macro variable.}
+\item{\strong{\%nrstr(<expression>)}: A macro quoting function that
+masks the enclosed expression to prevent resolution.}
 \item{\strong{#\%macro <name>(<parm1>, <parm2>, ...)}:
 Declares the start of a macro function, identifies the function name,
 and defines any parameters.}

@@ -121,6 +121,8 @@ If you are working in RStudio, the function will use the path of the currently
 active program by default. In that case, you don't need to do hardly anything!
 Just call `msource()` in the console with no parameters.
 
+Say something about shortcuts and interactive usage/addin.
+
 ## Available Functionality
 
 The **macro** package supports the most basic functionality of a macro system.
@@ -137,6 +139,32 @@ to make the system more practical.
 6. **Macro Do Loops**: Copies code inside the do block for each iteration of the loop.
 7. **User-Defined Macro Functions**: The ability to create a user-defined 
 text-replacement function, with or without parameters.
+
+
+### Macro Example
+
+Show simple but comprehensive example.  User-defined function with do loop, 
+conditionals, and at least one built-in function.
+
+
+Link to language reference.
+
+### Macro Symbol Table
+
+Explain symbol table and symbol table functions.  Link to symbol table vignette.
+
+### Macro Debugging
+
+Explain debugging and demonstrate.  Link to debugging vignette.
+
+
+### Next Steps
+
+Link to all vignettes.
+
+
+
+
 
 ### Macro Comments and Variables
 
