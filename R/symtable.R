@@ -4,7 +4,7 @@
 
 #' @title Macro Clear Function
 #' @description
-#' The \code{mclear} function clears the macro symbol table of any
+#' The \code{symclear} function clears the macro symbol table of any
 #' stored macro variables and macro functions.  The function is used
 #' to avoid contamination between one call to \code{msource} and the
 #' next.  It is called automatically when the "clear" parameter of
@@ -36,7 +36,7 @@
 #' msource(src, echo = FALSE)
 #'
 #' # View symbol table
-#' mput()
+#' symtable()
 #' # # Macro Symbol Table: 3 macro variables
 #' #   Name Value
 #' # 1   &x     1
@@ -47,19 +47,19 @@
 #' # 1 test        vl  Hello!
 #'
 #' # Clear symbol table
-#' mclear()
+#' symclear()
 #' # Clearing macro symbol table...
 #' # 4 items cleared.
 #'
 #' # View symbol table again
-#' mput()
+#' symtable()
 #' # # Macro Symbol Table: (empty)
 #' # # Macro Function List: (empty)
 #'
 #' @family symtable
 #' @seealso [msource()]
 #' @export
-mclear <- function() {
+symclear <- function() {
 
   cat("Clearing macro symbol table...\n")
 
@@ -82,9 +82,9 @@ mclear <- function() {
 
 }
 
-#' @title Macro Put Function
+#' @title Macro Symbol Table Function
 #' @description
-#' The \code{mput} function extracts the contents of the macro symbol table
+#' The \code{symtable} function extracts the contents of the macro symbol table
 #' as a data frame, and, by default, displays it in the console.
 #' The function can be used to examine the symbol table values.
 #' @returns
@@ -113,7 +113,7 @@ mclear <- function() {
 #' msource(src, echo = FALSE)
 #'
 #' # Examine symbol table
-#' res <- mput()
+#' res <- symtable()
 #'
 #' # View results
 #' print(res)
@@ -156,10 +156,10 @@ mclear <- function() {
 #' @family symtable
 #' @seealso [msource()]
 #' @export
-mput <- function() {
+symtable <- function() {
 
 
-  ret <- structure(list(), class = c("mput", "list"))
+  ret <- structure(list(), class = c("symtable", "list"))
 
   enms <- ls(gbl$env)
   sret <- list()
@@ -215,7 +215,7 @@ mput <- function() {
 #' msource(src, echo = FALSE)
 #'
 #' # Examine symbol table
-#' res <- mput()
+#' res <- symtable()
 #'
 #' # View results
 #' print(res)
@@ -259,7 +259,7 @@ mput <- function() {
 #' @family symtable
 #' @seealso [msource()]
 #' @export
-print.mput <- function(x, ..., verbose = FALSE) {
+print.symtable <- function(x, ..., verbose = FALSE) {
 
   if (verbose == TRUE) {
 
@@ -348,9 +348,9 @@ print.mput <- function(x, ..., verbose = FALSE) {
 }
 
 
-#' @title Macro Get Function
+#' @title Macro Symbol Get Function
 #' @description
-#' The \code{mget} function extracts the value of a single macro variable
+#' The \code{symget} function extracts the value of a single macro variable
 #' from the macro symbol table.
 #' @param name The name of the macro variable as a quoted string, with no
 #' leading ampersand or trailing dot (".").  The leading ampersand will
@@ -377,14 +377,14 @@ print.mput <- function(x, ..., verbose = FALSE) {
 #' # #%end
 #'
 #' # Set environment variable using mset()
-#' mset("env", "prod")
+#' symput("env", "prod")
 #'
 #' # Macro Execute Source Code
 #' # - set clear to FALSE to so "env" value is not removed
 #' msource(src, echo = FALSE, clear = FALSE)
 #'
 #' # View "pth" macro variable
-#' res <- mget("pth")
+#' res <- symget("pth")
 #'
 #' # View results
 #' # - Path is set to the "prod" value
@@ -394,7 +394,7 @@ print.mput <- function(x, ..., verbose = FALSE) {
 #' @family symtable
 #' @seealso [msource()]
 #' @export
-mget <- function(name) {
+symget <- function(name) {
 
   ret <- NA
 
@@ -409,9 +409,9 @@ mget <- function(name) {
 
 
 
-#' @title Macro Set Function
+#' @title Macro Symbol Put Function
 #' @description
-#' The \code{mset} function assigns the value of a macro
+#' The \code{symput} function assigns the value of a macro
 #' variable from regular R code.
 #' @param x The name of the macro variable to assign,
 #' passed as a quoted string with no leading ampersand or trailing
@@ -440,15 +440,15 @@ mget <- function(name) {
 #' #   #%let pth <- /projects/dev/data
 #' # #%end
 #'
-#' # Set environment variable using mset()
-#' mset("env", "prod")
+#' # Set environment variable using symput()
+#' symput("env", "prod")
 #'
 #' # Macro Execute Source Code
 #' # - set clear to FALSE to so "env" value is not removed
 #' msource(src, echo = FALSE, clear = FALSE)
 #'
 #' # View "pth" macro variable
-#' res <- mget("pth")
+#' res <- symget("pth")
 #'
 #' # View results
 #' # - Path is set to the "prod" value
@@ -458,7 +458,7 @@ mget <- function(name) {
 #' @family symtable
 #' @seealso [msource()]
 #' @export
-mset <- function(x, value = NULL) {
+symput <- function(x, value = NULL) {
 
   nm <- paste0("&", x)
 

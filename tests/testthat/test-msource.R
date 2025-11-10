@@ -745,9 +745,9 @@ test_that("msource29: Line continuation works as expected.", {
   res <- msource(fl, debug = TRUE, symbolgen = TRUE)
 
 
-  x <- mget("x")
-  y <- mget("y")
-  z <- mget("z")
+  x <- symget("x")
+  y <- symget("y")
+  z <- symget("z")
 
   expect_equal(x, "1")
   expect_equal(y, "c(\"One\",\n          \"Two\",\n          \"Three\")")

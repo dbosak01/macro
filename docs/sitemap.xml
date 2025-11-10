@@ -25,7 +25,12 @@
 <url><loc>https://macro.r-sassy.org/reference/mset.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/msource.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/print.mput.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/print.symtable.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/runMSource.html</loc></url>
 <url><loc>https://macro.r-sassy.org/reference/runMSourceDebug.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/symclear.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/symget.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/symput.html</loc></url>
+<url><loc>https://macro.r-sassy.org/reference/symtable.html</loc></url>
 </urlset>
 

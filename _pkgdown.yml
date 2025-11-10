@@ -25,11 +25,11 @@ reference:
 - title: Symbol Table Functions
   desc: Functions to interact with the Macro Symbol Table.
   contents:
-  - mset
-  - mget
-  - mclear
-  - mput
-  - print.mput
+  - symput
+  - symget
+  - symclear
+  - symtable
+  - print.symtable
 
 - title: Addin Functions
   desc: Functions to support interactive usage via addin menu.

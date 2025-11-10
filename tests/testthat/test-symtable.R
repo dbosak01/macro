@@ -7,7 +7,7 @@ dev <- FALSE
 
 
 
-test_that("symtable01: mclear() works as expected.", {
+test_that("symtable01: symclear() works as expected.", {
 
 
   fl <- file.path(base_path, "programs/test24.R")
@@ -28,13 +28,13 @@ test_that("symtable01: mclear() works as expected.", {
   expect_equal(eres, TRUE)
   expect_equal(hasa, TRUE)
 
-  res2 <- mclear()
+  res2 <- symclear()
 
   expect_equal(res2, 2) # clears &x and &y
 
 })
 
-test_that("symtable02: mput() works as expected.", {
+test_that("symtable02: symtable() works as expected.", {
 
 
   fl <- file.path(base_path, "programs/test25.R")
@@ -52,7 +52,7 @@ test_that("symtable02: mput() works as expected.", {
 
   expect_equal(eres, TRUE)
 
-  res2 <- mput()
+  res2 <- symtable()
 
   # Check normal printing
   print(res2)
@@ -68,7 +68,7 @@ test_that("symtable02: mput() works as expected.", {
 })
 
 
-test_that("symtable03: mget() works as expected.", {
+test_that("symtable03: symget() works as expected.", {
 
 
   fl <- file.path(base_path, "programs/test1.R")
@@ -85,17 +85,17 @@ test_that("symtable03: mget() works as expected.", {
 
   expect_equal(eres, TRUE)
 
-  expect_equal(mget("x"), "3")
-  expect_equal(mget("y"), "4")
-  expect_equal(mget("z"), "6")
-  expect_equal(mget("q"), "floor(2 + 2.5)")
-  expect_equal(mget("f"), "TRUE")
-  expect_equal(mget("g"), "FALSE")
+  expect_equal(symget("x"), "3")
+  expect_equal(symget("y"), "4")
+  expect_equal(symget("z"), "6")
+  expect_equal(symget("q"), "floor(2 + 2.5)")
+  expect_equal(symget("f"), "TRUE")
+  expect_equal(symget("g"), "FALSE")
 
 
 })
 
-test_that("symtable04: mset() works as expected.", {
+test_that("symtable04: symput() works as expected.", {
 
 
   fl <- file.path(base_path, "programs/test24.R")
@@ -105,7 +105,7 @@ test_that("symtable04: mset() works as expected.", {
     file.remove(fl2)
 
   `&x` <- 1
-  mset("q", 3)
+  symput("q", 3)
 
   res <- msource(fl, file_out = fl2, clear = FALSE)
 
@@ -113,17 +113,17 @@ test_that("symtable04: mset() works as expected.", {
 
   expect_equal(eres, TRUE)
 
-  res1 <- mget("q")
+  res1 <- symget("q")
 
   expect_equal(res1, "3")
 
-  res3 <- mput()
+  res3 <- symtable()
 
   expect_equal("&q" %in% names(res3$variables), TRUE)
 
 })
 
-test_that("symtable05: mput() with vectors works as expected.", {
+test_that("symtable05: symtable() with vectors works as expected.", {
 
 
   fl <- file.path(base_path, "programs/test25.R")
@@ -141,7 +141,7 @@ test_that("symtable05: mput() with vectors works as expected.", {
 
   expect_equal(eres, TRUE)
 
-  res2 <- mput()
+  res2 <- symtable()
 
   # Check normal printing
   print(res2)

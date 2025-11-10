@@ -1,7 +1,7 @@
 # macro 0.1.3
 
 * Created addin menus to make package more interactive.
-* Added symbol table functions: `mput()`, `mclear()`, `mget()` and `mset()`
+* Added symbol table functions: `symtable()`, `symclear()`, `symget()` and `symput()`
 * Added global options: "macro.autoclear", "macro.autosave", "macro.echo"
 * Added `%nrstr()` to block resolution.
 * Did more real-life testing.
@@ -11,7 +11,7 @@
 # macro 0.1.2
 
 * Add do loop
-* Add `symput()` and `symget()`
+* Add `%sysfunc()` and `%symput()`
 * Add user-defined macro function.
 * Use ampersand prefix.
 * Delayed resolution.
