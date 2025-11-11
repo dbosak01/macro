@@ -14,8 +14,308 @@ knitr::opts_chunk$set(
 )
 ```
 
-The **macro** package includes several functions to manage the macro symbol table...
+The **macro** package includes several functions to manage the macro symbol table.
+These functions provide an
+interface between regular R code and the macro language.
 
+The symbol table functions are as follows:
+
+* **`symput()`**: Add a macro variable to the macro symbol table.
+* **`symget()`**: Get a macro variable value from the macro symbol table.
+* **`symtable()`**: Extract and view the macro symbol table.
+* **`symclear()`**: Clear the values from the macro symbol table.
+
+In this article, we will look at the different ways the functions can be used,
+and how they can be used together.
+
+## How to Use
+
+Since the symbol table functions are regular R functions, they can be used 
+before or after the call to `msource()`.  One common way to use them is to
+set macro variable values for a standard macro program, and then examine the 
+symbol table after the standard macro program completes.  
+
+For example, let's say you have a template macro program to perform an analysis
+on some data.  You want to specify the input dataset, the variables to perform
+the analysis on, and you want some control over which statistics are calculated. 
+
+### Template Macro Program
+
+Here is a sample program that meets the above criteria. It is included
+in the **macro** package as "Demo5.R". Note the following about this template
+code:
+
+* The macro function `%get_analysis()` is defined in the program, with three parameters.  
+* The program sets up a "do" loop for each analysis variable, and calls
+"%get_analysis" for each.  
+* The macro function performs the analysis and dynamically creates a result
+data frame.  
+* The result data frames are bound together into a "final" data frame. This data
+frame will have one row for each analysis variable.  
+* The "final" data frame is printed to the console at the end of the program.
+
+```{r eval=FALSE, echo=TRUE}
+#% Demo5: Template Analysis Program %#
+library(dplyr)
+
+# Perform Analysis ------------------------------------
+
+#% Macro for Dynamic Descriptive Stats
+#%macro get_analysis(dat, var, stats)
+anl_&var <- `&dat` |>
+  summarize(VAR = "&var",
+            #%if ("mean" %in% &stats)
+            MEAN = mean(`&var`, na.rm = TRUE),
+            #%end
+            #%if ("median" %in% &stats)
+            MEDIAN = median(`&var`, na.rm = TRUE),
+            #%end
+            #%if ("sd" %in% &stats)
+            SD = sd(`&var`, na.rm = TRUE),
+            #%end
+            #%if ("min" %in% &stats)
+            MIN = min(`&var`, na.rm = TRUE),
+            #%end
+            #%if ("max" %in% &stats)
+            MAX = max(`&var`, na.rm = TRUE),
+            #%end
+            END = NULL
+  )
+#%mend
+
+#% Loop through analysis variables
+#%do idx = 1 %to %sysfunc(length(&vars))
+#%let var <- %sysfunc(&vars[&idx])
+#%get_analysis(&dat, &var, &stats)
+#%end
+
+#% Get datasets to bind
+#%let dsets <- %sysfunc(paste0("anl_", &vars, collapse = ", "))
+# Bind analysis datasets
+final <- bind_rows(`&dsets`)
+
+# Print results
+print(final)
+```
+As you can see, the above template program displays quite a bit of 
+macro functionality.
+
+### Run #1
+
+Now let's set some parameters and execute the template program. Note the following about 
+the run below:
+
+* The `symput()` functions are used to assign values to the macro variables
+"&dat", "&vars", and "&stats".  
+* The `msource()` function is called with the "clear" parameter set to FALSE.
+Setting the "clear" parameter to FALSE is needed so that we do not wipe out
+the values assigned by `symput()`.   
+* The `symtable()` function allows us to investigate the macro symbol table at the
+end of the run.  
+* Since the "clear" parameter on the `msource()` function is set to FALSE, 
+it is a good practice to clear out the symbol table by calling `symclear()`.
+That way, if we need to re-run the program, we can start with a clean 
+symbol table. 
+
+```{r eval=FALSE, echo=TRUE}
+library(macro)
+
+# Get demo program
+pth <- system.file("extdata/Demo5.R", package = "macro")
+
+# Set macro variables
+symput("dat", "mtcars")
+symput("vars", c("mpg", "disp", "drat"))
+symput("stats", c("mean", "median", "sd"))
+
+# Macro Source demo program
+msource(pth, clear = FALSE)
+# ---------
+# library(dplyr)
+#  
+#  # Perform Analysis ------------------------------------
+#  
+#  
+#  anl_mpg <- mtcars |>
+#    summarize(VAR = "mpg",
+#              MEAN = mean(mpg, na.rm = TRUE),
+#              MEDIAN = median(mpg, na.rm = TRUE),
+#              SD = sd(mpg, na.rm = TRUE),
+#              END = NULL
+#    )
+#  anl_disp <- mtcars |>
+#    summarize(VAR = "disp",
+#              MEAN = mean(disp, na.rm = TRUE),
+#              MEDIAN = median(disp, na.rm = TRUE),
+#              SD = sd(disp, na.rm = TRUE),
+#              END = NULL
+#    )
+#  anl_drat <- mtcars |>
+#    summarize(VAR = "drat",
+#              MEAN = mean(drat, na.rm = TRUE),
+#              MEDIAN = median(drat, na.rm = TRUE),
+#              SD = sd(drat, na.rm = TRUE),
+#              END = NULL
+#    )
+#  
+#  # Bind analysis datasets
+#  final <- bind_rows(anl_mpg, anl_disp, anl_drat)
+#  
+#  # Print results
+#  print(final)
+# ---------
+#    VAR       MEAN  MEDIAN          SD
+# 1  mpg  20.090625  19.200   6.0269481
+# 2 disp 230.721875 196.300 123.9386938
+# 3 drat   3.596563   3.695   0.5346787
+   
+# View symbol table
+symtable()
+# # Macro Symbol Table: 6 macro variables
+#     Name                       Value
+# 1   &dat                      mtcars
+# 2 &dsets anl_mpg, anl_disp, anl_drat
+# 3   &idx                           3
+# 4 &stats            mean, median, sd
+# 5   &var                        drat
+# 6  &vars             mpg, disp, drat
+# # Macro Function List: 1 functions
+# # Function '%get_analysis': 3 parameters
+# - dat
+# - var
+# - stats 
+
+# Get a specific variable value
+symget("dat")
+# [1] "mtcars"
+
+# Clear the symbol table
+symclear()
+# Clearing macro symbol table...
+# 8 items cleared.
+
+```
+Observe that the "final" dataset contains an analysis for all three requested
+variables.  The macro parameters allow you change the input dataset,
+the analysis variables, and the statistics generated. 
+
+### Run #2
+
+For illustration purposes, let's run "Demo5.R" again with different parameters.
+This time we will use the "iris" dataset:
+```{r eval=FALSE, echo=TRUE}
+library(macro)
+
+# Get demo program
+pth <- system.file("extdata/Demo5.R", package = "macro")
+
+# Set macro variables
+symput("dat", "iris")
+symput("vars", c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"))
+symput("stats", c("mean", "median", "sd", "min", "max"))
+
+# Macro Source demo program
+msource(pth, clear = FALSE)
+# ---------
+# library(dplyr)
+#  
+#  # Perform Analysis ------------------------------------
+#  
+#  
+#  anl_Sepal.Length <- iris |>
+#    summarize(VAR = "Sepal.Length",
+#              MEAN = mean(Sepal.Length, na.rm = TRUE),
+#              MEDIAN = median(Sepal.Length, na.rm = TRUE),
+#              SD = sd(Sepal.Length, na.rm = TRUE),
+#              MIN = min(Sepal.Length, na.rm = TRUE),
+#              MAX = max(Sepal.Length, na.rm = TRUE),
+#              END = NULL
+#    )
+#  anl_Sepal.Width <- iris |>
+#    summarize(VAR = "Sepal.Width",
+#              MEAN = mean(Sepal.Width, na.rm = TRUE),
+#              MEDIAN = median(Sepal.Width, na.rm = TRUE),
+#              SD = sd(Sepal.Width, na.rm = TRUE),
+#              MIN = min(Sepal.Width, na.rm = TRUE),
+#              MAX = max(Sepal.Width, na.rm = TRUE),
+#              END = NULL
+#    )
+#  anl_Petal.Length <- iris |>
+#    summarize(VAR = "Petal.Length",
+#              MEAN = mean(Petal.Length, na.rm = TRUE),
+#              MEDIAN = median(Petal.Length, na.rm = TRUE),
+#              SD = sd(Petal.Length, na.rm = TRUE),
+#              MIN = min(Petal.Length, na.rm = TRUE),
+#              MAX = max(Petal.Length, na.rm = TRUE),
+#              END = NULL
+#    )
+#  anl_Petal.Width <- iris |>
+#    summarize(VAR = "Petal.Width",
+#              MEAN = mean(Petal.Width, na.rm = TRUE),
+#              MEDIAN = median(Petal.Width, na.rm = TRUE),
+#              SD = sd(Petal.Width, na.rm = TRUE),
+#              MIN = min(Petal.Width, na.rm = TRUE),
+#              MAX = max(Petal.Width, na.rm = TRUE),
+#              END = NULL
+#    )
+#  
+#  # Bind analysis datasets
+#  final <- bind_rows(anl_Sepal.Length, anl_Sepal.Width, anl_Petal.Length, anl_Petal.Width)
+#  
+#  # Print results
+#  print(final)
+# 
+#  ---------
+#            VAR     MEAN MEDIAN        SD MIN MAX
+# 1 Sepal.Length 5.843333   5.80 0.8280661 4.3 7.9
+# 2  Sepal.Width 3.057333   3.00 0.4358663 2.0 4.4
+# 3 Petal.Length 3.758000   4.35 1.7652982 1.0 6.9
+# 4  Petal.Width 1.199333   1.30 0.7622377 0.1 2.5
+ 
+# View symbol table
+symtable()
+# # Macro Symbol Table: 6 macro variables
+#     Name                                                                Value
+# 1   &dat                                                                 iris
+# 2 &dsets anl_Sepal.Length, anl_Sepal.Width, anl_Petal.Length, anl_Petal.Width
+# 3   &idx                                                                    4
+# 4 &stats                                           mean, median, sd, min, max
+# 5   &var                                                          Petal.Width
+# 6  &vars                 Sepal.Length, Sepal.Width, Petal.Length, Petal.Width
+# # Macro Function List: 1 functions
+# # Function '%get_analysis': 3 parameters
+# - dat
+# - var
+# - stats
+
+# Clear symbol table
+symclear()
+# Clearing macro symbol table...
+# 7 items cleared.
+
+```
+By changing the macro parameters, we were able to perform a different analysis 
+on a completely different set of data. A macro-enabled program
+such as this offers considerable flexibility over other methods.  It would
+be troublesome to achieve such flexibility in a regular R program, especially one
+that makes heavy use of non-standard evaluation.
+
+### Other Uses
+
+While the above scenario demonstrates the most common application of symbol table 
+functions, there are some other scenarios where these functions may be helpful.
+Here are some of them:
+
+* **Interactive usage:** Symbol table functions can be used on the command line
+to set macro variable values, observe variable values, and clear the symbol
+table in preparation for the next run.  
+* **Debugging:** Symbol table functions can be helpful for debugging. You can 
+use them to temporarily set parameter values while writing a macro function, 
+or print out macro variable values to the console.
+* **Logging:**  The symbol table functions may be useful for logging, especially
+the `symget()` and `symtable()` functions.  You can use these to log 
+incoming macro parameter values, or log the state of the symbol table at the
+end of the run.
 
 
 Next: [Debugging](macro-debug.html)

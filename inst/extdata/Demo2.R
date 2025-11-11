@@ -1,5 +1,4 @@
-
-#% Macro for Correlation Analysis
+#% Demo2: Correlation Analysis %#
 #%macro get_correlation(dat, xvar, yvars)
 
 # Perform Analysis ------------------------------------

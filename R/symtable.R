@@ -2,13 +2,17 @@
 # Macro Symbol Table Functions ----------------------------------------------
 
 
-#' @title Macro Clear Function
+#' @title Clear the Macro Symbol Table
 #' @description
 #' The \code{symclear} function clears the macro symbol table of any
 #' stored macro variables and macro functions.  The function is used
 #' to avoid contamination between one call to \code{msource} and the
 #' next.  It is called automatically when the "clear" parameter of
 #' \code{msource} is set to TRUE.  The function takes no parameters.
+#' @param variables Whether or not to clear the macro symbol table.
+#' Default is TRUE.
+#' @param functions Whether or not to clear the macro function list.
+#' Default is TRUE.
 #' @returns
 #' The number of objects cleared, invisibly.  The function also
 #' outputs a message saying how many objects were cleared.
@@ -59,30 +63,37 @@
 #' @family symtable
 #' @seealso [msource()]
 #' @export
-symclear <- function() {
+symclear <- function(variables = TRUE, functions = TRUE) {
 
-  cat("Clearing macro symbol table...\n")
+  cnt <- 0
 
-  # Clear out macro environment (symbol table)
-  enms <- ls(gbl$env)
-  cnt <-  length(enms)
-  if (cnt > 0) {
-    rm(list = enms, envir = gbl$env)
+  if (variables) {
+    cat("Clearing macro symbol table...\n")
+
+    # Clear out macro environment (symbol table)
+    enms <- ls(gbl$env)
+    cnt <-  length(enms)
+    if (cnt > 0) {
+      rm(list = enms, envir = gbl$env)
+    }
   }
 
-  # Clear out macros
-  if (length(gbl$macros) > 0) {
-    cnt <- cnt + length(gbl$macros)
-    gbl$macros <- list()
+  if (functions) {
+    # Clear out macros
+    if (length(gbl$macros) > 0) {
+      cnt <- cnt + length(gbl$macros)
+      gbl$macros <- list()
+    }
   }
 
   cat(paste0(cnt, " items cleared.\n"))
+
 
   invisible(cnt)
 
 }
 
-#' @title Macro Symbol Table Function
+#' @title Examine the Macro Symbol Table
 #' @description
 #' The \code{symtable} function extracts the contents of the macro symbol table
 #' as a data frame, and, by default, displays it in the console.
@@ -298,17 +309,10 @@ print.symtable <- function(x, ..., verbose = FALSE) {
     } else {
 
       cat(grey60("# Macro Function List: " %+%
-                   as.character(length(x$functions)) %+% " macro functions\n"))
+                   as.character(length(x$functions)) %+% " functions\n"))
 
       nms <- names(x$functions)
 
-      # Variable vectors
-      fnm <- c()
-      pnm <- c()
-      dvl <- c()
-
-      # Row counter
-      rc <- 0
 
       for (idx in seq(1, length(nms))) {
 
@@ -316,31 +320,60 @@ print.symtable <- function(x, ..., verbose = FALSE) {
         prms <- x$functions[[nm]]$parameters
         pnms <- names(x$functions[[nm]]$parameters)
 
-        if (length(prms) == 0) {
+        cat(grey60(paste0("# Function '%", nm, "': ", as.character(length(prms)),
+                          " parameters\n")))
 
-          rc <- rc + 1
-          fnm[rc] <- nm
-          pnm[rc] <- ""
-          dvl[rc] <- ""
+        if (length(pnms) > 0) {
+          for (pnm in pnms) {
 
-        } else {
-          for (idx2 in seq(1, length(prms))) {
-            rc <- rc + 1
-
-            fnm[rc] <- nm
-            pnm[rc] <- pnms[idx2]
-            dvl[rc] <- ifelse(is.null(prms[[idx2]]), "", prms[[idx2]])
-
+            if (is.null(prms[[pnm]]) || prms[[pnm]] == "") {
+              cat(paste0("- ", pnm, "\n"))
+            } else {
+              cat(paste0("- ", pnm, " = ", prms[[pnm]], "\n"))
+            }
           }
         }
       }
 
-      # Create data frame from vectors
-      fret <- data.frame(Name = fnm, Parameter = pnm, Default = dvl,
-                         stringsAsFactors = FALSE)
-      # fret$Name <- ifelse(common::changed(fret$Name), fret$Name, "")
-
-      print(fret)
+      # # Variable vectors
+      # fnm <- c()
+      # pnm <- c()
+      # dvl <- c()
+      #
+      # # Row counter
+      # rc <- 0
+      #
+      # for (idx in seq(1, length(nms))) {
+      #
+      #   nm <- nms[idx]
+      #   prms <- x$functions[[nm]]$parameters
+      #   pnms <- names(x$functions[[nm]]$parameters)
+      #
+      #   if (length(prms) == 0) {
+      #
+      #     rc <- rc + 1
+      #     fnm[rc] <- nm
+      #     pnm[rc] <- ""
+      #     dvl[rc] <- ""
+      #
+      #   } else {
+      #     for (idx2 in seq(1, length(prms))) {
+      #       rc <- rc + 1
+      #
+      #       fnm[rc] <- nm
+      #       pnm[rc] <- pnms[idx2]
+      #       dvl[rc] <- ifelse(is.null(prms[[idx2]]), "", prms[[idx2]])
+      #
+      #     }
+      #   }
+      # }
+      #
+      # # Create data frame from vectors
+      # fret <- data.frame(Name = fnm, Parameter = pnm, Default = dvl,
+      #                    stringsAsFactors = FALSE)
+      # # fret$Name <- ifelse(common::changed(fret$Name), fret$Name, "")
+      #
+      # print(fret)
     }
   }
 
@@ -348,7 +381,7 @@ print.symtable <- function(x, ..., verbose = FALSE) {
 }
 
 
-#' @title Macro Symbol Get Function
+#' @title Get a Variable Value from the Macro Symbol Table
 #' @description
 #' The \code{symget} function extracts the value of a single macro variable
 #' from the macro symbol table.
@@ -409,7 +442,7 @@ symget <- function(name) {
 
 
 
-#' @title Macro Symbol Put Function
+#' @title Assign a Variable in the Macro Symbol Table
 #' @description
 #' The \code{symput} function assigns the value of a macro
 #' variable from regular R code.
@@ -465,7 +498,7 @@ symput <- function(x, value = NULL) {
   if (!is.null(value)) {
     assign(nm, as.character(value), envir = gbl$env)
   } else {
-    rm(nm, envir = gbl$env)
+    rm(list = nm, envir = gbl$env)
   }
 
   invisible(x)

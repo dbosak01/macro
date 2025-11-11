@@ -2,7 +2,7 @@
 % Please edit documentation in R/symtable.R
 \name{symget}
 \alias{symget}
-\title{Macro Symbol Get Function}
+\title{Get a Variable Value from the Macro Symbol Table}
 \usage{
 symget(name)
 }

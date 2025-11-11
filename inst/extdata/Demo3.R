@@ -1,4 +1,4 @@
-
+#% Demo3: Path Selection %#
 #% Determine appropriate data path
 #%if ("&env." == "prod")
   #%let pth <- /projects/prod/data

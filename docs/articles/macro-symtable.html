@@ -126,8 +126,334 @@
     
     
 <p>The <strong>macro</strong> package includes several functions to
-manage the macro symbol table…</p>
+manage the macro symbol table. These functions provide an interface
+between regular R code and the macro language.</p>
+<p>The symbol table functions are as follows:</p>
+<ul>
+<li>
+<strong><code><a href="../reference/symput.html">symput()</a></code></strong>: Add a macro variable to the
+macro symbol table.</li>
+<li>
+<strong><code><a href="../reference/symget.html">symget()</a></code></strong>: Get a macro variable value
+from the macro symbol table.</li>
+<li>
+<strong><code><a href="../reference/symtable.html">symtable()</a></code></strong>: Extract and view the macro
+symbol table.</li>
+<li>
+<strong><code><a href="../reference/symclear.html">symclear()</a></code></strong>: Clear the values from the
+macro symbol table.</li>
+</ul>
+<p>In this article, we will look at the different ways the functions can
+be used, and how they can be used together.</p>
+<div class="section level2">
+<h2 id="how-to-use">How to Use<a class="anchor" aria-label="anchor" href="#how-to-use"></a>
+</h2>
+<p>Since the symbol table functions are regular R functions, they can be
+used before or after the call to <code><a href="../reference/msource.html">msource()</a></code>. One common way
+to use them is to set macro variable values for a standard macro
+program, and then examine the symbol table after the standard macro
+program completes.</p>
+<p>For example, let’s say you have a template macro program to perform
+an analysis on some data. You want to specify the input dataset, the
+variables to perform the analysis on, and you want some control over
+which statistics are calculated.</p>
+<div class="section level3">
+<h3 id="template-macro-program">Template Macro Program<a class="anchor" aria-label="anchor" href="#template-macro-program"></a>
+</h3>
+<p>Here is a sample program that meets the above criteria. It is
+included in the <strong>macro</strong> package as “Demo5.R”. Note the
+following about this template code:</p>
+<ul>
+<li>The macro function <code>%get_analysis()</code> is defined in the
+program, with three parameters.<br>
+</li>
+<li>The program sets up a “do” loop for each analysis variable, and
+calls “%get_analysis” for each.<br>
+</li>
+<li>The macro function performs the analysis and dynamically creates a
+result data frame.<br>
+</li>
+<li>The result data frames are bound together into a “final” data frame.
+This data frame will have one row for each analysis variable.<br>
+</li>
+<li>The “final” data frame is printed to the console at the end of the
+program.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#% Demo5: Template Analysis Program %#</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Perform Analysis ------------------------------------</span></span>
+<span></span>
+<span><span class="co">#% Macro for Dynamic Descriptive Stats</span></span>
+<span><span class="co">#%macro get_analysis(dat, var, stats)</span></span>
+<span><span class="va">anl_</span><span class="op">&amp;</span><span class="va">var</span> <span class="op">&lt;-</span> <span class="va">`&amp;dat`</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>VAR <span class="op">=</span> <span class="st">"&amp;var"</span>,</span>
+<span>            <span class="co">#%if ("mean" %in% &amp;stats)</span></span>
+<span>            MEAN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">`&amp;var`</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>            <span class="co">#%end</span></span>
+<span>            <span class="co">#%if ("median" %in% &amp;stats)</span></span>
+<span>            MEDIAN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">`&amp;var`</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>            <span class="co">#%end</span></span>
+<span>            <span class="co">#%if ("sd" %in% &amp;stats)</span></span>
+<span>            SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">`&amp;var`</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>            <span class="co">#%end</span></span>
+<span>            <span class="co">#%if ("min" %in% &amp;stats)</span></span>
+<span>            MIN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">`&amp;var`</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>            <span class="co">#%end</span></span>
+<span>            <span class="co">#%if ("max" %in% &amp;stats)</span></span>
+<span>            MAX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">`&amp;var`</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>            <span class="co">#%end</span></span>
+<span>            END <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#%mend</span></span>
+<span></span>
+<span><span class="co">#% Loop through analysis variables</span></span>
+<span><span class="co">#%do idx = 1 %to %sysfunc(length(&amp;vars))</span></span>
+<span><span class="co">#%let var &lt;- %sysfunc(&amp;vars[&amp;idx])</span></span>
+<span><span class="co">#%get_analysis(&amp;dat, &amp;var, &amp;stats)</span></span>
+<span><span class="co">#%end</span></span>
+<span></span>
+<span><span class="co">#% Get datasets to bind</span></span>
+<span><span class="co">#%let dsets &lt;- %sysfunc(paste0("anl_", &amp;vars, collapse = ", "))</span></span>
+<span><span class="co"># Bind analysis datasets</span></span>
+<span><span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">`&amp;dsets`</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print results</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">final</span><span class="op">)</span></span></code></pre></div>
+<p>As you can see, the above template program displays quite a bit of
+macro functionality.</p>
+</div>
+<div class="section level3">
+<h3 id="run-1">Run #1<a class="anchor" aria-label="anchor" href="#run-1"></a>
+</h3>
+<p>Now let’s set some parameters and execute the template program. Note
+the following about the run below:</p>
+<ul>
+<li>The <code><a href="../reference/symput.html">symput()</a></code> functions are used to assign values to the
+macro variables “&amp;dat”, “&amp;vars”, and “&amp;stats”.<br>
+</li>
+<li>The <code><a href="../reference/msource.html">msource()</a></code> function is called with the “clear”
+parameter set to FALSE. Setting the “clear” parameter to FALSE is needed
+so that we do not wipe out the values assigned by
+<code><a href="../reference/symput.html">symput()</a></code>.<br>
+</li>
+<li>The <code><a href="../reference/symtable.html">symtable()</a></code> function allows us to investigate the
+macro symbol table at the end of the run.<br>
+</li>
+<li>Since the “clear” parameter on the <code><a href="../reference/msource.html">msource()</a></code> function
+is set to FALSE, it is a good practice to clear out the symbol table by
+calling <code><a href="../reference/symclear.html">symclear()</a></code>. That way, if we need to re-run the
+program, we can start with a clean symbol table.</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get demo program</span></span>
+<span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo5.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set macro variables</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"dat"</span>, <span class="st">"mtcars"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"vars"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mpg"</span>, <span class="st">"disp"</span>, <span class="st">"drat"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"stats"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span>, <span class="st">"sd"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Macro Source demo program</span></span>
+<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="va">pth</span>, clear <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># ---------</span></span>
+<span><span class="co"># library(dplyr)</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  # Perform Analysis ------------------------------------</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  anl_mpg &lt;- mtcars |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "mpg",</span></span>
+<span><span class="co">#              MEAN = mean(mpg, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(mpg, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(mpg, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  anl_disp &lt;- mtcars |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "disp",</span></span>
+<span><span class="co">#              MEAN = mean(disp, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(disp, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(disp, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  anl_drat &lt;- mtcars |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "drat",</span></span>
+<span><span class="co">#              MEAN = mean(drat, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(drat, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(drat, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  # Bind analysis datasets</span></span>
+<span><span class="co">#  final &lt;- bind_rows(anl_mpg, anl_disp, anl_drat)</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  # Print results</span></span>
+<span><span class="co">#  print(final)</span></span>
+<span><span class="co"># ---------</span></span>
+<span><span class="co">#    VAR       MEAN  MEDIAN          SD</span></span>
+<span><span class="co"># 1  mpg  20.090625  19.200   6.0269481</span></span>
+<span><span class="co"># 2 disp 230.721875 196.300 123.9386938</span></span>
+<span><span class="co"># 3 drat   3.596563   3.695   0.5346787</span></span>
+<span>   </span>
+<span><span class="co"># View symbol table</span></span>
+<span><span class="fu"><a href="../reference/symtable.html">symtable</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># # Macro Symbol Table: 6 macro variables</span></span>
+<span><span class="co">#     Name                       Value</span></span>
+<span><span class="co"># 1   &amp;dat                      mtcars</span></span>
+<span><span class="co"># 2 &amp;dsets anl_mpg, anl_disp, anl_drat</span></span>
+<span><span class="co"># 3   &amp;idx                           3</span></span>
+<span><span class="co"># 4 &amp;stats            mean, median, sd</span></span>
+<span><span class="co"># 5   &amp;var                        drat</span></span>
+<span><span class="co"># 6  &amp;vars             mpg, disp, drat</span></span>
+<span><span class="co"># # Macro Function List: 1 functions</span></span>
+<span><span class="co"># # Function '%get_analysis': 3 parameters</span></span>
+<span><span class="co"># - dat</span></span>
+<span><span class="co"># - var</span></span>
+<span><span class="co"># - stats </span></span>
+<span></span>
+<span><span class="co"># Get a specific variable value</span></span>
+<span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"dat"</span><span class="op">)</span></span>
+<span><span class="co"># [1] "mtcars"</span></span>
+<span></span>
+<span><span class="co"># Clear the symbol table</span></span>
+<span><span class="fu"><a href="../reference/symclear.html">symclear</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># Clearing macro symbol table...</span></span>
+<span><span class="co"># 8 items cleared.</span></span></code></pre></div>
+<p>Observe that the “final” dataset contains an analysis for all three
+requested variables. The macro parameters allow you change the input
+dataset, the analysis variables, and the statistics generated.</p>
+</div>
+<div class="section level3">
+<h3 id="run-2">Run #2<a class="anchor" aria-label="anchor" href="#run-2"></a>
+</h3>
+<p>For illustration purposes, let’s run “Demo5.R” again with different
+parameters. This time we will use the “iris” dataset:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get demo program</span></span>
+<span><span class="va">pth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo5.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set macro variables</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"dat"</span>, <span class="st">"iris"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"vars"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Sepal.Width"</span>, <span class="st">"Petal.Length"</span>, <span class="st">"Petal.Width"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"stats"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span>, <span class="st">"sd"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Macro Source demo program</span></span>
+<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="va">pth</span>, clear <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># ---------</span></span>
+<span><span class="co"># library(dplyr)</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  # Perform Analysis ------------------------------------</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  anl_Sepal.Length &lt;- iris |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "Sepal.Length",</span></span>
+<span><span class="co">#              MEAN = mean(Sepal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(Sepal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(Sepal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              MIN = min(Sepal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              MAX = max(Sepal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  anl_Sepal.Width &lt;- iris |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "Sepal.Width",</span></span>
+<span><span class="co">#              MEAN = mean(Sepal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(Sepal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(Sepal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              MIN = min(Sepal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              MAX = max(Sepal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  anl_Petal.Length &lt;- iris |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "Petal.Length",</span></span>
+<span><span class="co">#              MEAN = mean(Petal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(Petal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(Petal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              MIN = min(Petal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              MAX = max(Petal.Length, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  anl_Petal.Width &lt;- iris |&gt;</span></span>
+<span><span class="co">#    summarize(VAR = "Petal.Width",</span></span>
+<span><span class="co">#              MEAN = mean(Petal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              MEDIAN = median(Petal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              SD = sd(Petal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              MIN = min(Petal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              MAX = max(Petal.Width, na.rm = TRUE),</span></span>
+<span><span class="co">#              END = NULL</span></span>
+<span><span class="co">#    )</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  # Bind analysis datasets</span></span>
+<span><span class="co">#  final &lt;- bind_rows(anl_Sepal.Length, anl_Sepal.Width, anl_Petal.Length, anl_Petal.Width)</span></span>
+<span><span class="co">#  </span></span>
+<span><span class="co">#  # Print results</span></span>
+<span><span class="co">#  print(final)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co">#  ---------</span></span>
+<span><span class="co">#            VAR     MEAN MEDIAN        SD MIN MAX</span></span>
+<span><span class="co"># 1 Sepal.Length 5.843333   5.80 0.8280661 4.3 7.9</span></span>
+<span><span class="co"># 2  Sepal.Width 3.057333   3.00 0.4358663 2.0 4.4</span></span>
+<span><span class="co"># 3 Petal.Length 3.758000   4.35 1.7652982 1.0 6.9</span></span>
+<span><span class="co"># 4  Petal.Width 1.199333   1.30 0.7622377 0.1 2.5</span></span>
+<span> </span>
+<span><span class="co"># View symbol table</span></span>
+<span><span class="fu"><a href="../reference/symtable.html">symtable</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># # Macro Symbol Table: 6 macro variables</span></span>
+<span><span class="co">#     Name                                                                Value</span></span>
+<span><span class="co"># 1   &amp;dat                                                                 iris</span></span>
+<span><span class="co"># 2 &amp;dsets anl_Sepal.Length, anl_Sepal.Width, anl_Petal.Length, anl_Petal.Width</span></span>
+<span><span class="co"># 3   &amp;idx                                                                    4</span></span>
+<span><span class="co"># 4 &amp;stats                                           mean, median, sd, min, max</span></span>
+<span><span class="co"># 5   &amp;var                                                          Petal.Width</span></span>
+<span><span class="co"># 6  &amp;vars                 Sepal.Length, Sepal.Width, Petal.Length, Petal.Width</span></span>
+<span><span class="co"># # Macro Function List: 1 functions</span></span>
+<span><span class="co"># # Function '%get_analysis': 3 parameters</span></span>
+<span><span class="co"># - dat</span></span>
+<span><span class="co"># - var</span></span>
+<span><span class="co"># - stats</span></span>
+<span></span>
+<span><span class="co"># Clear symbol table</span></span>
+<span><span class="fu"><a href="../reference/symclear.html">symclear</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># Clearing macro symbol table...</span></span>
+<span><span class="co"># 7 items cleared.</span></span></code></pre></div>
+<p>By changing the macro parameters, we were able to perform a different
+analysis on a completely different set of data. A macro-enabled program
+such as this offers considerable flexibility over other methods. It
+would be troublesome to achieve such flexibility in a regular R program,
+especially one that makes heavy use of non-standard evaluation.</p>
+</div>
+<div class="section level3">
+<h3 id="other-uses">Other Uses<a class="anchor" aria-label="anchor" href="#other-uses"></a>
+</h3>
+<p>While the above scenario demonstrates the most common application of
+symbol table functions, there are some other scenarios where these
+functions may be helpful. Here are some of them:</p>
+<ul>
+<li>
+<strong>Interactive usage:</strong> Symbol table functions can be
+used on the command line to set macro variable values, observe variable
+values, and clear the symbol table in preparation for the next
+run.<br>
+</li>
+<li>
+<strong>Debugging:</strong> Symbol table functions can be helpful
+for debugging. You can use them to temporarily set parameter values
+while writing a macro function, or print out macro variable values to
+the console.</li>
+<li>
+<strong>Logging:</strong> The symbol table functions may be useful
+for logging, especially the <code><a href="../reference/symget.html">symget()</a></code> and
+<code><a href="../reference/symtable.html">symtable()</a></code> functions. You can use these to log incoming
+macro parameter values, or log the state of the symbol table at the end
+of the run.</li>
+</ul>
 <p>Next: <a href="macro-debug.html">Debugging</a></p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

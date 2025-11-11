@@ -2,9 +2,16 @@
 % Please edit documentation in R/symtable.R
 \name{symclear}
 \alias{symclear}
-\title{Macro Clear Function}
+\title{Clear the Macro Symbol Table}
 \usage{
-symclear()
+symclear(variables = TRUE, functions = TRUE)
+}
+\arguments{
+\item{variables}{Whether or not to clear the macro symbol table.
+Default is TRUE.}
+
+\item{functions}{Whether or not to clear the macro function list.
+Default is TRUE.}
 }
 \value{
 The number of objects cleared, invisibly.  The function also

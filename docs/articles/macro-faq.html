@@ -140,6 +140,8 @@ provide?</a></li>
 loops?</a></li>
 <li><a href="#nest">Can I nest macro conditionals?</a></li>
 <li><a href="#include">How does %include work?</a></li>
+<li><a href="#symput">What is the difference between symput() and
+%symput()?</a></li>
 <li><a href="#lines">Why are the debug line numbers off?</a></li>
 <li><a href="#generate">How can I use this package to generate
 code?</a></li>
@@ -244,6 +246,26 @@ There is no limit on the number of nested levels.</p>
 the basic functionality of SAS “%include”. Text from the included file
 will be extracted and inserted into the generated file. Any macro
 statements in the included code will be resolved normally.</p>
+<p><a href="#top">top</a></p>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="symput">What is the difference between symput() and %symput()?<a class="anchor" aria-label="anchor" href="#symput"></a>
+</h3>
+<p><strong>Q:</strong> There appears to be two functions,
+<code><a href="../reference/symput.html">symput()</a></code> and <code>%symput()</code>. Why? Don’t they do the
+same thing?</p>
+<p><strong>A:</strong> The <code><a href="../reference/symput.html">symput()</a></code> and
+<code>%symput()</code> functions are similar in that they take a value
+from regular R code and assign it to a macro variable. The difference in
+the time they run. The <code><a href="../reference/symput.html">symput()</a></code> function runs at execution
+time, and the <code>%symput()</code> function runs in the macro
+pre-processor. This difference is quite significant, and that is why
+there are two different functions. The <code><a href="../reference/symput.html">symput()</a></code> function
+can be used in regular R code even before <code><a href="../reference/msource.html">msource()</a></code> is
+called. The <code>%symput()</code> function can only be used in a macro
+<code>#%let</code> statement, and will pick up values dynamically from
+the generated code.</p>
 <p><a href="#top">top</a></p>
 <hr>
 </div>

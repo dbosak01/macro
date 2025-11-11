@@ -135,7 +135,7 @@ package that can make debugging easier.</p>
 three parameters: <code>debug</code>, <code>debug_out</code>, and
 <code>symbolgen</code>.</p>
 <div class="section level3">
-<h3 id="baseline">Baseline<a class="anchor" aria-label="anchor" href="#baseline"></a>
+<h3 id="sample-program">Sample Program<a class="anchor" aria-label="anchor" href="#sample-program"></a>
 </h3>
 <p>The <code>debug</code> parameter turns debugging on or off. When set
 to TRUE, the debug parameter will send debugging information to the
@@ -172,9 +172,10 @@ like this:</p>
 debugging on, simply set the <code>debug</code> parameter to TRUE. Like
 this:</p>
 <pre><code>&gt; msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)</code></pre>
-<p>Normally, the <code><a href="../reference/msource.html">msource()</a></code> function does not return
-anything when executed. But when the <code>debug</code> parameter is
-TRUE, the following is printed to the console:</p>
+<p>Normally, the <code><a href="../reference/msource.html">msource()</a></code> function echos the generated
+code and any printed output from the generated code. But when the
+<code>debug</code> parameter is TRUE, the following is sent to the
+console:</p>
 <pre><code>&gt; msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
 ******************************************************************************** 
 **  Pre-Processing

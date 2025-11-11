@@ -22,7 +22,7 @@ a debug feature in the **macro** package that can make debugging easier.
 To enhance debugging, the `msource()` function contains three parameters: 
 `debug`, `debug_out`, and `symbolgen`.  
 
-### Baseline
+### Sample Program
 
 The `debug` parameter turns debugging on or off. When set to TRUE, the debug
 parameter will send debugging information to the console. This information
@@ -62,8 +62,9 @@ simply set the `debug` parameter to TRUE.  Like this:
 ```
 > msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
 ```
-Normally, the `msource()` function does not return anything when executed.
-But when the `debug` parameter is TRUE, the following is printed to the console:
+Normally, the `msource()` function echos the generated code and any printed
+output from the generated code.
+But when the `debug` parameter is TRUE, the following is sent to the console:
 ```
 > msource("./Debug1.R", "./Debug1_mod.R", debug = TRUE)
 ******************************************************************************** 

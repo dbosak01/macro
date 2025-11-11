@@ -28,6 +28,7 @@ on the links below to navigate to the full question and answer content.
 * [Can I create macro functions and do loops?](#functions)
 * [Can I nest macro conditionals?](#nest)
 * [How does %include work?](#include)
+* [What is the difference between symput() and %symput()?](#symput)
 * [Why are the debug line numbers off?](#lines)
 * [How can I use this package to generate code?](#generate)
 * [Why should I use this package for code generation?](#benefits)
@@ -138,7 +139,23 @@ resolved normally.
 [top](#top) 
 
 ******
+### What is the difference between symput() and %symput()?{#symput}
 
+**Q:** There appears to be two functions, `symput()` and `%symput()`. Why? Don't 
+they do the same thing? 
+
+**A:** The `symput()` and `%symput()` functions are similar in that they take
+a value from regular R code and assign it to a macro variable.  The difference
+in the time they run.  The `symput()` function runs at execution time, and the 
+`%symput()` function runs in the macro pre-processor. This difference
+is quite significant, and that is why there are two different functions.
+The `symput()` function can be used in regular R code even before `msource()` 
+is called. The `%symput()` function can only be used in a macro `#%let`
+statement, and will pick up values dynamically from the generated code.
+
+[top](#top) 
+
+******
 ### Why are the debug line numbers off? {#lines}
 
 **Q:** I'm trying to debug a macro. But the line numbers on the "In#" column 

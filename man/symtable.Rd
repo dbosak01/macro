@@ -2,7 +2,7 @@
 % Please edit documentation in R/symtable.R
 \name{symtable}
 \alias{symtable}
-\title{Macro Symbol Table Function}
+\title{Examine the Macro Symbol Table}
 \usage{
 symtable()
 }

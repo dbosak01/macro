@@ -121,6 +121,12 @@ test_that("symtable04: symput() works as expected.", {
 
   expect_equal("&q" %in% names(res3$variables), TRUE)
 
+  symput("q")
+
+  res4 <- symtable()
+
+  expect_equal("&q" %in% names(res4$variables), FALSE)
+
 })
 
 test_that("symtable05: symtable() with vectors works as expected.", {

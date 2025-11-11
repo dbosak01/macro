@@ -2,7 +2,7 @@
 % Please edit documentation in R/symtable.R
 \name{symput}
 \alias{symput}
-\title{Macro Symbol Put Function}
+\title{Assign a Variable in the Macro Symbol Table}
 \usage{
 symput(x, value = NULL)
 }
