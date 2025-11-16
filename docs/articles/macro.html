@@ -227,10 +227,15 @@ each iteration of the loop.</li>
 a user-defined text-replacement function, with or without
 parameters.</li>
 </ol>
-<p>Need something here as a transition.</p>
+<p>The above functionality covers the majority of use cases for a macro
+language. Now let’s see how the R macro language is actually
+implemented.</p>
 <div class="section level4">
 <h4 id="sas-to-r-macro-language-map">SAS to R Macro Language Map<a class="anchor" aria-label="anchor" href="#sas-to-r-macro-language-map"></a>
 </h4>
+<p>The table below maps SAS macro statements to the corresponding
+statement in R. This table can help SAS programmers quickly understand
+how the <strong>macro</strong> package works.</p>
 <style>
 .sasstyle {
   color: blue;
@@ -336,8 +341,8 @@ condition”)<br> #%end<br>
 </td>
 </tr>
 </table>
-<p>For comprehensive documentation on the R macro language commands, see
-the <a href="macro-language.html">Macro Languge Reference</a>.</p>
+<p>The table above contains all of the commands in the R macro language.
+For comprehensive documentation, see the <a href="macro-language.html">Macro Languge Reference</a>.</p>
 </div>
 </div>
 </div>
@@ -400,7 +405,7 @@ by default.</li>
 function list at the beginning of every call to <code><a href="../reference/msource.html">msource()</a></code>.
 TRUE by default.</li>
 </ul>
-<p>Additional information about the <code><a href="../reference/msource.html">msource()</a></code> function is
+<p>Additional information about the <code><a href="../reference/msource.html">msource()</a></code> parameters is
 available in the function reference.</p>
 </div>
 <div class="section level3">

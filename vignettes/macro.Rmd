@@ -105,10 +105,15 @@ to make the system more practical.
 7. **User-Defined Macro Functions**: The ability to create a user-defined 
 text-replacement function, with or without parameters.
 
+The above functionality covers the majority of use cases for a macro language.
+Now let's see how the R macro language is actually implemented.
 
-Need something here as a transition.
 
 ### SAS to R Macro Language Map
+
+The table below maps SAS macro statements to the corresponding statement in 
+R.  This table can help SAS programmers quickly understand
+how the **macro** package works. 
 
 <style>
 .sasstyle {
@@ -206,8 +211,8 @@ Need something here as a transition.
 
 </table>
 
-
-For comprehensive documentation on the R macro language commands, see the 
+The table above contains all of the commands in the R macro language. 
+For comprehensive documentation, see the 
 [Macro Languge Reference](macro-language.html).
 
 # The msource() Function
@@ -250,7 +255,7 @@ By default, this information is sent to the console.
 * **clear**: Clears the macro symbol table and macro function list at the 
 beginning of every call to `msource()`. TRUE by default.
 
-Additional information about the `msource()` function is available in the 
+Additional information about the `msource()` parameters is available in the 
 function reference.
 
 ## How to Use

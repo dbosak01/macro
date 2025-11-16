@@ -26,8 +26,9 @@ To generate the listing, we will still need just two files:
 ### Macro Driver Script
 
 Here is the macro driver script. What is different is that the macro driver 
-is written in standard R code, and uses the `symput()` and `symget()` symbol
-table functions to set the macro variable values:
+is written in regular R code. This approach gives you somewhat more flexibility
+when populating the macro variable values. The macro variables are created in the global 
+environment, and then picked up by `msource()`:
 ```{r eval=FALSE, echo=TRUE}
 library(macro)
 

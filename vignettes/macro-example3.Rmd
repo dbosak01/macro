@@ -356,10 +356,10 @@ In the above code, notice the following:
   If the environment is "dev", sample data is used.  If the environment is 
   "prod", a real dataset is used. The "dev" sample data comes from an 
   included code snippet.
-    * Analysis variable blocks are created using functions from the **procs**
+  * Analysis variable blocks are created using functions from the **procs**
   package.
   * The code for all analysis variables is divided in the continuous and 
-  categorical sections.  The appropriate analysis is driven by the "anals."
+  categorical sections.  The appropriate analysis is driven by the "&anals"
   macro variable. This template program can be easily extended to other analysis 
   variables.
   * The report code comes from an included template code snippet.  
@@ -764,7 +764,7 @@ lines from the template program are emitted during pre-processing.
 Here is the output report:
 <img src="../man/images/example3.png" alt = "Generated table example image"/>
 
-To add more analysis variables, just change the "trt_groups." macro variable
+To add more analysis variables, just change the "&trt_groups" macro variable
 in the driver program. You can also change the titles, footnotes, and other
 parameters as desired.  The generated code will adjust dynamically to
 all parameter settings.

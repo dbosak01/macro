@@ -469,16 +469,13 @@ study name, etc.</li>
 <li>Data for the program can either come from the “prod” or “dev”
 environment. If the environment is “dev”, sample data is used. If the
 environment is “prod”, a real dataset is used. The “dev” sample data
-comes from an included code snippet.
-<ul>
+comes from an included code snippet.</li>
 <li>Analysis variable blocks are created using functions from the
 <strong>procs</strong> package.</li>
-</ul>
-</li>
 <li>The code for all analysis variables is divided in the continuous and
-categorical sections. The appropriate analysis is driven by the “anals.”
-macro variable. This template program can be easily extended to other
-analysis variables.</li>
+categorical sections. The appropriate analysis is driven by the
+“&amp;anals” macro variable. This template program can be easily
+extended to other analysis variables.</li>
 <li>The report code comes from an included template code snippet.</li>
 </ul>
 </div>
@@ -873,8 +870,8 @@ pre-processing.</p>
 </h3>
 <p>Here is the output report:
 <img src="../man/images/example3.png" alt="Generated table example image"></p>
-<p>To add more analysis variables, just change the “trt_groups.” macro
-variable in the driver program. You can also change the titles,
+<p>To add more analysis variables, just change the “&amp;trt_groups”
+macro variable in the driver program. You can also change the titles,
 footnotes, and other parameters as desired. The generated code will
 adjust dynamically to all parameter settings.</p>
 <p>Next: <a href="macro-disclaimer.html">Disclaimer</a></p>

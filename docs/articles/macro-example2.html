@@ -139,9 +139,10 @@ different way. This time we’ll add some more complexity.</p>
 <h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
 </h3>
 <p>Here is the macro driver script. What is different is that the macro
-driver is written in standard R code, and uses the <code><a href="../reference/symput.html">symput()</a></code>
-and <code><a href="../reference/symget.html">symget()</a></code> symbol table functions to set the macro
-variable values:</p>
+driver is written in regular R code. This approach gives you somewhat
+more flexibility when populating the macro variable values. The macro
+variables are created in the global environment, and then picked up by
+<code><a href="../reference/msource.html">msource()</a></code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
 <span></span>
