@@ -1,13 +1,37 @@
-# Assign vector
-v1 <- c("one", "two", "three")
 
-#% Get length of vector
-#%let x <- %symput(length(v1))
+library(procs)
+library(macro)
 
-#% Get vector values
-#%let y <- %symput(v1)
+#% Assign macro variables
+#%let dat <- mtcars
+#%let vars <- c("mpg", "disp", "drat")
 
-# Print each value of vector y.
-#%do idx = 1 %to x.
-print("Vector value %sysfunc(y.[idx.])")
+#% Macro to run proc_means
+#%macro get_means(dat, var)
+
+# Analysis of '&var`
+anl_&var <- proc_means(`&dat`, `&var`, class = cyl,
+                      output = report)
+
+#%mend
+
+#% Loop over variables
+#%do idx = 1 %to %sysfunc(length(&vars))
+  #%let var <- %sysfunc(&vars[&idx])
+  #%get_means(&dat, &var)
 #%end
+
+#% Create list of analysis datasets
+#%let varlst <- %sysfunc(paste0("anl_", &vars, collapse = ", "))
+
+# Combine analysis
+final <- list(`&varlst`)
+
+# Print to console
+print(final)
+
+# Print to viewer
+proc_print(final,
+           titles = c("Analysis of Selected MTCARS Variables",
+                      "by cylinders"))
+

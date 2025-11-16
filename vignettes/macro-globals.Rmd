@@ -14,19 +14,79 @@ knitr::opts_chunk$set(
 )
 ```
 
-The **macro** package includes several global options...
+The **macro** package includes several global options to customize the behavior
+of `msource()`.  The options can alter some key parameter defaults. Note that
+these global options will override both the parameter defaults, and any local
+setting on the function call.
 
+### Echo Option
 
-macro.autosave
+The "echo" parameter of `msource()` prints the generated code to the console. 
+In most cases, viewing this generated code is useful. However,
+there are some cases where you may want to turn this feature off. You can do
+that with the "echo" global option, as such:
+```{r eval=FALSE, echo=TRUE}
+# Turn echo off
+options("macro.echo" = FALSE)
 
-macro.autoclear
+# Turn echo on
+options("macro.echo" = TRUE)
 
-macro.echo
+# Remove global option
+options("macro.echo" = NULL)
+```
 
+### Auto Clear Option
 
-Global settings will override local for all options.
+When run from the command line or from code, the `msource()` function will clear 
+the macro symbol table and macro function list every time you execute the function.
+This default aims to avoid contaminating the symbol table with macro variable values 
+from the previous run.
 
+On the other hand, the `runMSource()` addin menu option sets the "clear" parameter
+to FALSE. This setting aims to facilitate interactive usage.
 
+The "clear" settings for both `msource()` and `runMSource()` functions can be
+forced using the "autoclear" global option.  The syntax is as follows:
+
+```{r eval=FALSE, echo=TRUE}
+# Turn autoclear off
+options("macro.autoclear" = FALSE)
+
+# Turn autoclear on
+options("macro.autoclear" = TRUE)
+
+# Remove global option 
+options("macro.autoclear" = NULL)
+```
+
+### Auto Save Option
+
+By default, RStudio will save unsaved changes in the editor when you push 
+the "Source" button.  Similarly, the **macro** addin will save unsaved
+changes in the editor when you execute either the "Macro Source" or "Macro Source
+with Debug" menu items. This behavior can be overridden with the "autosave" option.
+Here is the syntax:
+```{r eval=FALSE, echo=TRUE}
+# Turn autosave off
+options("macro.autosave" = FALSE)
+
+# Turn autosave on
+options("macro.autosave" = TRUE)
+
+# Remove global option
+options("macro.autosave" = NULL)
+```
+Note that the "autosave" feature only applies to situations when you are running
+the entire program.  If you only select a portion of the code in the editor and
+run the "Macro Source" addin, the program will not be saved.  This exception
+is identical to the RStudio "Source" button.
+
+### Clearing Global Options
+
+Reminder that any global settings will override local parameter settings 
+for all options. If you want to restore priority to the local settings, set 
+the global options to NULL.
 
 Next: [Example 1: Listing](macro-example1.html)
 

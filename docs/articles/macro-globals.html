@@ -56,7 +56,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/macro-setup.html">IDE Setup</a>
+      <a href="../articles/macro-setup.html">Installation and Setup</a>
     </li>
     <li>
       <a href="../articles/macro-language.html">Macro Language Reference</a>
@@ -125,13 +125,82 @@
 
     
     
-<p>The <strong>macro</strong> package includes several global
-options…</p>
-<p>macro.autosave</p>
-<p>macro.autoclear</p>
-<p>macro.echo</p>
-<p>Global settings will override local for all options.</p>
+<p>The <strong>macro</strong> package includes several global options to
+customize the behavior of <code><a href="../reference/msource.html">msource()</a></code>. The options can alter
+some key parameter defaults. Note that these global options will
+override both the parameter defaults, and any local setting on the
+function call.</p>
+<div class="section level3">
+<h3 id="echo-option">Echo Option<a class="anchor" aria-label="anchor" href="#echo-option"></a>
+</h3>
+<p>The “echo” parameter of <code><a href="../reference/msource.html">msource()</a></code> prints the generated
+code to the console. In most cases, viewing this generated code is
+useful. However, there are some cases where you may want to turn this
+feature off. You can do that with the “echo” global option, as such:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Turn echo off</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.echo"</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Turn echo on</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.echo"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove global option</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.echo"</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="auto-clear-option">Auto Clear Option<a class="anchor" aria-label="anchor" href="#auto-clear-option"></a>
+</h3>
+<p>When run from the command line or from code, the
+<code><a href="../reference/msource.html">msource()</a></code> function will clear the macro symbol table and
+macro function list every time you execute the function. This default
+aims to avoid contaminating the symbol table with macro variable values
+from the previous run.</p>
+<p>On the other hand, the <code><a href="../reference/runMSource.html">runMSource()</a></code> addin menu option
+sets the “clear” parameter to FALSE. This setting aims to facilitate
+interactive usage.</p>
+<p>The “clear” settings for both <code><a href="../reference/msource.html">msource()</a></code> and
+<code><a href="../reference/runMSource.html">runMSource()</a></code> functions can be forced using the “autoclear”
+global option. The syntax is as follows:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Turn autoclear off</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.autoclear"</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Turn autoclear on</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.autoclear"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove global option </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.autoclear"</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="auto-save-option">Auto Save Option<a class="anchor" aria-label="anchor" href="#auto-save-option"></a>
+</h3>
+<p>By default, RStudio will save unsaved changes in the editor when you
+push the “Source” button. Similarly, the <strong>macro</strong> addin
+will save unsaved changes in the editor when you execute either the
+“Macro Source” or “Macro Source with Debug” menu items. This behavior
+can be overridden with the “autosave” option. Here is the syntax:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Turn autosave off</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.autosave"</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Turn autosave on</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.autosave"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove global option</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"macro.autosave"</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<p>Note that the “autosave” feature only applies to situations when you
+are running the entire program. If you only select a portion of the code
+in the editor and run the “Macro Source” addin, the program will not be
+saved. This exception is identical to the RStudio “Source” button.</p>
+</div>
+<div class="section level3">
+<h3 id="clearing-global-options">Clearing Global Options<a class="anchor" aria-label="anchor" href="#clearing-global-options"></a>
+</h3>
+<p>Reminder that any global settings will override local parameter
+settings for all options. If you want to restore priority to the local
+settings, set the global options to NULL.</p>
 <p>Next: <a href="macro-example1.html">Example 1: Listing</a></p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -1,9 +1,7 @@
 
-
 # Here is a comment
 x1 <- 1
 print(x1)
-
 
 # Here is a macro function
 

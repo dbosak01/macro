@@ -399,7 +399,11 @@ msource <- function(pth = NULL, file_out = NULL, envir = parent.frame(),
 
   # Echo code if requested
   if (echo & debug == FALSE) {
+
+    # Extract generated code
     lns <- readLines(ppth)
+
+    # Eliminate blank lines at beginning or end
     if (length(lns) > 1) {
       if (lns[1] == "") {
         lns <- lns[seq(2, length(lns))]
@@ -408,6 +412,8 @@ msource <- function(pth = NULL, file_out = NULL, envir = parent.frame(),
         lns <- lns[seq(1, length(lns) - 1)]
       }
     }
+
+    # Echo generated code
     cat("---------\n")
     cat(paste0(lns, "\n"))
     cat("---------\n")
@@ -540,7 +546,7 @@ preprocess <- function(pth, file_out, envir, debug, debug_out, clear) {
 
     if (envir == "local") {
 
-      # user environment is two levels up
+      # User environment is two levels up
       penv <- parent.frame(2)
 
       # Copy any macro variables to new environment
@@ -626,6 +632,7 @@ mprocess <- function(lns, debug, debug_out) {
   lncnt <- length(lns)
   emt <- FALSE       # emit flat
   gbl$buffer <- c()  # execution buffer
+  lastempty <- FALSE # previous line was empty
 
   # Set up scope tracking
   scope <- list()  # set base environment
@@ -696,11 +703,12 @@ mprocess <- function(lns, debug, debug_out) {
       # Macro end
       ismend <- is_mend(ln)
 
-      # Had idea about eliminating blank spaces
-      # before or after macro lines.
-      # Not happy with it.
-      # Kill for now.
-      ismacroln <- FALSE
+      # Identify empty lines
+      if (ln == "") {
+        isempty <- TRUE
+      } else {
+        isempty <- FALSE
+      }
 
       if (as.logical(isif)) {   # Deal with 'if'
         lvl <- lvl + 1
@@ -864,9 +872,10 @@ mprocess <- function(lns, debug, debug_out) {
         # Don't emit
       } else if (all(isopen)) {     # Deal with normal code
 
-        if (nchar(trimws(ln)) == 0 & ismacroln) {
+        if (isempty & lastempty) {
           # Do nothing
-          # Eliminate blank lines after macro statements
+          # Eliminate repeating empty lines
+          # Will allow lines with blank spaces
         } else {
           # If it makes it to this point,
           # replace any macro variables and emit as code
@@ -891,6 +900,13 @@ mprocess <- function(lns, debug, debug_out) {
 
           # Append resolved line to output vector
           ret <- append(ret, nln)
+
+          # Set empty flags
+          if (isempty) {
+            lastempty <- TRUE
+          } else {
+            lastempty <- FALSE
+          }
         }
       }
     }

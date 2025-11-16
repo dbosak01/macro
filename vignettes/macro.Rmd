@@ -24,7 +24,7 @@ generates the regular code, and then the regular code is executed to produce
 some sort of output. It is, at heart, a text manipulation system.
 
 The SAS® macro language is commonly used in SAS programs. The R **macro** package 
-was inspired by SAS. Specifically, the **macro** package aims to replicate
+was inspired by SAS. Specifically, the **macro** package aims to mimic
 SAS macro with "mprint" and "mfile" options turned on.  These options generate 
 a resolved code file.
 
@@ -83,10 +83,134 @@ R macro language:
   * All operators in the R macro language use R syntax, including the 
   comparison operator ("==").
   * R macro variables in open code must be surrounded by backticks ("`") to 
-  avoid errors. Inside comments and other macro commands, they do not need
-  backticks.  
+  avoid syntax errors. Inside comments, strings, and other macro commands, they do not 
+  need backticks. 
+  
+  
+  
+## Available Functionality
 
-# The msource() function
+The **macro** package supports the most basic functionality of a macro system.
+That includes: 
+
+1. **Macro Comments**: Like regular R comments, but are not emitted to the output file.
+2. **Macro Variables**:  Allow you to assign a value to a macro variable, and use
+the macro variable as a text replacement token.
+3. **Macro Conditionals**: If-Then-Else logic that allows you to conditionally 
+execute a chunk of code.
+4. **Macro Include**: Inserts the contents of an external file into your program.
+5. **Built-in Macro Functions**: A small number of macro functions
+to make the system more practical.
+6. **Macro Do Loops**: Copies code inside the do block for each iteration of the loop.
+7. **User-Defined Macro Functions**: The ability to create a user-defined 
+text-replacement function, with or without parameters.
+
+
+Need something here as a transition.
+
+### SAS to R Macro Language Map
+
+<style>
+.sasstyle {
+  color: blue;
+  font-family: Courier;
+}
+
+.rstyle {
+  color: green;
+  font-family: Courier;
+}
+</style>
+
+
+<table>
+<tr><td>&nbsp;</td><td><b>SAS</b></td><td><b>R</b></td></tr>
+<tr><td><b>Comment:</b></td>
+<td class="sasstyle">%* Here is a comment;</td>
+<td class="rstyle">#% Here is a comment</td></tr>
+
+<tr><td><b>Assignment:</b></td>
+<td class="sasstyle">%let x = 1;</td>
+<td class="rstyle">#%let x <- 1</td></tr>
+
+<tr><td><b>Conditional:</b></td>
+<td class="sasstyle">
+%if (&x = 1) %then %do;<br>
+&nbsp;&nbsp;%put "First condition";<br>
+%end;<br>
+%else %if (&x = 2) %then %do;<br>
+&nbsp;&nbsp;%put "Second condition";<br>
+%end;<br>
+%else %do;<br>
+&nbsp;&nbsp;%put "Default condition";<br>
+%end;<br>
+</td>
+<td class="rstyle">
+#%if (&x == 1)<br>
+&nbsp;&nbsp;print("First condition")<br>
+#%elseif (&x == 2)<br>
+&nbsp;&nbsp;print("Second condition")<br>
+#%else<br>
+&nbsp;&nbsp;print("Default condition")<br>
+#%end<br>
+</td></tr>
+
+
+<tr><td><b>Include:</b></td>
+<td class="sasstyle">%include "myfile.sas";</td>
+<td class="rstyle">#%include "myfile.R"</td></tr>
+
+
+<tr><td><b>Built in Functions:</b></td>
+<td class="sasstyle">
+%sysfunc()<br>
+%symexist()<br>
+%symput()<br>
+%nrstr()
+</td>
+<td class="rstyle">
+%sysfunc()<br>
+%symexist()<br>
+%symput()<br>
+%nrstr()
+</td></tr>
+
+<tr><td><b>Do Loop:</b></td>
+<td class="sasstyle">
+%do y = 1 %to 3;<br>
+&nbsp;&nbsp;%put Y is &y;<br>
+%end;<br>
+</td>
+<td class="rstyle">
+#%do y = 1 %to 3<br>
+&nbsp;&nbsp;print("Y is &y")<br>
+#%end<br>
+</td></tr>
+
+<tr><td><b>User-Defined Function:</b></td>
+<td class="sasstyle">
+%macro test();<br>
+&nbsp;&nbsp;%put "Hello!";<br>
+%mend;<br>
+<br>
+%test();<br>
+</td>
+<td class="rstyle">
+#%macro test()<br>
+&nbsp;&nbsp;print("Hello!")<br>
+#%mend<br>
+<br>
+#%test()
+</td></tr>
+
+
+</table>
+
+
+For comprehensive documentation on the R macro language commands, see the 
+[Macro Languge Reference](macro-language.html).
+
+# The msource() Function
 
 In the **macro** package, pre-processing of the macro code is accomplished by a special function:
 `msource()`. The `msource()` function is similar to the `source()` function in R.
@@ -106,549 +230,354 @@ In addition, the R macro language is a text-replacement language, just like SAS.
 variables are swapped out with real values as text replacements.  Macro conditions
 are evaluated, and only the code in the TRUE macro conditions is executed. 
 
-All of the above is handled by the `msource()` function. `msource()` is in fact the 
-only user-facing function in the **macro** package.
+All of the above is handled by the `msource()` function. `msource()` is the core
+function in the **macro** package.
+
+### Parameters
+
+The `msource()` function has several parameters.  Here is a short summary:
+
+* **pth**: The path to the macro program.
+* **file_out**: An optional path to store the generated code.
+* **envir**: An optional environment to use for program execution.
+* **exec**: A TRUE or FALSE value indicating whether to execute the generated
+code.
+* **debug**: If TRUE, the function will generate additional debug information.
+By default, this information is sent to the console.
+* **debug_out**: An optional file path to send the debug information.
+* **symbolgen**: If TRUE, macro variable values are added to the debug information.
+* **echo**: Echos the generated code to the console. TRUE by default.
+* **clear**: Clears the macro symbol table and macro function list at the 
+beginning of every call to `msource()`. TRUE by default.
+
+Additional information about the `msource()` function is available in the 
+function reference.
 
 ## How to Use
 
 To use the **macro** package, you will first write your macro-enabled R code in 
 a regular ".R" code file.  You can use
 RStudio® or another code editor.  The macro statements are written as special
-comments, as described above.  To execute a macro-enabled program, simply
-call the `msource()` function in the console and pass the program path.  That's it!  
+comments, as described above.  You can execute a macro-enabled program in 
+three different ways:
 
-If you are working in RStudio, the function will use the path of the currently 
-active program by default. In that case, you don't need to do hardly anything!
-Just call `msource()` in the console with no parameters.
+* From the console
+* From a script
+* From a keyboard shortcut  
 
-Say something about shortcuts and interactive usage/addin.
+The below sections will elaborate on these different approaches. 
 
-## Available Functionality
+### Execute From the Console
 
-The **macro** package supports the most basic functionality of a macro system.
-That includes: 
+To execute a macro-enabled program, simply
+call the `msource()` function in the console and pass the program path. If 
+you want to save the generated code, or run in debug mode, pass the appropriate
+parameters to `msource()`.
 
-1. **Macro Comments**: Like regular R comments, but are not emitted to the output file.
-2. **Macro Variables**:  Allow you to assign a value to a macro variable, and use
-the macro variable as a text replacement token.
-3. **Macro Conditionals**: If-Then-Else logic that allows you to conditionally 
-execute a chunk of code.
-4. **Macro Include**: Inserts the contents of an external file into your program.
-5. **Built-in Macro Functions**: A small number of macro functions
-to make the system more practical.
-6. **Macro Do Loops**: Copies code inside the do block for each iteration of the loop.
-7. **User-Defined Macro Functions**: The ability to create a user-defined 
-text-replacement function, with or without parameters.
+The `msource()` function provides some convenience for those people working
+in RStudio.  If you are working in RStudio, the function will use the path of the currently 
+active program by default. In that case, you don't even need to pass the 
+program path. Just call `msource()` in the console with no parameters.
 
+A simple example of executing a macro program from the console is provided below.
+For a more extensive example, please see [Example 1](macro-example1.html).
 
-### Macro Example
+### Execute From a Script
 
-Show simple but comprehensive example.  User-defined function with do loop, 
-conditionals, and at least one built-in function.
+The `msource()` function can also be sourced from a regular R program. You can
+create a driver script to set up some macro parameters, and then
+call the `msource()` function from the driver.
 
+For an example of a driver script, see [Example 2](macro-example2.html) or 
+[Example 3](macro-example3.html). 
 
-Link to language reference.
+### Execute From a Keyboard Shortcut
 
-### Macro Symbol Table
+The core features of the **macro** package are also available via 
+the RStudio Addin menu and keyboard shortcuts.  These features allow
+you to use the **macro** package interactively in RStudio. They make 
+writing and debugging macro-enabled programs much easier.
 
-Explain symbol table and symbol table functions.  Link to symbol table vignette.
+See the [Installation and Setup](macro-setup.html) vignette for
+instructions on how to enable and use the **macro** keyboard shortcuts.
 
-### Macro Debugging
+## Example Macro Program
 
-Explain debugging and demonstrate.  Link to debugging vignette.
+Here is what a simple macro-enabled program looks like:
 
+<img src="../man/images/sample1.png" alt="Sample Macro Program">
 
-### Next Steps
+### Console Output
 
-Link to all vignettes.
-
-
-
-
-
-### Macro Comments and Variables
-
-Above we saw a simple macro variable assignment. Macro variables are defined with
-the keyword `#%let` and then the variable name and value.  
-
-We can document those macro assignments with macro comments.  Macro comments
-are prefixed with `#%`.  You can type anything after the prefix.
-
-Note that macro comments are a single line comment.  There are no multi-line 
-comments in R.
-
-Here are a few macro variable assignments with comments for different data types:
-
-```{r eval=FALSE, echo=TRUE}
-#% Assign integer value 
-#%let v1 <- 1
-
-#% Assign double value
-#%let v2 <- 1.2
-
-#% Assign character value
-#%let v3 <- "Hello World!"
-
-#% Assign date value
-#%let v4 <- as.Date("2025-07-15")
-
-#% Assign vector
-#%let v5 <- c(1, 2, 3, 4, 5)
-
-#% Assign calculated value
-#%let v6 <- 2 + 2
-
-#% Assign using another macro variable
-#%let v7 <- &v6
-
-#% Calculate using another macro variable
-#%let v8 <- &v7 + 1
-```
-Once a macro variable is assigned, it can be used as a text replacement token
-anywhere in your program. 
-
-R macro variables begin with an ampersand ("&") 
-prefix, just like SAS. Also like SAS, a trailing dot (".") suffix is optional.
-The trailing dot can help separate the macro variable from surrounding text.
-
-One difference is that, in R, the ampersand ("&") is normally not 
-allowed as the first character of a variable name.  
-Therefore, when macro variables appear in open code,
-they must be back-quoted to avoid errors.
-
-For example, we can use some of the above macro assignments like this:
-```{r eval=FALSE, echo=TRUE}
-# Resolve inside a comment
-# The value of 'v1' is &v1
-
-# Resolve in a text string
-a <- "The value of 'v2' is &v2"
-print(a)
-
-# Resolve in open code
-b <- `&v3`
-print(b)
-
-# Resolve in a function
-c <- mean(`&v5`)
-print(c)
-
-```
-If we execute the above code using `msource()`, we'll get the following result:
-```
-> msource()
-[1] "The value of 'v2' is 1.2"
-[1] "Hello World!"
-[1] 3
-```
-And the generated code would look like this:
-```{r eval=FALSE, echo=TRUE}
-# Resolve inside a comment
-# The value of 'v1' is 1
-
-# Resolve in a text string
-a <- "The value of 'v2' is 1.2"
-print(a)
-
-# Resolve in open code
-b <- "Hello World!"
-print(b)
-
-# Resolve in a function
-c <- mean(c(1, 2, 3, 4, 5))
-print(c)
-
-```
-Notice in the above generated code that the macro variables `&v3` and `&v5` were
-replaced exactly as they were assigned.  All macro variable resolution is 
-text replacement.
-
-### Simple Macro Conditionals
-
-Macro conditionals allow you to conditionally execute a chunk of code.  If
-a macro condition is TRUE, the code inside that condition will be output
-to the generated code file and executed.  Otherwise, the code will not be
-emitted. This feature makes the generated code file more compact.
-
-Here are some examples of simple macro conditions:
-```{r eval=FALSE, echo=TRUE}
-#% Assign integer value 
-#%let x = 1
-
-#%if (&x == 1)
-  # X is one
-  print("Inside the first condition")
-#%elseif (&x == 2)
-  # X is two
-  print("Inside the second condition")
-#%else 
-  # X is something else
-  print("Inside the else.")
-#%end
-
-```
-When executed with `msource()`, the above code will generate the result 
-`"Inside the first condition"`.  If you pass a file name to the `file_out`
-parameter of the `msource()` function, a code file will be generated.  That
-code file will contain the following content:
-```{r eval=FALSE, echo=TRUE}
-  # X is one
-  print("Inside the first condition")
-
-```
-Notice that all spacing and comments from inside the condition are preserved.
-Also notice that all macro code and code from inside other conditions has 
-been removed. Only the code inside the TRUE condition has been emitted.
-
-### Nested Macro Conditionals
-
-Macro conditionals can also be nested. Here is an 
-example that illustrates such conditionals:
-
-```{r eval=FALSE, echo=TRUE}
-#% Assign integers
-#%let x = 1
-#%let y = 2
-
-#%if (&x. == 1)
-
-  #%if (&y. == 1)
-
-    print("X is one and Y is 1")
-
-  #%else
-
-    print("X is one and Y is &y.")
-
-  #%end
-
-#%elseif (&x. == 2)
-
-    #%if (&y. == 1)
-
-    print("X is two and Y is 1")
-
-    #%else
-
-    print("X is two and Y is &y.")
-
-    #%end
-
-#%else
-
-  #%if (&y. == 1)
-
-    print("X is &x. and Y is 1")
-
-  #%else
-
-    print("X is &x. and Y is &y.")
-
-  #%end
-
-#%end
-
-```
-The result of the above code will be "X is one and Y is 2", and the output
-file will look like this:
-```{r eval=FALSE, echo=TRUE}
-
-    print("X is one and Y is 2")
-
-
-```
-In this way, many levels of macro logic can be boiled down to a few lines of 
-generated code.
-
-### Macro Include
-
-There is no equivalent in Base R for a SAS macro include.  The R `source()` function
-executes an external code file.  But it does not "include" or "insert" the
-code into the calling program.  Therefore, the macro include from the 
-**macro** package brings a useful feature to R.
-
-A macro include from the **macro** package looks like this:
-```{r eval=FALSE, echo=TRUE}
-#%include 'c:/myfolder/myprogram.R'
-
-```
-Upon execution by `msource()`, the contents of "myprogram.R" will be extracted
-from the file and copied into the calling program as text.  The calling program
-will then be scanned for macro commands that may have existed in "myprogram.R".
-The result will be a fully integrated program with all macro commands resolved.
-
-### Macro Functions
-
-There are a some built-in macro functions that are considered necessary for proper
-operation of the system.  The essential functions are `%sysfunc()`, 
-`%symexist()`, and `%symput()`.
-
-### Evaluating and Formatting Expressions: %sysfunc()
-
-The `%sysfunc()` macro function allows you to evaluate an R expression as
-part of a macro command.  The expression can contain any valid R function
-or operator.  Observe:
-
-```{r eval=FALSE, echo=TRUE}
-
-#% Assign integer vector
-#%let a = c(2, 5, 8, 9)
-
-#% Sum vector without %sysfunc
-#%let b = sum(&a) / 1.3
-
-#% Sum vector with %sysfunc
-#%let c = %sysfunc(sum(&a) / 1.3)
-
-#% Format expression with %sysfunc
-#%let d = %sysfunc(sum(&a) / 1.3, %.2f)
-
-# Text replacement
-w <- `&a`
-
-# Expression replacement
-x <- `&b`
-
-# Evaluated with %sysfunc()
-y <- `&c`
-
-# Formatted with %sysfunc()
-z <- `&d`
-
-
-```
-Here is the above code after pre-processing:
-```{r eval=FALSE, echo=TRUE}
-
-# Text replacement
-w <- c(2, 5, 8, 9)
-
-# Expression replacement
-x <- sum(c(2, 5, 8, 9)) / 1.3
-
-# Evaluated with %sysfunc()
-y <- 18.4615384615385
-
-# Formatted with %sysfunc()
-z <- 18.46
-
-```
-Notice how the macro values resolve differently depending on whether and how
-`%sysfunc()` is used.
-
-### Checking For Macro Variables: %symexist()
-
-The `%symexist()` macro function is used to determine whether or not 
-a macro variable exists.  You will pass the name of the macro variable
-without quotes and without the ampersand ("&") prefix or the dot (".") suffix.  
-
-Here is a very simple example:
-
-```{r eval=FALSE, echo=TRUE}
-
-#%let a = 1
-
-#%if (%symexist(a))
-
-  print("Macro variable 'a' exists!")
-  print("Here is the value: &a")
-
-#%else
-
-  print("Macro variable 'a' does not exist!")
-
-#%end
-
-#%if (%symexist(b))
-
-  print("Macro variable 'b' exists!")
-  print("Here is the value: &b")
-
-#%else
-
-  print("Macro variable 'b' does not exist!")
-
-#%end
-
-```
-And the resulting code looks like this:
-```{r eval=FALSE, echo=TRUE}
-
-  print("Macro variable 'a' exists!")
-  print("Here is the value: 1")
-
-  print("Macro variable 'b' does not exist!")
-
-```
-
-### Assigning Macro Variables from Execution Environment: %symput()
-
-The `%symput()` function allows you examine values in the runtime environment
-during pre-processing.  Notice below that you can assign macro variable values
-based on regular R variables and expressions:
-```{r eval=FALSE, echo=TRUE}
-# Assign vector
-v1 <- c("one", "two", "three")
-
-#% Get length of vector
-#%let x <- %symput(length(v1))
-
-#% Get vector values
-#%let y <- %symput(v1)
-
-# Assign length with macro variable
-a <- `&x`
-
-# Assign vector values with macro variable
-b <- `&y`
-
-```
-The generated code looks like this:
-```{r eval=FALSE, echo=TRUE}
-# Assign vector
-v1 <- c("one", "two", "three")
-
-# Assign length with macro variable
-a <- 3
-
-# Assign vector values with macro variable
-b <- c('one', 'two', 'three')
-```
-As you can see, the `%symput()` function provides a way to pass values back and
-forth between Base R and the macro language seamlessly.  This feature gives you 
-the capability to make decisions in pre-processing
-based on what is happening during execution.
-
-### Macro Do Loops
-
-Macro do loops can be used to easily copy a section of code multiple times.
-Here is a modified version of the above `%symput()` example that demonstrates
-a macro loop:
-```{r eval=FALSE, echo=TRUE}
-# Assign vector
-v1 <- c("one", "two", "three")
-
-#% Get length of vector
-#%let x <- %symput(length(v1))
-
-#% Get vector values
-#%let y <- %symput(v1)
-
-# Print each value of vector &y.
-#%do idx = 1 %to &x.
-print("Vector value %sysfunc(&y[&idx])")
-#%end
-```
-The above macro will produce the following console output:
-```
-> msource()
-[1] "Vector value one"
-[1] "Vector value two"
-[1] "Vector value three"
-```
-And here is the generated code:
-```{r eval=FALSE, echo=TRUE}
-# Assign vector
-v1 <- c("one", "two", "three")
-
-# Print each value of vector c('one', 'two', 'three')
-print("Vector value one")
-print("Vector value two")
-print("Vector value three")
-```
-Note that you can have any number of statements inside the do loop. This 
-macro feature is useful when you are performing repetitive operations, want
-to avoid copying the code, but still want a resolved and transparent output file.
-
-### User-defined Macro Functions
-
-User-defined macro functions allow you to wrap up a set up statements,
-assign a name to it, and call these functions as needed. Calling the function
-will insert the contents of the function into the generated file. It is 
-important to note the difference between a regular R function and an R
-macro function: an R macro function is still a text replacement/insertion.
-
-Here is an illustrative example:
-```{r eval=FALSE, echo=TRUE}
-#% Define macro function
-#%macro do_analysis(data, varname)
-# Analysis for "&varname"
-mean_&varname <- mean(`&data`[["&varname"]])
-min_&varname <- min(`&data`[["&varname"]])
-max_&varname <- max(`&data`[["&varname"]])
-anal_&varname <- data.frame("Variable" = "&varname",
-                            "Mean" = mean_&varname,
-                            "Min"  = min_&varname,
-                            "Max"  = max_&varname)
-#%mend
-
-#%do_analysis(mtcars, mpg)
-#%do_analysis(mtcars, cyl)
-#%do_analysis(mtcars, disp)
-
-# Combine analysis blocks
-final <- rbind(anal_mpg, anal_cyl, anal_disp)
-
-# Print result
-print(final)
-
-```
-Here is the generated code.  Notice that the code inside the macro function
-is repeated for every call:
-```{r eval=FALSE, echo=TRUE}
-
-# Analysis for "mpg"
-mean_mpg <- mean(mtcars[["mpg"]])
-min_mpg <- min(mtcars[["mpg"]])
-max_mpg <- max(mtcars[["mpg"]])
-anal_mpg <- data.frame("Variable" = "mpg",
-                            "Mean" = mean_mpg,
-                            "Min"  = min_mpg,
-                            "Max"  = max_mpg)
-# Analysis for "cyl"
-mean_cyl <- mean(mtcars[["cyl"]])
-min_cyl <- min(mtcars[["cyl"]])
-max_cyl <- max(mtcars[["cyl"]])
-anal_cyl <- data.frame("Variable" = "cyl",
-                            "Mean" = mean_cyl,
-                            "Min"  = min_cyl,
-                            "Max"  = max_cyl)
-# Analysis for "disp"
-mean_disp <- mean(mtcars[["disp"]])
-min_disp <- min(mtcars[["disp"]])
-max_disp <- max(mtcars[["disp"]])
-anal_disp <- data.frame("Variable" = "disp",
-                            "Mean" = mean_disp,
-                            "Min"  = min_disp,
-                            "Max"  = max_disp)
-
-# Combine analysis blocks
-final <- rbind(anal_mpg, anal_cyl, anal_disp)
-
-# Print result
-print(final)
-
-```
-The result of the above code is a data frame that contains analysis for
-all three variables.  The console output looks like this:
+If you execute the `msource()` function in the console, the above program
+will run and display the following:
 
 ```
 > msource()
-  Variable      Mean  Min   Max
-1      mpg  20.09062 10.4  33.9
-2      cyl   6.18750  4.0   8.0
-3     disp 230.72188 71.1 472.0
-```
-Using combinations of macro functions, macro do loops, and macro conditions, 
-you can create very dynamic, flexible, and useful programs. 
+---------
+library(procs)
+ library(macro)
+ 
+ # Analysis of 'mpg`
+ anl_mpg <- proc_means(mtcars, mpg, class = cyl,
+                       output = report)
+ 
+ # Analysis of 'disp`
+ anl_disp <- proc_means(mtcars, disp, class = cyl,
+                       output = report)
+ 
+ # Analysis of 'drat`
+ anl_drat <- proc_means(mtcars, drat, class = cyl,
+                       output = report)
+ 
+ # Combine analysis
+ final <- list(anl_mpg, anl_disp, anl_drat)
+ 
+ # Print to console
+ print(final)
+ 
+ # Print to viewer
+ proc_print(final,
+            titles = c("Analysis of Selected MTCARS Variables",
+                       "by cylinders"))
+ 
+---------
+[[1]]
+  CLASS VAR  N     MEAN      STD  MIN  MAX
+1     4 mpg 11 26.66364 4.509828 21.4 33.9
+2     6 mpg  7 19.74286 1.453567 17.8 21.4
+3     8 mpg 14 15.10000 2.560048 10.4 19.2
 
+[[2]]
+  CLASS  VAR  N     MEAN      STD   MIN   MAX
+1     4 disp 11 105.1364 26.87159  71.1 146.7
+2     6 disp  7 183.3143 41.56246 145.0 258.0
+3     8 disp 14 353.1000 67.77132 275.8 472.0
+
+[[3]]
+  CLASS  VAR  N     MEAN       STD  MIN  MAX
+1     4 drat 11 4.070909 0.3654711 3.69 4.93
+2     6 drat  7 3.585714 0.4760552 2.76 3.92
+3     8 drat 14 3.229286 0.3723618 2.76 4.22
+
+```
+
+The `msource()` console output contains two sections.  The first section is the generated
+code.  The second section is any printed output from the generated code. In this way,
+you can see what code was actually sourced, and the output of that code.
+
+If you do not wish to see the generated code, set the "echo" parameter on
+`msource()` to FALSE.
+
+### Viewer Output
+
+The above macro program also displayed the analysis in the RStudio viewer.
+It looks like this:
+
+<img src="../man/images/sample2.png" alt="Sample Macro Program View">
+
+See the [procs](https://procs.r-sassy.org) package documentation for more 
+information about the `proc_means()` and `proc_print()` functions. Both
+the **macro** package and the **procs** package are part of the 
+[sassy](https://www.r-sassy.org) system of packages.
+
+# Additional Features
+
+## Symbol Table Functions
+
+The functions in the macro package operate via an internal memory register
+called the macro symbol table.  The symbol table stores the names and values
+for any macro variables, and the definition of any macro functions.  The symbol
+table can be accessed from regular R code using a special set of functions.
+The symbol table functions are as follows:
+
+* **`symtable()`**: Returns an object containing the macro symbol table and 
+macro function list.  By default, this object is printed to the console.
+* **`symclear()`**: Clears the macro symbol table and deletes any macro function
+definitions.
+* **`symget()`**: Gets a macro variable value from the macro symbol table.
+* **`symput()`**: Sets the value of a macro variable.
+
+These functions can be used to observe and manipulate the macro symbol table 
+from regular R code or from the console. 
+
+### Example Symtable Function
+
+For instance, we can follow up on the `msource()` example from above by calling
+the `symtable()` function in the console.  Like this:
+```
+> symtable()
+# Macro Symbol Table: 5 macro variables
+     Name                       Value
+1    &dat                      mtcars
+2    &idx                           3
+3    &var                        drat
+4 &varlst anl_mpg, anl_disp, anl_drat
+5   &vars    c("mpg", "disp", "drat")
+# Macro Function List: 1 functions
+# Function '%get_means': 2 parameters
+- dat
+- var
+```
+The above console output shows the macro symbol table and the macro function
+list. This information can be useful for ensuring the program ran correctly
+and for debugging.
+
+For a full discussion on the symbol table functions, see the 
+[Symbol Table Functions](macro-symtable.html) vignette.
+
+## Debugging
+
+The **macro** package provides extensive debugging capabilities.  These
+capabilities can be enabled by activating the "debug" parameter on the 
+`msource()` function.  When activated, the debug information will be sent
+to the console. 
+
+Let's illustrate the debug feature by running `msource()`
+again for the above sample program, but this time set the "debug"
+parameter to TRUE:
+```
+> msource(debug = TRUE)
+******************************************************************************** 
+**  Pre-Processing 
+******************************************************************************** 
+-    File In: C:/packages/macro/tests/testthat/programs/sample16.R 
+-   File Out: C:\Users\dbosa\AppData\Local\Temp\RtmpQhWV50/sample16.R 
+******************************************************************************** 
+[ In#][Out#]: 
+[   1][   1]:  
+[   2][   2]: library(procs) 
+[   3][   3]: library(macro) 
+[   4][   4]:  
+[   5][    ]: #% Assign macro variables 
+[   6][    ]: #%let dat <- mtcars 
+[   7][    ]: #%let vars <- c("mpg", "disp", "drat") 
+[   8][    ]:  
+[   9][    ]: #% Macro to run proc_means 
+[  10][    ]: #%macro get_means(dat, var) 
+[  17][    ]:  
+[  18][    ]: #% Loop over variables 
+[  19][    ]: #%do idx = 1 %to 3 
+[  20][    ]: #%let idx <- 1 
+[  21][    ]:   #%let var <- mpg 
+[  22][    ]:   #%get_means(&dat, &var) 
+[  23][    ]: #%let dat <- mtcars 
+[  24][    ]: #%let var <- mpg 
+[  25][    ]:  
+[  26][   5]: # Analysis of 'mpg` 
+[  27][   6]: anl_mpg <- proc_means(mtcars, mpg, class = cyl, 
+[  28][   7]:                       output = report) 
+[  29][   8]:  
+[  30][    ]: #%mend get_means 
+[  31][    ]: #%let idx <- 2 
+[  32][    ]:   #%let var <- disp 
+[  33][    ]:   #%get_means(&dat, &var) 
+[  34][    ]: #%let dat <- mtcars 
+[  35][    ]: #%let var <- disp 
+[  36][    ]:  
+[  37][   9]: # Analysis of 'disp` 
+[  38][  10]: anl_disp <- proc_means(mtcars, disp, class = cyl, 
+[  39][  11]:                       output = report) 
+[  40][  12]:  
+[  41][    ]: #%mend get_means 
+[  42][    ]: #%let idx <- 3 
+[  43][    ]:   #%let var <- drat 
+[  44][    ]:   #%get_means(&dat, &var) 
+[  45][    ]: #%let dat <- mtcars 
+[  46][    ]: #%let var <- drat 
+[  47][    ]:  
+[  48][  13]: # Analysis of 'drat` 
+[  49][  14]: anl_drat <- proc_means(mtcars, drat, class = cyl, 
+[  50][  15]:                       output = report) 
+[  51][  16]:  
+[  52][    ]: #%mend get_means 
+[  53][    ]: #% end do 
+[  54][    ]:  
+[  55][    ]: #% Create list of analysis datasets 
+[  56][    ]: #%let varlst <- anl_mpg, anl_disp, anl_drat 
+[  57][    ]:  
+[  58][  17]: # Combine analysis 
+[  59][  18]: final <- list(anl_mpg, anl_disp, anl_drat) 
+[  60][  19]:  
+[  61][  20]: # Print to console 
+[  62][  21]: print(final) 
+[  63][  22]:  
+[  64][  23]: # Print to viewer 
+[  65][  24]: proc_print(final, 
+[  66][  25]:            titles = c("Analysis of Selected MTCARS Variables", 
+[  67][  26]:                       "by cylinders")) 
+[  68][  27]:  
+******************************************************************************** 
+**  Execution 
+******************************************************************************** 
+
+> library(procs)
+
+> library(macro)
+
+> # Analysis of 'mpg`
+> anl_mpg <- proc_means(mtcars, mpg, class = cyl,
++                       output = report)
+
+> # Analysis of 'disp`
+> anl_disp <- proc_means(mtcars, disp, class = cyl,
++                       output = report)
+
+> # Analysis of 'drat`
+> anl_drat <- proc_means(mtcars, drat, class = cyl,
++                       output = report)
+
+> # Combine analysis
+> final <- list(anl_mpg, anl_disp, anl_drat)
+
+> # Print to console
+> print(final)
+[[1]]
+  CLASS VAR  N     MEAN      STD  MIN  MAX
+1     4 mpg 11 26.66364 4.509828 21.4 33.9
+2     6 mpg  7 19.74286 1.453567 17.8 21.4
+3     8 mpg 14 15.10000 2.560048 10.4 19.2
+
+[[2]]
+  CLASS  VAR  N     MEAN      STD   MIN   MAX
+1     4 disp 11 105.1364 26.87159  71.1 146.7
+2     6 disp  7 183.3143 41.56246 145.0 258.0
+3     8 disp 14 353.1000 67.77132 275.8 472.0
+
+[[3]]
+  CLASS  VAR  N     MEAN       STD  MIN  MAX
+1     4 drat 11 4.070909 0.3654711 3.69 4.93
+2     6 drat  7 3.585714 0.4760552 2.76 3.92
+3     8 drat 14 3.229286 0.3723618 2.76 4.22
+
+
+> # Print to viewer
+> proc_print(final,
++            titles = c("Analysis of Selected MTCARS Variables",
++                       "by cylinders"))
+ 
+******************************************************************************** 
+**  End 
+******************************************************************************** 
+```
+The debug information shows how the incoming macro code was processed. For 
+each incoming line, it shows whether that line was emitted to the generated
+code file, and how it was resolved.  Any errors during pre-processing
+or execution will appear at the point they occurred.  In this way, it
+is very easy to find which line has the error.
+
+For a full explanation of the debugging features in the **macro** package,
+see the [Debugging](macro-debug.html) vignette.
 
 # Next Steps
 
-Here are some more articles for further exploration of the **macro** package:
+Here are some more articles for further exploration:
 
-- [Macro Language Glossary](macro-language.html) 
+- [Installation and Setup](macro-setup.html) 
+- [Macro Language Reference](macro-language.html) 
+- [Symbol Table Functions](macro-symtable.html)
 - [Debugging](macro-debug.html)
+- [Global Options](macro-globals.html)
 - [Example 1: Listing](macro-example1.html)
 - [Example 2: Another Listing](macro-example2.html)
 - [Example 3: Table](macro-example3.html)

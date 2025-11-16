@@ -3,7 +3,6 @@
 x1 <- 1
 print(x1)
 
-
 # Here is a macro function
 
 x2 <- 2

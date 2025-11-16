@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IDE Setup • macro</title>
+<title>Installation and Setup • macro</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="IDE Setup">
+<script src="../pkgdown.js"></script><script src="../extra.js"></script><meta property="og:title" content="Installation and Setup">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -56,7 +56,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/macro-setup.html">IDE Setup</a>
+      <a href="../articles/macro-setup.html">Installation and Setup</a>
     </li>
     <li>
       <a href="../articles/macro-language.html">Macro Language Reference</a>
@@ -115,7 +115,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>IDE Setup</h1>
+      <h1 data-toc-skip>Installation and Setup</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/dbosak01/macro/blob/HEAD/vignettes/macro-setup.Rmd" class="external-link"><code>vignettes/macro-setup.Rmd</code></a></small>
@@ -125,8 +125,98 @@
 
     
     
-<p>The <strong>macro</strong> package can be used interactively in your
-favorite IDE…</p>
+<p>The <strong>macro</strong> package can be used interactively in
+RStudio®. First, it requires a basic package install.</p>
+<div class="section level2">
+<h2 id="package-install">Package Install<a class="anchor" aria-label="anchor" href="#package-install"></a>
+</h2>
+<p>You can install the <strong>macro</strong> package by executing the
+following command in the R console:</p>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"macro"</span><span class="op">)</span></span></code></pre>
+<p>Upon completion of the install, the <strong>macro</strong> package
+will be available for use in scripts and programs. To enhance the user
+experience, it is recommended that you set up the package for
+interactive use in your IDE. The subsequent instructions explain
+how.</p>
+</div>
+<div class="section level2">
+<h2 id="addin-menu">Addin Menu<a class="anchor" aria-label="anchor" href="#addin-menu"></a>
+</h2>
+<p>The <strong>macro</strong> package contains an Addin menu to
+facilitate interactive use. The addin menu should be available in
+RStudio upon basic installation.</p>
+<p>First, check that you see the <strong>macro</strong> package menu
+items in your “Addins” drop-down:</p>
+<p><img src="../man/images/setup1.png" alt="Macro Addin Menu"></p>
+<p>There are two menus on the Addin:</p>
+<ul>
+<li><p><strong>Macro Source</strong>: Calls the function
+<code><a href="../reference/runMSource.html">runMSource()</a></code>. This function is specially built for the
+Addin menu. It runs the <code><a href="../reference/msource.html">msource()</a></code> function in normal mode,
+but with the “clear” parameter set to FALSE and the “envir” parameter
+set to the global environment.</p></li>
+<li><p><strong>Macro Source with Debug</strong>: Calls the function
+<code><a href="../reference/runMSourceDebug.html">runMSourceDebug()</a></code>. This function runs
+<code><a href="../reference/msource.html">msource()</a></code> in debug mode. The “debug” and “symbolgen”
+parameters are set to TRUE, and the “clear” and “envir” parameters are
+set the same as above.</p></li>
+</ul>
+<p>You may use the above menus any time by navigating to the Addin menu
+with your mouse. However, the reason the Addin menus have been included
+in the package is so that they can be tied to keyboard shortcuts. The
+keyboard shortcuts can greatly improve efficiency in using the
+package.</p>
+</div>
+<div class="section level2">
+<h2 id="keyboard-shortcuts">Keyboard Shortcuts<a class="anchor" aria-label="anchor" href="#keyboard-shortcuts"></a>
+</h2>
+<p>Setting up keyboard shortcuts may be somewhat different depending
+what operating system you are using. The instructions and images below
+are for RStudio on Windows. Please adjust the instructions as
+appropriate for your operating system.</p>
+<p>To connect keyboard shortcuts to the <strong>macro</strong> package
+Addin menu, take the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>Go to the Tools -&gt; Modify Keyboard Shortcuts menu.</p>
+<p><img src="../man/images/setup2.png" alt="Modify Keyboard Shortcuts menu"></p>
+</li>
+<li>
+<p>Type the word “macro” on the search bar.</p>
+<p><img src="../man/images/setup3.png" alt="Search for Macro menu items"></p>
+</li>
+<li>
+<p>On the “Macro Source” row, put your cursor in the “Shortcut”
+column and press the “Ctrl” key and the “m” key. Then on the “Macro
+Source with Debug” row, put your cursor in the “Shortcut” column and
+press the “Ctrl” key and the “d” key.</p>
+<p><img src="../man/images/setup4.png" alt="Add the keyboard shortcuts"></p>
+</li>
+<li><p>Press the “Apply” button and close the shortcuts dialog.</p></li>
+</ol>
+<p>The <strong>macro</strong> package shortcuts are now enabled in your
+IDE.</p>
+</div>
+<div class="section level2">
+<h2 id="test-interactive-usage">Test Interactive Usage<a class="anchor" aria-label="anchor" href="#test-interactive-usage"></a>
+</h2>
+<p>To test your shortcuts, open a new R script file, and type the
+following:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#%let x &lt;- Hello World!</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"&amp;x"</span><span class="op">)</span></span></code></pre></div>
+<p>Then select the above code, and press Ctrl+m. You should see “Hello
+World!” appear in your console:</p>
+<p><img src="../man/images/setup5.png" alt="Run Macro Hello World!"></p>
+<p>Next, select the above code again, and press Ctrl+d. The debug output
+should appear in the console:</p>
+<p><img src="../man/images/setup6.png" alt="Run Macro Hello World! with debug"></p>
+<p>As a final test, don’t select any code and press Ctrl+m again. The
+function should run the entire script, and produce the same results as
+above.</p>
+<p>Now your environment is set up to use the <strong>macro</strong>
+package interactively. Enjoy!</p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
