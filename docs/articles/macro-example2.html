@@ -148,48 +148,44 @@ variable values:</p>
 <span><span class="co">#***********************************#</span></span>
 <span><span class="co">#* Define Macro Variables</span></span>
 <span><span class="co">#***********************************#</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"sponsor_name"</span>, <span class="st">"Acme"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"study_name"</span>, <span class="st">"ABC"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"prog_name"</span>, <span class="st">"l_dm"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"base_dir"</span>, <span class="st">"c:/packages/macro/tests/testthat/examples"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"output_dir"</span>, <span class="st">"&amp;base_dir/output"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_dir"</span>, <span class="st">"&amp;base_dir/data"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_file"</span>, <span class="st">"dm.rda"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_name"</span>, <span class="st">"dm"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"titles"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"footnotes"</span>, <span class="st">"'Program: &amp;prog_name..R'"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"output_type"</span>, <span class="st">"PDF"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"preview"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">`&amp;sponsor_name`</span> <span class="op">&lt;-</span> <span class="st">"Acme"</span></span>
+<span><span class="va">`&amp;study_name`</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
+<span><span class="va">`&amp;prog_name`</span> <span class="op">&lt;-</span> <span class="st">"l_dm"</span></span>
+<span><span class="va">`&amp;base_dir`</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/macro/tests/testthat/examples"</span></span>
+<span><span class="va">`&amp;output_dir`</span> <span class="op">&lt;-</span> <span class="st">"&amp;base_dir/output"</span></span>
+<span><span class="va">`&amp;data_dir`</span> <span class="op">&lt;-</span> <span class="st">"&amp;base_dir/data"</span></span>
+<span><span class="va">`&amp;data_file`</span> <span class="op">&lt;-</span> <span class="st">"dm.rda"</span></span>
+<span><span class="va">`&amp;data_name`</span> <span class="op">&lt;-</span> <span class="st">"dm"</span></span>
+<span><span class="va">`&amp;titles`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span></span>
+<span><span class="va">`&amp;footnotes`</span> <span class="op">&lt;-</span> <span class="st">"'Program: &amp;prog_name..R'"</span></span>
+<span><span class="va">`&amp;output_type`</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
+<span><span class="va">`&amp;preview`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
 <span></span>
 <span><span class="co">#***********************************#</span></span>
 <span><span class="co">#* Macro Source Listing Template Code</span></span>
 <span><span class="co">#***********************************#</span></span>
-<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"base_dir"</span><span class="op">)</span>, <span class="st">"templates/lst02.R"</span><span class="op">)</span>,</span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"base_dir"</span><span class="op">)</span>, <span class="st">"code/l_dm2.R"</span><span class="op">)</span>,</span>
-<span>        debug <span class="op">=</span> <span class="cn">TRUE</span>, clear <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"templates/lst02.R"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"code/l_dm2.R"</span><span class="op">)</span>,</span>
+<span>        debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Note the following in the above driver:</p>
 <ul>
-<li>Macro variables can be set in regular R code using the
-<code><a href="../reference/symput.html">symput()</a></code> function. This function makes it easy to assign
-macro variable values before <code><a href="../reference/msource.html">msource()</a></code> runs.</li>
-<li>The macro variables set using <code><a href="../reference/symput.html">symput()</a></code> can be used to
-construct other macro variables. They will be resolved normally during
-pre-processing.</li>
-<li>If you need a macro variable value immediately, you can use the
-<code><a href="../reference/symget.html">symget()</a></code> function to retrieve it from the symbol
-table.</li>
+<li>Macro variables can be set in regular R code before
+<code><a href="../reference/msource.html">msource()</a></code> is called. The variable names must have a leading
+ampersand. These variables will be copied to the macro symbol table when
+<code><a href="../reference/msource.html">msource()</a></code> starts.</li>
+<li>All text variable values are quoted to conform to standard R
+syntax.</li>
+<li>The macro variables are still regular R variables, and you can use
+them in other functions like <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code> or
+<code><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path()</a></code>.</li>
 <li>The above approach allows you to execute <code><a href="../reference/msource.html">msource()</a></code>
 directly from the driver script. This approach avoids having to run it
-on the command line. Instead, you can run it from the “Source” or “Run”
-button in your development environment.</li>
+on the command line or Addin menu. Instead, you can run it from the
+“Source” or “Run” button in your development environment.</li>
 <li>The above call to <code><a href="../reference/msource.html">msource()</a></code> includes the
 <code>debug = TRUE</code> parameter. This option will generate debug
 information in the console. The debug information will be shown
 below.</li>
-<li>The above call to <code><a href="../reference/msource.html">msource()</a></code> also sets the
-<code>clear = FALSE</code> parameter so the macro variables you set with
-<code><a href="../reference/symput.html">symput()</a></code> do not get wiped out when <code><a href="../reference/msource.html">msource()</a></code>
-runs.</li>
 </ul>
 <p>Otherwise, the macro driver performs the exact same tasks as the
 previous listing example. It sets the macro variable values and executes

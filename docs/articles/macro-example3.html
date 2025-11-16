@@ -144,76 +144,81 @@ create such a parameterized table.</p>
 <div class="section level3">
 <h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
 </h3>
-<p>In this example, we will assign macro parameters directly in R code.
-This is yet a third way to pass parameters into a template program:</p>
+<p>In this example, we will assign macro parameters using
+<code><a href="../reference/symput.html">symput()</a></code>. This is yet a third way to pass parameters into a
+template program:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################</span></span>
 <span><span class="co"># Assign Macro Variables</span></span>
 <span><span class="co">#####################################</span></span>
 <span></span>
 <span><span class="co"># Assign base path</span></span>
-<span><span class="va">`&amp;base_path`</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/macro/tests/testthat/examples"</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"base_path"</span>, <span class="st">"c:/packages/macro/tests/testthat/examples"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign relative paths</span></span>
-<span><span class="va">`&amp;log_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"log"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;output_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"output"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;template_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"templates"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;data_path`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"data"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"log_path"</span>, <span class="st">"&amp;base_path/log"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"output_path"</span>, <span class="st">"&amp;base_path/output"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"template_path"</span>, <span class="st">"&amp;base_path/templates"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_path"</span>, <span class="st">"&amp;base_path/data"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign global variables</span></span>
-<span><span class="va">`&amp;sponsor_name`</span> <span class="op">&lt;-</span> <span class="st">"Acme, Inc."</span></span>
-<span><span class="va">`&amp;study_name`</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
-<span><span class="va">`&amp;prog_name`</span> <span class="op">&lt;-</span> <span class="st">"t_dm"</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"sponsor_name"</span>, <span class="st">"Acme, Inc."</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"study_name"</span>, <span class="st">"ABC"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"prog_name"</span>, <span class="st">"t_dm"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select analysis variables</span></span>
-<span><span class="va">`&amp;vars`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"AGEG"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;anals`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cont"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;lbls`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Age Group"</span>, <span class="st">"Sex"</span>, <span class="st">"Race"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"vars"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"AGEG"</span>, <span class="st">"SEX"</span>, <span class="st">"RACE"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"anals"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cont"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span>, <span class="st">"cat"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"lbls"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Age Group"</span>, <span class="st">"Sex"</span>, <span class="st">"Race"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign or get titles</span></span>
-<span><span class="va">`&amp;titles`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Table 1.0"</span>,</span>
-<span>             <span class="st">"Analysis of Demographic Characteristics"</span>,</span>
-<span>             <span class="st">"Safety Population"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"titles"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Table 1.0"</span>,</span>
+<span>                   <span class="st">"Analysis of Demographic Characteristics"</span>,</span>
+<span>                   <span class="st">"Safety Population"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign or get footnotes</span></span>
-<span><span class="va">`&amp;footnotes`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Program: "</span>, <span class="va">`&amp;prog_name`</span>, <span class="st">".R"</span><span class="op">)</span>,</span>
-<span>                <span class="st">"NOTE: Denominator based on number of non-missing responses."</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"footnotes"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Program: &amp;prog_name..R"</span><span class="op">)</span>,</span>
+<span>                      <span class="st">"NOTE: Denominator based on number of non-missing responses."</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign treatment groups and labels</span></span>
-<span><span class="va">`&amp;trt_grps`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span> <span class="op">=</span> <span class="st">"Placebo"</span>, <span class="st">"ARM B"</span> <span class="op">=</span> <span class="st">"Drug 50mg"</span>, <span class="st">"ARM C"</span> <span class="op">=</span> <span class="st">"Drug 100mg"</span>,</span>
-<span>               <span class="st">"ARM D"</span> <span class="op">=</span> <span class="st">"Competitor"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"trt_grps"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM A"</span> <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>                     <span class="st">"ARM B"</span> <span class="op">=</span> <span class="st">"Drug 50mg"</span>,</span>
+<span>                     <span class="st">"ARM C"</span> <span class="op">=</span> <span class="st">"Drug 100mg"</span>,</span>
+<span>                     <span class="st">"ARM D"</span> <span class="op">=</span> <span class="st">"Competitor"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign other parameters</span></span>
-<span><span class="va">`&amp;env`</span> <span class="op">&lt;-</span> <span class="st">"dev"</span> <span class="co"># "prod"</span></span>
-<span><span class="va">`&amp;out_type`</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"env"</span>, <span class="st">"dev"</span><span class="op">)</span> <span class="co"># "prod"</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"out_type"</span>, <span class="st">"PDF"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assign preview</span></span>
-<span><span class="va">`&amp;preview`</span> <span class="op">&lt;-</span> <span class="st">", preview = 1"</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"preview"</span>, <span class="st">", preview = 1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Preprocess and Run Example3</span></span>
-<span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"/templates/dm01.R"</span><span class="op">)</span>,</span>
-<span>               <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"/code/t_dm.R"</span><span class="op">)</span>,</span>
-<span>               debug <span class="op">=</span> <span class="cn">TRUE</span>, symbolgen <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"base_path"</span><span class="op">)</span>, <span class="st">"/templates/dm01.R"</span><span class="op">)</span>,</span>
+<span>               <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"base_path"</span><span class="op">)</span>, <span class="st">"/code/t_dm.R"</span><span class="op">)</span>,</span>
+<span>               debug <span class="op">=</span> <span class="cn">TRUE</span>, symbolgen <span class="op">=</span> <span class="cn">TRUE</span>, clear <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Note the following in the above driver:</p>
 <ul>
-<li>Macro variables can be set in regular R code. One stipulation is
-that they must be set before <code><a href="../reference/msource.html">msource()</a></code> is called. Also, the
-variable names must have a leading ampersand. These variables will be
-copied to the macro symbol table when <code><a href="../reference/msource.html">msource()</a></code>
-starts.</li>
-<li>All text variable values are quoted to conform to standard R
-syntax.</li>
-<li>The macro variables are still regular R variables, and you can use
-them in other functions like <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code> or
-<code><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path()</a></code>.</li>
-<li>The above approach allows you to execute <code><a href="../reference/msource.html">msource()</a></code>
-directly from the driver script. This approach avoids having to run it
-on the command line. Instead, you can run it from the “Source” or “Run”
-button in your development environment.</li>
+<li>The <code><a href="../reference/symput.html">symput()</a></code> function is a clean approach to passing
+macro parameters into a template program. You can gather macro variable
+values from metadata or utility functions and easily pass them into
+<code><a href="../reference/symput.html">symput()</a></code>.</li>
+<li>The macro variables set using <code><a href="../reference/symput.html">symput()</a></code> can be used to
+construct other macro variables. They will be resolved normally during
+pre-processing.</li>
+<li>If you need a macro variable value immediately, you can use the
+<code><a href="../reference/symget.html">symget()</a></code> function to retrieve it from the symbol
+table.</li>
+<li>The above approach also allows you to execute <code><a href="../reference/msource.html">msource()</a></code>
+directly from the driver script. You can run this script from the
+“Source” or “Run” button in your development environment.</li>
 <li>The above call to <code><a href="../reference/msource.html">msource()</a></code> includes the
-<code>debug = TRUE</code> parameter. This option will generate debug
-information in the console. The debug information will be shown
+<code>debug = TRUE</code> parameter. The debug information will be shown
 below.</li>
+<li>The above call to <code><a href="../reference/msource.html">msource()</a></code> also sets the
+<code>clear = FALSE</code> parameter so the macro variables you set with
+<code><a href="../reference/symput.html">symput()</a></code> do not get wiped out when <code><a href="../reference/msource.html">msource()</a></code>
+runs.</li>
 </ul>
 <p>Observe that there are four possible analysis variables for this
 demographics table: “age”, “ageg”, “sex”, and “race”. The program allows

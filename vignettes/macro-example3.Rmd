@@ -31,7 +31,7 @@ To generate the table, we will need four files:
 
 ### Macro Driver Script
 
-In this example, we will assign macro parameters directly in R code. 
+In this example, we will assign macro parameters using `symput()`. 
 This is yet a third way to pass parameters into a template program: 
 
 ```{r eval=FALSE, echo=TRUE}
@@ -40,67 +40,70 @@ This is yet a third way to pass parameters into a template program:
 #####################################
 
 # Assign base path
-`&base_path` <- "c:/packages/macro/tests/testthat/examples"
+symput("base_path", "c:/packages/macro/tests/testthat/examples")
 
 # Assign relative paths
-`&log_path` <- file.path(`&base_path`, "log")
-`&output_path` <- file.path(`&base_path`, "output")
-`&template_path` <- file.path(`&base_path`, "templates")
-`&data_path` <- file.path(`&base_path`, "data")
+symput("log_path", "&base_path/log")
+symput("output_path", "&base_path/output")
+symput("template_path", "&base_path/templates")
+symput("data_path", "&base_path/data")
 
 # Assign global variables
-`&sponsor_name` <- "Acme, Inc."
-`&study_name` <- "ABC"
-`&prog_name` <- "t_dm"
+symput("sponsor_name", "Acme, Inc.")
+symput("study_name", "ABC")
+symput("prog_name", "t_dm")
 
 # Select analysis variables
-`&vars` <- c("AGE", "AGEG", "SEX", "RACE")
-`&anals` <- c("cont", "cat", "cat", "cat")
-`&lbls` <- c("Age", "Age Group", "Sex", "Race")
+symput("vars", c("AGE", "AGEG", "SEX", "RACE"))
+symput("anals", c("cont", "cat", "cat", "cat"))
+symput("lbls", c("Age", "Age Group", "Sex", "Race"))
 
 # Assign or get titles
-`&titles` <- c("Table 1.0",
-             "Analysis of Demographic Characteristics",
-             "Safety Population")
+symput("titles", c("Table 1.0",
+                   "Analysis of Demographic Characteristics",
+                   "Safety Population"))
 
 # Assign or get footnotes
-`&footnotes` <- c(paste0("Program: ", `&prog_name`, ".R"),
-                "NOTE: Denominator based on number of non-missing responses.")
+symput("footnotes", c(paste0("Program: &prog_name..R"),
+                      "NOTE: Denominator based on number of non-missing responses."))
 
 # Assign treatment groups and labels
-`&trt_grps` <- c("ARM A" = "Placebo", "ARM B" = "Drug 50mg", "ARM C" = "Drug 100mg",
-               "ARM D" = "Competitor")
+symput("trt_grps", c("ARM A" = "Placebo",
+                     "ARM B" = "Drug 50mg",
+                     "ARM C" = "Drug 100mg",
+                     "ARM D" = "Competitor"))
 
 # Assign other parameters
-`&env` <- "dev" # "prod"
-`&out_type` <- "PDF"
+symput("env", "dev") # "prod"
+symput("out_type", "PDF")
 
 # Assign preview
-`&preview` <- ", preview = 1"
+symput("preview", ", preview = 1")
 
 # Preprocess and Run Example3
-macro::msource(paste0(`&base_path`, "/templates/dm01.R"),
-               paste0(`&base_path`, "/code/t_dm.R"),
-               debug = TRUE, symbolgen = TRUE)
+macro::msource(paste0(symget("base_path"), "/templates/dm01.R"),
+               paste0(symget("base_path"), "/code/t_dm.R"),
+               debug = TRUE, symbolgen = TRUE, clear = FALSE)
 
 ```
 
 Note the following in the above driver:
 
-  * Macro variables can be set in regular R code.  One stipulation is
-  that they must be set before `msource()` is called. Also, the variable names
-  must have a leading ampersand.  These variables will be copied to the macro
-  symbol table when `msource()` starts.
-  * All text variable values are quoted to conform to standard R syntax.
-  * The macro variables are still regular R variables, and you can use them 
-  in other functions like `paste()` or `file.path()`.
-  * The above approach allows you to execute `msource()` directly
-  from the driver script.  This approach avoids having to run it on the command
-  line. Instead, you can run it from the "Source" or "Run" button in your
-  development environment.
-  * The above call to `msource()` includes the `debug = TRUE` parameter. This 
-  option will generate debug information in the console.  The debug information 
-  will be shown below.
+  * The `symput()` function is a clean approach to passing macro parameters
+  into a template program.  You can gather macro variable values from
+  metadata or utility functions and easily pass them into `symput()`.
+  * The macro variables set using `symput()` can be used to construct other 
+  macro variables.  They will be resolved normally during pre-processing.
+  * If you need a macro variable value immediately, you can use 
+  the `symget()` function to retrieve it from the symbol table. 
+  * The above approach also allows you to execute `msource()` directly
+  from the driver script.  You can run this script from the "Source" or 
+  "Run" button in your development environment.
+  * The above call to `msource()` includes the `debug = TRUE` parameter. 
+  The debug information will be shown below.
+  * The above call to `msource()` also sets the `clear = FALSE` parameter so
+  the macro variables you set with `symput()` do not get wiped out when
+  `msource()` runs.
 
 Observe that there are four possible analysis variables for this demographics
 table: "age", "ageg", "sex", and "race".  The program allows the user

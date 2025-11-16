@@ -125,9 +125,10 @@
 
     
     
-<p>Macro-enabling a program can make it more complicated to debug.
-Fortunately, there is a debug feature in the <strong>macro</strong>
-package that can make debugging easier.</p>
+<p>An R macro program can have different kinds of errors than a regular
+R program. Fortunately, there is a debug feature in the
+<strong>macro</strong> package that can make debugging a macro-enabled
+program easier.</p>
 <div class="section level2">
 <h2 id="how-to-debug-a-macro">How to Debug a Macro<a class="anchor" aria-label="anchor" href="#how-to-debug-a-macro"></a>
 </h2>
@@ -158,7 +159,7 @@ feature:</p>
 contains a macro condition to choose the “dev” or “prod” path. Then the
 path is constructed via supplied macro variables.</p>
 <p>The above code is placed into an R script, and run via
-<code><a href="../reference/msource.html">msource()</a></code> on the command line. The generated output looks
+<code><a href="../reference/msource.html">msource()</a></code> on the command line. The generated code looks
 like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>

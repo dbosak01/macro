@@ -34,45 +34,43 @@ library(macro)
 #***********************************#
 #* Define Macro Variables
 #***********************************#
-symput("sponsor_name", "Acme")
-symput("study_name", "ABC")
-symput("prog_name", "l_dm")
-symput("base_dir", "c:/packages/macro/tests/testthat/examples")
-symput("output_dir", "&base_dir/output")
-symput("data_dir", "&base_dir/data")
-symput("data_file", "dm.rda")
-symput("data_name", "dm")
-symput("titles", c("Listing 1.0", "SDTM Demographics"))
-symput("footnotes", "'Program: &prog_name..R'")
-symput("output_type", "PDF")
-symput("preview", TRUE)
+`&sponsor_name` <- "Acme"
+`&study_name` <- "ABC"
+`&prog_name` <- "l_dm"
+`&base_dir` <- "c:/packages/macro/tests/testthat/examples"
+`&output_dir` <- "&base_dir/output"
+`&data_dir` <- "&base_dir/data"
+`&data_file` <- "dm.rda"
+`&data_name` <- "dm"
+`&titles` <- c("Listing 1.0", "SDTM Demographics")
+`&footnotes` <- "'Program: &prog_name..R'"
+`&output_type` <- "PDF"
+`&preview` <- TRUE
 
 #***********************************#
 #* Macro Source Listing Template Code
 #***********************************#
-msource(file.path(symget("base_dir"), "templates/lst02.R"),
-        file.path(symget("base_dir"), "code/l_dm2.R"),
-        debug = TRUE, clear = FALSE)
+msource(file.path(`&base_dir`, "templates/lst02.R"),
+        file.path(`&base_dir`, "code/l_dm2.R"),
+        debug = TRUE)
+
 ```
 Note the following in the above driver:
 
-  * Macro variables can be set in regular R code using the `symput()`
-  function. This function makes it easy to assign 
-  macro variable values before `msource()` runs.
-  * The macro variables set using `symput()` can be used to construct other 
-  macro variables.  They will be resolved normally during pre-processing.
-  * If you need a macro variable value immediately, you can use 
-  the `symget()` function to retrieve it from the symbol table. 
+  * Macro variables can be set in regular R code before `msource()` is called. 
+  The variable names must have a leading ampersand.  These variables will be 
+  copied to the macro symbol table when `msource()` starts.
+  * All text variable values are quoted to conform to standard R syntax.
+  * The macro variables are still regular R variables, and you can use them 
+  in other functions like `paste()` or `file.path()`.
   * The above approach allows you to execute `msource()` directly
   from the driver script.  This approach avoids having to run it on the command
-  line. Instead, you can run it from the "Source" or "Run" button in your
-  development environment.
+  line or Addin menu. Instead, you can run it from the "Source" or "Run" 
+  button in your development environment.
   * The above call to `msource()` includes the `debug = TRUE` parameter. This 
   option will generate debug information in the console.  The debug information 
   will be shown below.
-  * The above call to `msource()` also sets the `clear = FALSE` parameter so
-  the macro variables you set with `symput()` do not get wiped out when
-  `msource()` runs.
+  
 
 Otherwise, the macro driver performs the exact same tasks as the previous
 listing example.  It sets the macro variable values and executes the template

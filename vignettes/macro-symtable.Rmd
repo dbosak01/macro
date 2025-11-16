@@ -20,10 +20,10 @@ interface between regular R code and the macro language.
 
 The symbol table functions are as follows:
 
-* **`symput()`**: Add a macro variable to the macro symbol table.
-* **`symget()`**: Get a macro variable value from the macro symbol table.
-* **`symtable()`**: Extract and view the macro symbol table.
-* **`symclear()`**: Clear the values from the macro symbol table.
+* **`symput()`**: Adds a macro variable to the macro symbol table.
+* **`symget()`**: Gets a macro variable value from the macro symbol table.
+* **`symtable()`**: Extracts and views the macro symbol table.
+* **`symclear()`**: Clears the values from the macro symbol table.
 
 In this article, we will look at the different ways the functions can be used,
 and how they can be used together.

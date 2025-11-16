@@ -9,7 +9,7 @@ Operating System: Windows 10 x64 build 26100
 Base Packages: stats graphics grDevices utils datasets methods base
 Other Packages: tidylog_1.1.0 procs_1.0.7 libr_1.3.9 logr_1.3.9 fmtr_1.7.0
 sassy_1.2.5 reporter_1.4.4 macro_0.1.3 testthat_3.2.1.1 common_1.1.3
-Log Start Time: 2025-11-16 00:27:34.594137
+Log Start Time: 2025-11-16 09:22:29.607226
 =========================================================================
 
 =========================================================================
@@ -422,10 +422,6 @@ Write out the report
 - stub: VAR LABEL 'Variable' width=2.5 align='left' 
 - define: VAR 'Variable' dedupe='TRUE' 
 - define: LABEL 'Demographic Category' 
-- define: ARM A 'Placebo' 
-- define: ARM B 'Drug 50mg' 
-- define: ARM C 'Drug 100mg' 
-- define: ARM D 'Competitor' 
 
 =========================================================================
 Clean Up
@@ -434,6 +430,6 @@ Clean Up
 Close log
 
 =========================================================================
-Log End Time: 2025-11-16 00:27:38.282344
-Log Elapsed Time: 0 00:00:03
+Log End Time: 2025-11-16 09:22:32.518483
+Log Elapsed Time: 0 00:00:02
 =========================================================================

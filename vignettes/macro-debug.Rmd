@@ -14,8 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-Macro-enabling a program can make it more complicated to debug.  Fortunately, there is 
-a debug feature in the **macro** package that can make debugging easier.
+An R macro program can have different kinds of errors than a regular
+R program.  Fortunately, there is 
+a debug feature in the **macro** package that can make debugging a 
+macro-enabled program easier.
 
 ## How to Debug a Macro
 
@@ -47,7 +49,7 @@ a macro condition to choose the "dev" or "prod" path.  Then the path is
 constructed via supplied macro variables.  
 
 The above code is placed into an R script, and run via `msource()` on the 
-command line. The generated output looks like this:
+command line. The generated code looks like this:
 ```{r eval=FALSE, echo=TRUE}
 
 # Path to data

@@ -206,10 +206,9 @@ Error in mreplace(ln) :
 ```
 #### Global Macro Assignment 
 
-Macro variables can also be assigned in regular R code, as long as it is done
-before `msource()` is executed.  In the below code, macro variable `&c` is
-assigned the value of 3, and then the template code file "temp1.R" is executed
-via `msource()`:
+Macro variables can also be assigned in regular R code.  In the below code, 
+macro variable `&c` is assigned the value of 3, and then the 
+template code file "temp1.R" is executed via `msource()`:
 
 ```{r eval=FALSE, echo=TRUE}
 # Assignment before msource()
@@ -518,10 +517,10 @@ quoted or unquoted. If the path is quoted, single or double quotes may be used.
 
 The `#%include()` macro command inserts text from an external file into
 the generated output file. This behavior is different from the Base R
-`source()` function, which only executes the code from the external file.
+`source()` function, which only executes the code in the external file.
 A macro include actually copies the code into the generated file.  The 
 included code does not have to be fully functional. It can be a code snippet
-that only works when combined with other included code.
+that only works when combined with other snippets.
 
 ### Examples
 
@@ -557,7 +556,7 @@ dm <- read.table(header = TRUE, text = '
        "016"   "ARM A" "M"  "WHITE" 40')
 
 # Print sample data
-print(dat)
+print(dm)
 ```
 Notice that the included code is integrated with the surrounding code
 from the macro-enabled program.  In this way, you can collate a program
@@ -567,8 +566,8 @@ from multiple code snippets into a unified result.
 
 ## Built-in Macro Functions {#builtin}
 
-The **macro** package currently supports three built-in macro functions: 
-`%sysfunc()`, `%symexist()`, and `%symput()`.  
+The **macro** package currently supports four built-in macro functions: 
+`%sysfunc()`, `%symexist()`, `%symput()`, and `%nrstr()`.  
 
 ### Syntax
 ```
@@ -616,13 +615,12 @@ It cannot be used with any other R macro command.
 ```
 Where "&lt;expression&gt;" is any R expression, specifically one that contains 
 a reference to a macro variable that you do not want to resolve. The `%nrstr()`
-masks the expression to prevent normal resolution, which is desirable in 
-some cases.
+masks the expression to prevent normal resolution.
 
 
 ### Details
 
-The `%sysfunc()`, `%symexist()`, and `%symput()` functions are helper functions 
+The `%sysfunc()`, `%symexist()`, `%symput()`, and `%nrstr()` functions are helper functions 
 that are usually contained in other macro statements.  Most commonly, they will exist
 as part of "let" or "if" statement.  For this reason, the syntax does not include
 a leading comment symbol ("#").
@@ -655,7 +653,7 @@ from the SAS version. But they have the same goal.
 Similar to the SAS version, `%nrstr()` is a macro quoting function, and can 
 be used to prevent resolution of a macro variable or other macro expression.
 This function can be used if you are trying to output a macro variable
-name instead of the resolved value, which can be desirable in some cases.
+name instead of the resolved value.
 
 ### Examples
 
@@ -672,11 +670,11 @@ w <- `&a`
 x <- `&b`
 
 #% Unevaluated replacement 
-#%let c <- a. + b.
+#%let c <- &a + &b
 y <- `&c`
 
 #% Evaluated replacement
-#%let d <- %sysfunc(a. + b.)
+#%let d <- %sysfunc(&a + &b)
 z <- `&d`
   
 ```
@@ -717,30 +715,44 @@ text string.  You can see that it is resolved in both cases.
 
 Note that you do not need multiple calls to `%sysfunc()` if you have multiple
 Base R functions in your expression. Just put your entire expression
-inside one call to `%sysfunc()` and it will evaluate as desired.
+inside one call to `%sysfunc()`, and it will evaluate as desired.
 
 #### %symexist()
 
-Below is a simple example checking for the existence of some macro variables
-before using them in a calculation:
+Below is a simple example checking for the existence of some macro variables:
 ```{r eval=FALSE, echo=TRUE}
-#% Check for existance of a
-#%if (%symexist(a) == FALSE)
-  #%let a <- 2
+#%let a = 1
+
+#%if (%symexist(a))
+
+  print("Macro variable 'a' exists!")
+  print("Here is the value: &a")
+
+#%else
+
+  print("Macro variable 'a' does not exist!")
+
 #%end
 
-#% Check for existance of b
-#%if (%symexist(b) == FALSE)
-  #%let b <- 3
+#%if (%symexist(b))
+
+  print("Macro variable 'b' exists!")
+  print("Here is the value: &b")
+
+#%else
+
+  print("Macro variable 'b' does not exist!")
+
 #%end
 
-# Calculate a * b
-x <- `&a` * `&b`
 ```
 And here is the resolved version:
 ```{r eval=FALSE, echo=TRUE}
-# Calculate a * b
-x <- 2 * 3
+
+  print("Macro variable 'a' exists!")
+  print("Here is the value: 1")
+
+  print("Macro variable 'b' does not exist!")
 ```
 Notice that the variable name inside the `%symexist()` function is not 
 quoted. For this function, quoting is not necessary, and will in fact prevent
@@ -795,15 +807,14 @@ macro variable:
 ```{r eval=FALSE, echo=TRUE}
 #% Assign variables
 #%let x <- 1
-#%let y <- %nrstr(&x.)
-print("The value of &y is &x")
+print("The value of %nrstr(&x) is &x")
 ```
 The above code sends the following to the console:
 ```
 > msource()
-[1] "The value of &x. is 1"
+[1] "The value of &x is 1"
 ```
-Why didn't `&x.` resolve?  Because `%nrstr()` prevented resolution.  This 
+Why didn't the first `&x` resolve?  Because `%nrstr()` prevented it.  This 
 function is useful if you need to reference macro variable names or generate
 macro code.
 
@@ -919,7 +930,7 @@ is available for manipulation.
 #%macro <name>([<param1>, <param2> = <default>, ...])
 #%mend
 ```
-Where "&lt;name&gt;" is the name of the user-defined function,  
+Where "&lt;name&gt;" is the name of the user-defined function,
 "&lt;param1&gt;", "&lt;param2&gt;", etc. are zero or more parameters,
 and "&lt;default&gt;" is an optional default value. Between the "#%macro" and 
 "#%mend" commands are one or more statements that comprise the function.
@@ -1083,7 +1094,7 @@ cat("\n")
 
 ```
 
-A macro like this is highly re-useable. You can use it for any dataset, and
+A macro like this is highly re-useable. You can apply it to any dataset, and
 any set of variables.  If desired, you could put macro conditions inside
 the macro function to handle different scenarios, such as the absence of 
 a grouping variable.  
@@ -1108,7 +1119,7 @@ fit on a single line, or is inconvenient to do so.
 ### Details
 
 Sometimes it is necessary to wrap a macro call over several lines. You may
-have a macro variable with a vector of several values, or a user-define macro 
+have a macro variable with a vector of several values, or a user-defined macro 
 function with several parameters. The macro line continuation allows you 
 to spread that call over several lines in the editor, and still execute 
 the call as expected.

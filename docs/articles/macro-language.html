@@ -305,10 +305,9 @@ cleared. Here is the error that is generated:</p>
 <div class="section level4">
 <h4 id="global-macro-assignment">Global Macro Assignment<a class="anchor" aria-label="anchor" href="#global-macro-assignment"></a>
 </h4>
-<p>Macro variables can also be assigned in regular R code, as long as it
-is done before <code><a href="../reference/msource.html">msource()</a></code> is executed. In the below code,
-macro variable <code>&amp;c</code> is assigned the value of 3, and then
-the template code file “temp1.R” is executed via
+<p>Macro variables can also be assigned in regular R code. In the below
+code, macro variable <code>&amp;c</code> is assigned the value of 3, and
+then the template code file “temp1.R” is executed via
 <code><a href="../reference/msource.html">msource()</a></code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assignment before msource()</span></span>
@@ -618,10 +617,10 @@ quotes may be used.</p>
 <p>The <code>#%include()</code> macro command inserts text from an
 external file into the generated output file. This behavior is different
 from the Base R <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code> function, which only executes the
-code from the external file. A macro include actually copies the code
-into the generated file. The included code does not have to be fully
+code in the external file. A macro include actually copies the code into
+the generated file. The included code does not have to be fully
 functional. It can be a code snippet that only works when combined with
-other included code.</p>
+other snippets.</p>
 </div>
 <div class="section level3">
 <h3 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a>
@@ -657,7 +656,7 @@ contains a snippet of sample data:</p>
 <span><span class="st">       "016"   "ARM A" "M"  "WHITE" 40'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print sample data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that the included code is integrated with the surrounding code
 from the macro-enabled program. In this way, you can collate a program
 from multiple code snippets into a unified result.</p>
@@ -667,9 +666,9 @@ from multiple code snippets into a unified result.</p>
 <div class="section level2">
 <h2 id="builtin">Built-in Macro Functions<a class="anchor" aria-label="anchor" href="#builtin"></a>
 </h2>
-<p>The <strong>macro</strong> package currently supports three built-in
-macro functions: <code>%sysfunc()</code>, <code>%symexist()</code>, and
-<code>%symput()</code>.</p>
+<p>The <strong>macro</strong> package currently supports four built-in
+macro functions: <code>%sysfunc()</code>, <code>%symexist()</code>,
+<code>%symput()</code>, and <code>%nrstr()</code>.</p>
 <div class="section level3">
 <h3 id="syntax-4">Syntax<a class="anchor" aria-label="anchor" href="#syntax-4"></a>
 </h3>
@@ -708,16 +707,16 @@ with any other R macro command.</p>
 <p>Where “&lt;expression&gt;” is any R expression, specifically one that
 contains a reference to a macro variable that you do not want to
 resolve. The <code>%nrstr()</code> masks the expression to prevent
-normal resolution, which is desirable in some cases.</p>
+normal resolution.</p>
 </div>
 <div class="section level3">
 <h3 id="details-4">Details<a class="anchor" aria-label="anchor" href="#details-4"></a>
 </h3>
-<p>The <code>%sysfunc()</code>, <code>%symexist()</code>, and
-<code>%symput()</code> functions are helper functions that are usually
-contained in other macro statements. Most commonly, they will exist as
-part of “let” or “if” statement. For this reason, the syntax does not
-include a leading comment symbol (“#”).</p>
+<p>The <code>%sysfunc()</code>, <code>%symexist()</code>,
+<code>%symput()</code>, and <code>%nrstr()</code> functions are helper
+functions that are usually contained in other macro statements. Most
+commonly, they will exist as part of “let” or “if” statement. For this
+reason, the syntax does not include a leading comment symbol (“#”).</p>
 <p>The purpose of <code>%sysfunc()</code> is to evaluate regular R
 expressions during macro processing. The evaluated result can then be
 assigned to a macro variable, or used in a macro condition.</p>
@@ -742,8 +741,7 @@ goal.</p>
 <p>Similar to the SAS version, <code>%nrstr()</code> is a macro quoting
 function, and can be used to prevent resolution of a macro variable or
 other macro expression. This function can be used if you are trying to
-output a macro variable name instead of the resolved value, which can be
-desirable in some cases.</p>
+output a macro variable name instead of the resolved value.</p>
 </div>
 <div class="section level3">
 <h3 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a>
@@ -763,11 +761,11 @@ desirable in some cases.</p>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">`&amp;b`</span></span>
 <span></span>
 <span><span class="co">#% Unevaluated replacement </span></span>
-<span><span class="co">#%let c &lt;- a. + b.</span></span>
+<span><span class="co">#%let c &lt;- &amp;a + &amp;b</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">`&amp;c`</span></span>
 <span></span>
 <span><span class="co">#% Evaluated replacement</span></span>
-<span><span class="co">#%let d &lt;- %sysfunc(a. + b.)</span></span>
+<span><span class="co">#%let d &lt;- %sysfunc(&amp;a + &amp;b)</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">`&amp;d`</span></span>
 <span>  </span></code></pre></div>
 <p>The above code resolves as follows:</p>
@@ -803,31 +801,45 @@ conditional, and inside a text string. You can see that it is resolved
 in both cases.</p>
 <p>Note that you do not need multiple calls to <code>%sysfunc()</code>
 if you have multiple Base R functions in your expression. Just put your
-entire expression inside one call to <code>%sysfunc()</code> and it will
-evaluate as desired.</p>
+entire expression inside one call to <code>%sysfunc()</code>, and it
+will evaluate as desired.</p>
 </div>
 <div class="section level4">
 <h4 id="symexist">%symexist()<a class="anchor" aria-label="anchor" href="#symexist"></a>
 </h4>
 <p>Below is a simple example checking for the existence of some macro
-variables before using them in a calculation:</p>
+variables:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#% Check for existance of a</span></span>
-<span><span class="co">#%if (%symexist(a) == FALSE)</span></span>
-<span>  <span class="co">#%let a &lt;- 2</span></span>
+<code class="sourceCode R"><span><span class="co">#%let a = 1</span></span>
+<span></span>
+<span><span class="co">#%if (%symexist(a))</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'a' exists!"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: &amp;a"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%else</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'a' does not exist!"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co">#%end</span></span>
 <span></span>
-<span><span class="co">#% Check for existance of b</span></span>
-<span><span class="co">#%if (%symexist(b) == FALSE)</span></span>
-<span>  <span class="co">#%let b &lt;- 3</span></span>
-<span><span class="co">#%end</span></span>
+<span><span class="co">#%if (%symexist(b))</span></span>
 <span></span>
-<span><span class="co"># Calculate a * b</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">`&amp;a`</span> <span class="op">*</span> <span class="va">`&amp;b`</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' exists!"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: &amp;b"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%else</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#%end</span></span></code></pre></div>
 <p>And here is the resolved version:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate a * b</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'a' exists!"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Here is the value: 1"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Macro variable 'b' does not exist!"</span><span class="op">)</span></span></code></pre></div>
 <p>Notice that the variable name inside the <code>%symexist()</code>
 function is not quoted. For this function, quoting is not necessary, and
 will in fact prevent the function from finding the specified variable
@@ -881,14 +893,13 @@ resolution of a macro variable:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#% Assign variables</span></span>
 <span><span class="co">#%let x &lt;- 1</span></span>
-<span><span class="co">#%let y &lt;- %nrstr(&amp;x.)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"The value of &amp;y is &amp;x"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"The value of %nrstr(&amp;x) is &amp;x"</span><span class="op">)</span></span></code></pre></div>
 <p>The above code sends the following to the console:</p>
 <pre><code>&gt; msource()
-[1] "The value of &amp;x. is 1"</code></pre>
-<p>Why didn’t <code>&amp;x.</code> resolve? Because
-<code>%nrstr()</code> prevented resolution. This function is useful if
-you need to reference macro variable names or generate macro code.</p>
+[1] "The value of &amp;x is 1"</code></pre>
+<p>Why didn’t the first <code>&amp;x</code> resolve? Because
+<code>%nrstr()</code> prevented it. This function is useful if you need
+to reference macro variable names or generate macro code.</p>
 <p><a href="#top">top</a></p>
 </div>
 </div>
@@ -997,7 +1008,7 @@ language, any part of the code is available for manipulation.</p>
 </h3>
 <pre><code><span><span class="co">#%macro &lt;name&gt;([&lt;param1&gt;, &lt;param2&gt; = &lt;default&gt;, ...])</span></span>
 <span><span class="co">#%mend</span></span></code></pre>
-<p>Where “&lt;name&gt;” is the name of the user-defined function,<br>
+<p>Where “&lt;name&gt;” is the name of the user-defined function,
 “&lt;param1&gt;”, “&lt;param2&gt;”, etc. are zero or more parameters,
 and “&lt;default&gt;” is an optional default value. Between the
 “#%macro” and “#%mend” commands are one or more statements that comprise
@@ -1150,7 +1161,7 @@ Analysis for Petal.Width
 <span>            Quantile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Petal.Width</span>, probs <span class="op">=</span> <span class="fl">.25</span>, rm.na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
-<p>A macro like this is highly re-useable. You can use it for any
+<p>A macro like this is highly re-useable. You can apply it to any
 dataset, and any set of variables. If desired, you could put macro
 conditions inside the macro function to handle different scenarios, such
 as the absence of a grouping variable.</p>
@@ -1179,7 +1190,7 @@ so.</p>
 </h3>
 <p>Sometimes it is necessary to wrap a macro call over several lines.
 You may have a macro variable with a vector of several values, or a
-user-define macro function with several parameters. The macro line
+user-defined macro function with several parameters. The macro line
 continuation allows you to spread that call over several lines in the
 editor, and still execute the call as expected.</p>
 </div>
