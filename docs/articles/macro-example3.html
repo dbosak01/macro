@@ -144,8 +144,8 @@ create such a parameterized table.</p>
 <div class="section level3">
 <h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
 </h3>
-<p>In the second listing example, we assigned macro parameters directly
-in R code. That technique will be used again here:</p>
+<p>In this example, we will assign macro parameters directly in R code.
+This is yet a third way to pass parameters into a template program:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####################################</span></span>
 <span><span class="co"># Assign Macro Variables</span></span>
@@ -194,6 +194,27 @@ in R code. That technique will be used again here:</p>
 <span><span class="fu">macro</span><span class="fu">::</span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"/templates/dm01.R"</span><span class="op">)</span>,</span>
 <span>               <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">`&amp;base_path`</span>, <span class="st">"/code/t_dm.R"</span><span class="op">)</span>,</span>
 <span>               debug <span class="op">=</span> <span class="cn">TRUE</span>, symbolgen <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Note the following in the above driver:</p>
+<ul>
+<li>Macro variables can be set in regular R code. One stipulation is
+that they must be set before <code><a href="../reference/msource.html">msource()</a></code> is called. Also, the
+variable names must have a leading ampersand. These variables will be
+copied to the macro symbol table when <code><a href="../reference/msource.html">msource()</a></code>
+starts.</li>
+<li>All text variable values are quoted to conform to standard R
+syntax.</li>
+<li>The macro variables are still regular R variables, and you can use
+them in other functions like <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code> or
+<code><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path()</a></code>.</li>
+<li>The above approach allows you to execute <code><a href="../reference/msource.html">msource()</a></code>
+directly from the driver script. This approach avoids having to run it
+on the command line. Instead, you can run it from the “Source” or “Run”
+button in your development environment.</li>
+<li>The above call to <code><a href="../reference/msource.html">msource()</a></code> includes the
+<code>debug = TRUE</code> parameter. This option will generate debug
+information in the console. The debug information will be shown
+below.</li>
+</ul>
 <p>Observe that there are four possible analysis variables for this
 demographics table: “age”, “ageg”, “sex”, and “race”. The program allows
 the user to pick which variables will be added to the final report. The
@@ -391,9 +412,9 @@ calling:</p>
 <span></span>
 <span><span class="co">#% Get length of variable vector</span></span>
 <span><span class="co">#%let varcnt &lt;- %sysfunc(length(&amp;vars.))</span></span>
-<span><span class="co">#%</span></span>
+<span></span>
 <span><span class="co"># Perform Analysis  -------------------------------------------------------</span></span>
-<span><span class="co">#%</span></span>
+<span></span>
 <span><span class="co">#% Iterate analysis variables</span></span>
 <span><span class="co">#%do idx = 1 %to &amp;varcnt.</span></span>
 <span></span>

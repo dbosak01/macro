@@ -31,8 +31,8 @@ To generate the table, we will need four files:
 
 ### Macro Driver Script
 
-In the second listing example, we assigned macro parameters directly in R code. 
-That technique will be used again here:  
+In this example, we will assign macro parameters directly in R code. 
+This is yet a third way to pass parameters into a template program: 
 
 ```{r eval=FALSE, echo=TRUE}
 #####################################
@@ -84,6 +84,24 @@ macro::msource(paste0(`&base_path`, "/templates/dm01.R"),
                debug = TRUE, symbolgen = TRUE)
 
 ```
+
+Note the following in the above driver:
+
+  * Macro variables can be set in regular R code.  One stipulation is
+  that they must be set before `msource()` is called. Also, the variable names
+  must have a leading ampersand.  These variables will be copied to the macro
+  symbol table when `msource()` starts.
+  * All text variable values are quoted to conform to standard R syntax.
+  * The macro variables are still regular R variables, and you can use them 
+  in other functions like `paste()` or `file.path()`.
+  * The above approach allows you to execute `msource()` directly
+  from the driver script.  This approach avoids having to run it on the command
+  line. Instead, you can run it from the "Source" or "Run" button in your
+  development environment.
+  * The above call to `msource()` includes the `debug = TRUE` parameter. This 
+  option will generate debug information in the console.  The debug information 
+  will be shown below.
+
 Observe that there are four possible analysis variables for this demographics
 table: "age", "ageg", "sex", and "race".  The program allows the user
 to pick which variables will be added to the final report.  The template table
@@ -280,9 +298,9 @@ proc_transpose(sort_&lvar,
 
 #% Get length of variable vector
 #%let varcnt <- %sysfunc(length(&vars.))
-#%
+
 # Perform Analysis  -------------------------------------------------------
-#%
+
 #% Iterate analysis variables
 #%do idx = 1 %to &varcnt.
 

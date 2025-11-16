@@ -7,7 +7,6 @@ library(sassy)
 
 # Prepare Log -------------------------------------------------------------
 
-
 options("logr.autolog" = TRUE,
         "logr.on" = TRUE,
         "logr.notes" = FALSE,
@@ -33,8 +32,6 @@ fc <- fcat(MEAN = "%.1f", STD = "(%.2f)",
            MIN = "%d", MAX = "%d",
            CNT = "%2d", PCT = "(%5.1f%%)")
 
-
-
 put("Age Groups")
 fc$AGEG <- value(condition(x >= 18 & x <= 29, "18 to 29"),
                  condition(x >=30 & x <= 39, "30 to 39"),
@@ -42,14 +39,11 @@ fc$AGEG <- value(condition(x >= 18 & x <= 29, "18 to 29"),
                  condition(x >= 50, ">= 50"),
                  as.factor = TRUE)
 
-
 put("Sex decodes")
 fc$SEX <- value(condition(x == "M", "Male"),
                 condition(x == "F", "Female"),
                 condition(TRUE, "Other"),
                 as.factor = TRUE)
-
-
 
 put("Race decodes")
 fc$RACE <- value(condition(x == "WHITE", "White"),
@@ -59,13 +53,9 @@ fc$RACE <- value(condition(x == "WHITE", "White"),
                  condition(TRUE, "Other"),
                  as.factor = TRUE)
 
-
-
-
 # Load and Prepare Data ---------------------------------------------------
 
 sep("Prepare Data")
-
 
 put("Create sample data.")
 dm <- read.table(header = TRUE, text = '
@@ -87,13 +77,11 @@ dm <- read.table(header = TRUE, text = '
        "015"   "ARM C" "M"  "WHITE" 36
        "016"   "ARM A" "M"  "WHITE" 40')
 
-
 put("Log starting dataset")
 put(dm)
 
 put("Filter out screen failure")
 dm_f <- subset(dm, ARM != 'SCREEN FAILURE')
-
 
 put("Get ARM population counts")
 proc_freq(dm_f, tables = ARM,
@@ -104,15 +92,10 @@ put("Log treatment groups variable")
 trt_grps <- c('ARM A' = 'Placebo', 'ARM B' = 'Drug 50mg', 'ARM C' = 'Drug 100mg', 'ARM D' = 'Competitor')
 put(trt_grps)
 
-
 put("Categorize AGE")
 dm_f$AGEG <- fapply(dm_f$AGE, fc$AGEG)
 
-
-
-
 # Perform Analysis  -------------------------------------------------------
-
 
 # Age Summary Block -------------------------------------------------------
 
@@ -135,7 +118,6 @@ datastep(stats_age,
            `Q1 - Q3` <- fapply2(Q1, Q3, sep = " - ")
            `Min - Max` <- fapply2(MIN, MAX, sep = " - ")
 
-
          }) -> comb_age
 
 put("Transpose ARMs into columns")
@@ -143,7 +125,6 @@ proc_transpose(comb_age,
                var = names(comb_age),
                copy = VAR, id = BY,
                name = LABEL) -> age_block
-
 
 # Age Group Block ---------------------------------------------------------------
 
@@ -165,7 +146,6 @@ datastep(freq_ageg,
            LABEL <- CAT
          }) -> comb_ageg
 
-
 put("Sort by ageg factor")
 proc_sort(comb_ageg, by = v(BY, LABEL)) -> sort_ageg
 
@@ -176,7 +156,6 @@ proc_transpose(sort_ageg,
                id = BY,
                by = LABEL,
                options = noname) -> ageg_block
-
 
 # Sex Block ---------------------------------------------------------------
 
@@ -198,7 +177,6 @@ datastep(freq_sex,
            LABEL <- fapply(CAT, fc$SEX)
          }) -> comb_sex
 
-
 put("Sort by sex factor")
 proc_sort(comb_sex, by = v(BY, LABEL)) -> sort_sex
 
@@ -209,7 +187,6 @@ proc_transpose(sort_sex,
                id = BY,
                by = LABEL,
                options = noname) -> sex_block
-
 
 # Race Block ---------------------------------------------------------------
 
@@ -231,7 +208,6 @@ datastep(freq_race,
            LABEL <- fapply(CAT, fc$RACE)
          }) -> comb_race
 
-
 put("Sort by race factor")
 proc_sort(comb_race, by = v(BY, LABEL)) -> sort_race
 
@@ -245,14 +221,11 @@ proc_transpose(sort_race,
 
 # Create final data frame -------------------------------------------------
 
-
 final <- rbind(age_block, ageg_block, sex_block, race_block)
 
 # Report ------------------------------------------------------------------
 
-
 sep("Create and print report")
-
 
 # Get min and max columns
 mincol <- names(trt_grps[1])
@@ -293,9 +266,9 @@ sep("Clean Up")
 put("Close log")
 log_close()
 
-
 # Uncomment to view report
 # file.show(res$modified_path)
 
 # Uncomment to view log
 # file.show(lf)
+

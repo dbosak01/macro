@@ -26,39 +26,43 @@ To generate the listing, we will still need just two files:
 ### Macro Driver Script
 
 Here is the macro driver script. What is different is that the macro driver 
-is written in standard R code:
+is written in standard R code, and uses the `symput()` and `symget()` symbol
+table functions to set the macro variable values:
 ```{r eval=FALSE, echo=TRUE}
+library(macro)
+
 #***********************************#
 #* Define Macro Variables
 #***********************************#
-`&sponsor_name` <- "Acme"
-`&study_name` <- "ABC"
-`&prog_name` <- "l_dm"
-`&base_dir` <- "c:/packages/macro/tests/testthat/examples"
-`&output_dir` <- file.path(`&base_dir`, "output")
-`&data_dir` <- file.path(`&base_dir`, "data")
-`&data_file` <- "dm.rda"
-`&data_name` <- "dm"
-`&titles` <- c("Listing 1.0", "SDTM Demographics")
-`&footnotes` <- paste0("'Program: ", `&prog_name`, ".R'")
-`&output_type` <- "PDF"
-`&preview` <- TRUE
+symput("sponsor_name", "Acme")
+symput("study_name", "ABC")
+symput("prog_name", "l_dm")
+symput("base_dir", "c:/packages/macro/tests/testthat/examples")
+symput("output_dir", "&base_dir/output")
+symput("data_dir", "&base_dir/data")
+symput("data_file", "dm.rda")
+symput("data_name", "dm")
+symput("titles", c("Listing 1.0", "SDTM Demographics"))
+symput("footnotes", "'Program: &prog_name..R'")
+symput("output_type", "PDF")
+symput("preview", TRUE)
 
 #***********************************#
 #* Macro Source Listing Template Code
 #***********************************#
-msource(file.path(`&base_dir`, "templates/lst02.R"),
-        file.path(`&base_dir`, "code/l_dm2.R"),
-        debug = TRUE)
+msource(file.path(symget("base_dir"), "templates/lst02.R"),
+        file.path(symget("base_dir"), "code/l_dm2.R"),
+        debug = TRUE, clear = FALSE)
 ```
 Note the following in the above driver:
 
-  * Macro variables can be set in regular R code.  One stipulation is
-  that they must be set before `msource()` is called. Also, the variable names
-  must have a trailing dot (".").
-  * All text variable values are quoted to conform to standard R syntax.
-  * The macro variables are still regular R variables, and you can use them 
-  in other functions like `paste()` or `file.path()`.
+  * Macro variables can be set in regular R code using the `symput()`
+  function. This function makes it easy to assign 
+  macro variable values before `msource()` runs.
+  * The macro variables set using `symput()` can be used to construct other 
+  macro variables.  They will be resolved normally during pre-processing.
+  * If you need a macro variable value immediately, you can use 
+  the `symget()` function to retrieve it from the symbol table. 
   * The above approach allows you to execute `msource()` directly
   from the driver script.  This approach avoids having to run it on the command
   line. Instead, you can run it from the "Source" or "Run" button in your
@@ -66,6 +70,9 @@ Note the following in the above driver:
   * The above call to `msource()` includes the `debug = TRUE` parameter. This 
   option will generate debug information in the console.  The debug information 
   will be shown below.
+  * The above call to `msource()` also sets the `clear = FALSE` parameter so
+  the macro variables you set with `symput()` do not get wiped out when
+  `msource()` runs.
 
 Otherwise, the macro driver performs the exact same tasks as the previous
 listing example.  It sets the macro variable values and executes the template
@@ -131,6 +138,7 @@ Since the call to `msource()` is included directly in the macro driver script,
 you can source the script normally in RStudio or another editor.  When executed,
 the script will write the following to the console:
 ```
+> source("C:/packages/macro/tests/testthat/examples/Example2.R")
 ******************************************************************************** 
 **  Pre-Processing 
 ******************************************************************************** 
@@ -159,18 +167,18 @@ the script will write the following to the console:
 [  19][    ]: #%if (TRUE == FALSE) 
 [  20][    ]: #%let output_type <- RTF 
 [  21][    ]: #%end 
-[  22][  18]:  
-[  23][  19]: # Create report object 
-[  24][  20]: rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |> 
-[  25][  21]:   page_header("Sponsor: Acme", "Study: ABC") |> 
-[  26][  22]:   titles(c('Listing 1.0', 'SDTM Demographics')) |> 
-[  27][  23]:   add_content(tbl, align = "left") |> 
-[  28][  24]:   footnotes('Program: l_dm.R') |> 
-[  29][  25]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]") 
-[  30][  26]:  
-[  31][  27]: # Write report to file 
+[  22][    ]:  
+[  23][  18]: # Create report object 
+[  24][  19]: rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |> 
+[  25][  20]:   page_header("Sponsor: Acme", "Study: ABC") |> 
+[  26][  21]:   titles(c('Listing 1.0', 'SDTM Demographics')) |> 
+[  27][  22]:   add_content(tbl, align = "left") |> 
+[  28][  23]:   footnotes('Program: l_dm.R') |> 
+[  29][  24]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]") 
+[  30][  25]:  
+[  31][  26]: # Write report to file 
 [  32][    ]: #%if (&preview. == TRUE) 
-[  33][  28]: write_report(rpt, preview = 1) 
+[  33][  27]: write_report(rpt, preview = 1) 
 [  34][    ]: #%else 
 [  35][    ]: write_report(rpt) 
 [  36][    ]: #%end 
@@ -211,7 +219,7 @@ the script will write the following to the console:
 - title 1: 'Listing 1.0'
 - title 2: 'SDTM Demographics'
 - footnote 1: 'Program: l_dm.R'
-- page_footer: left=2025-10-26 10:36:41.852507 center=CONFIDENTIAL right=Page [pg] of [tpg]
+- page_footer: left=2025-11-16 00:17:40.081514 center=CONFIDENTIAL right=Page [pg] of [tpg]
 - content: 
 # A table specification:
 - data: tibble 'dm' 87 rows 24 cols
@@ -250,7 +258,6 @@ load("c:/packages/macro/tests/testthat/examples/data/dm.rda")
 tbl <- create_table(dm) |>
   define(USUBJID, id_var = TRUE)
 
-
 # Create report object
 rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
   page_header("Sponsor: Acme", "Study: ABC") |>
@@ -261,7 +268,6 @@ rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
 
 # Write report to file
 write_report(rpt, preview = 1)
-
 ```
 The listing code above is identical to the previous listing, except
 the output type is "PDF" and the `preview` parameter is set on the call

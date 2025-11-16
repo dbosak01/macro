@@ -15,7 +15,6 @@ load("c:/packages/macro/tests/testthat/examples/data/dm.rda")
 tbl <- create_table(dm) |>
   define(USUBJID, id_var = TRUE)
 
-
 # Create report object
 rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
   page_header("Sponsor: Acme", "Study: ABC") |>
@@ -26,3 +25,4 @@ rpt <- create_report(out_pth, font = "Courier", output_type = "PDF") |>
 
 # Write report to file
 write_report(rpt, preview = 1)
+

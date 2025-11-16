@@ -139,40 +139,45 @@ different way. This time we’ll add some more complexity.</p>
 <h3 id="macro-driver-script">Macro Driver Script<a class="anchor" aria-label="anchor" href="#macro-driver-script"></a>
 </h3>
 <p>Here is the macro driver script. What is different is that the macro
-driver is written in standard R code:</p>
+driver is written in standard R code, and uses the <code><a href="../reference/symput.html">symput()</a></code>
+and <code><a href="../reference/symget.html">symget()</a></code> symbol table functions to set the macro
+variable values:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#***********************************#</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://macro.r-sassy.org">macro</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#***********************************#</span></span>
 <span><span class="co">#* Define Macro Variables</span></span>
 <span><span class="co">#***********************************#</span></span>
-<span><span class="va">`&amp;sponsor_name`</span> <span class="op">&lt;-</span> <span class="st">"Acme"</span></span>
-<span><span class="va">`&amp;study_name`</span> <span class="op">&lt;-</span> <span class="st">"ABC"</span></span>
-<span><span class="va">`&amp;prog_name`</span> <span class="op">&lt;-</span> <span class="st">"l_dm"</span></span>
-<span><span class="va">`&amp;base_dir`</span> <span class="op">&lt;-</span> <span class="st">"c:/packages/macro/tests/testthat/examples"</span></span>
-<span><span class="va">`&amp;output_dir`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"output"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;data_dir`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"data"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;data_file`</span> <span class="op">&lt;-</span> <span class="st">"dm.rda"</span></span>
-<span><span class="va">`&amp;data_name`</span> <span class="op">&lt;-</span> <span class="st">"dm"</span></span>
-<span><span class="va">`&amp;titles`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;footnotes`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"'Program: "</span>, <span class="va">`&amp;prog_name`</span>, <span class="st">".R'"</span><span class="op">)</span></span>
-<span><span class="va">`&amp;output_type`</span> <span class="op">&lt;-</span> <span class="st">"PDF"</span></span>
-<span><span class="va">`&amp;preview`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"sponsor_name"</span>, <span class="st">"Acme"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"study_name"</span>, <span class="st">"ABC"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"prog_name"</span>, <span class="st">"l_dm"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"base_dir"</span>, <span class="st">"c:/packages/macro/tests/testthat/examples"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"output_dir"</span>, <span class="st">"&amp;base_dir/output"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_dir"</span>, <span class="st">"&amp;base_dir/data"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_file"</span>, <span class="st">"dm.rda"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"data_name"</span>, <span class="st">"dm"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"titles"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Listing 1.0"</span>, <span class="st">"SDTM Demographics"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"footnotes"</span>, <span class="st">"'Program: &amp;prog_name..R'"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"output_type"</span>, <span class="st">"PDF"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/symput.html">symput</a></span><span class="op">(</span><span class="st">"preview"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#***********************************#</span></span>
 <span><span class="co">#* Macro Source Listing Template Code</span></span>
 <span><span class="co">#***********************************#</span></span>
-<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"templates/lst02.R"</span><span class="op">)</span>,</span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">`&amp;base_dir`</span>, <span class="st">"code/l_dm2.R"</span><span class="op">)</span>,</span>
-<span>        debug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/msource.html">msource</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"base_dir"</span><span class="op">)</span>, <span class="st">"templates/lst02.R"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="../reference/symget.html">symget</a></span><span class="op">(</span><span class="st">"base_dir"</span><span class="op">)</span>, <span class="st">"code/l_dm2.R"</span><span class="op">)</span>,</span>
+<span>        debug <span class="op">=</span> <span class="cn">TRUE</span>, clear <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Note the following in the above driver:</p>
 <ul>
-<li>Macro variables can be set in regular R code. One stipulation is
-that they must be set before <code><a href="../reference/msource.html">msource()</a></code> is called. Also, the
-variable names must have a trailing dot (“.”).</li>
-<li>All text variable values are quoted to conform to standard R
-syntax.</li>
-<li>The macro variables are still regular R variables, and you can use
-them in other functions like <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code> or
-<code><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path()</a></code>.</li>
+<li>Macro variables can be set in regular R code using the
+<code><a href="../reference/symput.html">symput()</a></code> function. This function makes it easy to assign
+macro variable values before <code><a href="../reference/msource.html">msource()</a></code> runs.</li>
+<li>The macro variables set using <code><a href="../reference/symput.html">symput()</a></code> can be used to
+construct other macro variables. They will be resolved normally during
+pre-processing.</li>
+<li>If you need a macro variable value immediately, you can use the
+<code><a href="../reference/symget.html">symget()</a></code> function to retrieve it from the symbol
+table.</li>
 <li>The above approach allows you to execute <code><a href="../reference/msource.html">msource()</a></code>
 directly from the driver script. This approach avoids having to run it
 on the command line. Instead, you can run it from the “Source” or “Run”
@@ -181,6 +186,10 @@ button in your development environment.</li>
 <code>debug = TRUE</code> parameter. This option will generate debug
 information in the console. The debug information will be shown
 below.</li>
+<li>The above call to <code><a href="../reference/msource.html">msource()</a></code> also sets the
+<code>clear = FALSE</code> parameter so the macro variables you set with
+<code><a href="../reference/symput.html">symput()</a></code> do not get wiped out when <code><a href="../reference/msource.html">msource()</a></code>
+runs.</li>
 </ul>
 <p>Otherwise, the macro driver performs the exact same tasks as the
 previous listing example. It sets the macro variable values and executes
@@ -246,7 +255,8 @@ while you are developing.</p>
 macro driver script, you can source the script normally in RStudio or
 another editor. When executed, the script will write the following to
 the console:</p>
-<pre><code>******************************************************************************** 
+<pre><code>&gt; source("C:/packages/macro/tests/testthat/examples/Example2.R")
+******************************************************************************** 
 **  Pre-Processing 
 ******************************************************************************** 
 -    File In: c:/packages/macro/tests/testthat/examples/templates/lst02.R 
@@ -274,18 +284,18 @@ the console:</p>
 [  19][    ]: #%if (TRUE == FALSE) 
 [  20][    ]: #%let output_type &lt;- RTF 
 [  21][    ]: #%end 
-[  22][  18]:  
-[  23][  19]: # Create report object 
-[  24][  20]: rpt &lt;- create_report(out_pth, font = "Courier", output_type = "PDF") |&gt; 
-[  25][  21]:   page_header("Sponsor: Acme", "Study: ABC") |&gt; 
-[  26][  22]:   titles(c('Listing 1.0', 'SDTM Demographics')) |&gt; 
-[  27][  23]:   add_content(tbl, align = "left") |&gt; 
-[  28][  24]:   footnotes('Program: l_dm.R') |&gt; 
-[  29][  25]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]") 
-[  30][  26]:  
-[  31][  27]: # Write report to file 
+[  22][    ]:  
+[  23][  18]: # Create report object 
+[  24][  19]: rpt &lt;- create_report(out_pth, font = "Courier", output_type = "PDF") |&gt; 
+[  25][  20]:   page_header("Sponsor: Acme", "Study: ABC") |&gt; 
+[  26][  21]:   titles(c('Listing 1.0', 'SDTM Demographics')) |&gt; 
+[  27][  22]:   add_content(tbl, align = "left") |&gt; 
+[  28][  23]:   footnotes('Program: l_dm.R') |&gt; 
+[  29][  24]:   page_footer(Sys.time(), "CONFIDENTIAL", "Page [pg] of [tpg]") 
+[  30][  25]:  
+[  31][  26]: # Write report to file 
 [  32][    ]: #%if (&amp;preview. == TRUE) 
-[  33][  28]: write_report(rpt, preview = 1) 
+[  33][  27]: write_report(rpt, preview = 1) 
 [  34][    ]: #%else 
 [  35][    ]: write_report(rpt) 
 [  36][    ]: #%end 
@@ -326,7 +336,7 @@ the console:</p>
 - title 1: 'Listing 1.0'
 - title 2: 'SDTM Demographics'
 - footnote 1: 'Program: l_dm.R'
-- page_footer: left=2025-10-26 10:36:41.852507 center=CONFIDENTIAL right=Page [pg] of [tpg]
+- page_footer: left=2025-11-16 00:17:40.081514 center=CONFIDENTIAL right=Page [pg] of [tpg]
 - content: 
 # A table specification:
 - data: tibble 'dm' 87 rows 24 cols
@@ -362,7 +372,6 @@ isolate problems with your program.</p>
 <span><span class="co"># Create table object</span></span>
 <span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_table.html" class="external-link">create_table</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://reporter.r-sassy.org/reference/define.html" class="external-link">define</a></span><span class="op">(</span><span class="va">USUBJID</span>, id_var <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
 <span></span>
 <span><span class="co"># Create report object</span></span>
 <span><span class="va">rpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://reporter.r-sassy.org/reference/create_report.html" class="external-link">create_report</a></span><span class="op">(</span><span class="va">out_pth</span>, font <span class="op">=</span> <span class="st">"Courier"</span>, output_type <span class="op">=</span> <span class="st">"PDF"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
