@@ -80,9 +80,6 @@
       <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
-      <a href="../articles/macro-disclaimer.html">Disclaimer</a>
-    </li>
-    <li>
       <a href="../articles/macro-faq.html">Frequently Asked Questions</a>
     </li>
   </ul>
@@ -197,6 +194,8 @@ comparison operator (“==”).</li>
 to avoid syntax errors. Inside comments, strings, and other macro
 commands, they do not need backticks.</li>
 </ul>
+<p>Otherwise, the R macro language is similar to SAS in terms of basic
+functionality.</p>
 <div class="section level3">
 <h3 id="available-functionality">Available Functionality<a class="anchor" aria-label="anchor" href="#available-functionality"></a>
 </h3>
@@ -474,15 +473,15 @@ the above program will run and display the following:</p>
 library(procs)
  library(macro)
  
- # Analysis of 'mpg`
+ # Analysis of 'mpg'
  anl_mpg &lt;- proc_means(mtcars, mpg, class = cyl,
                        output = report)
  
- # Analysis of 'disp`
+ # Analysis of 'disp'
  anl_disp &lt;- proc_means(mtcars, disp, class = cyl,
                        output = report)
  
- # Analysis of 'drat`
+ # Analysis of 'drat'
  anl_drat &lt;- proc_means(mtcars, drat, class = cyl,
                        output = report)
  
@@ -626,7 +625,7 @@ parameter to TRUE:</p>
 [  23][    ]: #%let dat &lt;- mtcars 
 [  24][    ]: #%let var &lt;- mpg 
 [  25][    ]:  
-[  26][   5]: # Analysis of 'mpg` 
+[  26][   5]: # Analysis of 'mpg' 
 [  27][   6]: anl_mpg &lt;- proc_means(mtcars, mpg, class = cyl, 
 [  28][   7]:                       output = report) 
 [  29][   8]:  
@@ -637,7 +636,7 @@ parameter to TRUE:</p>
 [  34][    ]: #%let dat &lt;- mtcars 
 [  35][    ]: #%let var &lt;- disp 
 [  36][    ]:  
-[  37][   9]: # Analysis of 'disp` 
+[  37][   9]: # Analysis of 'disp' 
 [  38][  10]: anl_disp &lt;- proc_means(mtcars, disp, class = cyl, 
 [  39][  11]:                       output = report) 
 [  40][  12]:  
@@ -648,7 +647,7 @@ parameter to TRUE:</p>
 [  45][    ]: #%let dat &lt;- mtcars 
 [  46][    ]: #%let var &lt;- drat 
 [  47][    ]:  
-[  48][  13]: # Analysis of 'drat` 
+[  48][  13]: # Analysis of 'drat' 
 [  49][  14]: anl_drat &lt;- proc_means(mtcars, drat, class = cyl, 
 [  50][  15]:                       output = report) 
 [  51][  16]:  
@@ -677,15 +676,15 @@ parameter to TRUE:</p>
 
 &gt; library(macro)
 
-&gt; # Analysis of 'mpg`
+&gt; # Analysis of 'mpg'
 &gt; anl_mpg &lt;- proc_means(mtcars, mpg, class = cyl,
 +                       output = report)
 
-&gt; # Analysis of 'disp`
+&gt; # Analysis of 'disp'
 &gt; anl_disp &lt;- proc_means(mtcars, disp, class = cyl,
 +                       output = report)
 
-&gt; # Analysis of 'drat`
+&gt; # Analysis of 'drat'
 &gt; anl_drat &lt;- proc_means(mtcars, drat, class = cyl,
 +                       output = report)
 
@@ -744,7 +743,6 @@ error.</p>
 <li><a href="macro-example1.html">Example 1: Listing</a></li>
 <li><a href="macro-example2.html">Example 2: Another Listing</a></li>
 <li><a href="macro-example3.html">Example 3: Table</a></li>
-<li><a href="macro-disclaimer.html">Disclaimer</a></li>
 <li><a href="macro-faq.html">Frequently Asked Questions</a></li>
 </ul>
 </div>

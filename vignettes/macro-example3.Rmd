@@ -770,5 +770,3 @@ parameters as desired.  The generated code will adjust dynamically to
 all parameter settings.
 
 
-Next: [Disclaimer](macro-disclaimer.html)
-

@@ -9,7 +9,7 @@ library(macro)
 #% Macro to run proc_means
 #%macro get_means(dat, var)
 
-# Analysis of '&var`
+# Analysis of '&var'
 anl_&var <- proc_means(`&dat`, `&var`, class = cyl,
                       output = report)
 

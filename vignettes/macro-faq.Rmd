@@ -71,7 +71,7 @@ These features are the most essential features of the SAS macro language,
 and will allow you to do most of the things you can do in SAS. There 
 are many built-in macro functions in SAS that have not been replicated in the 
 **macro** package. The built-in macro functions included in the **macro**
-package are `%sysfunc()`, `%symexist()`, and `%symput()`.
+package are `%sysfunc()`, `%symexist()`, `%symput()`, and `%nrstr()`.
 
 [top](#top) 
 
@@ -146,7 +146,7 @@ they do the same thing?
 
 **A:** The `symput()` and `%symput()` functions are similar in that they take
 a value from regular R code and assign it to a macro variable.  The difference
-in the time they run.  The `symput()` function runs at execution time, and the 
+is in the time they run.  The `symput()` function runs at execution time, and the 
 `%symput()` function runs in the macro pre-processor. This difference
 is quite significant, and that is why there are two different functions.
 The `symput()` function can be used in regular R code even before `msource()` 

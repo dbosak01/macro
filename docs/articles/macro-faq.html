@@ -80,9 +80,6 @@
       <a href="../articles/macro-example3.html">Example 3: Table</a>
     </li>
     <li>
-      <a href="../articles/macro-disclaimer.html">Disclaimer</a>
-    </li>
-    <li>
       <a href="../articles/macro-faq.html">Frequently Asked Questions</a>
     </li>
   </ul>
@@ -187,8 +184,8 @@ language, and will allow you to do most of the things you can do in SAS.
 There are many built-in macro functions in SAS that have not been
 replicated in the <strong>macro</strong> package. The built-in macro
 functions included in the <strong>macro</strong> package are
-<code>%sysfunc()</code>, <code>%symexist()</code>, and
-<code>%symput()</code>.</p>
+<code>%sysfunc()</code>, <code>%symexist()</code>,
+<code>%symput()</code>, and <code>%nrstr()</code>.</p>
 <p><a href="#top">top</a></p>
 <hr>
 </div>
@@ -257,15 +254,15 @@ statements in the included code will be resolved normally.</p>
 same thing?</p>
 <p><strong>A:</strong> The <code><a href="../reference/symput.html">symput()</a></code> and
 <code>%symput()</code> functions are similar in that they take a value
-from regular R code and assign it to a macro variable. The difference in
-the time they run. The <code><a href="../reference/symput.html">symput()</a></code> function runs at execution
-time, and the <code>%symput()</code> function runs in the macro
-pre-processor. This difference is quite significant, and that is why
-there are two different functions. The <code><a href="../reference/symput.html">symput()</a></code> function
-can be used in regular R code even before <code><a href="../reference/msource.html">msource()</a></code> is
-called. The <code>%symput()</code> function can only be used in a macro
-<code>#%let</code> statement, and will pick up values dynamically from
-the generated code.</p>
+from regular R code and assign it to a macro variable. The difference is
+in the time they run. The <code><a href="../reference/symput.html">symput()</a></code> function runs at
+execution time, and the <code>%symput()</code> function runs in the
+macro pre-processor. This difference is quite significant, and that is
+why there are two different functions. The <code><a href="../reference/symput.html">symput()</a></code>
+function can be used in regular R code even before
+<code><a href="../reference/msource.html">msource()</a></code> is called. The <code>%symput()</code> function
+can only be used in a macro <code>#%let</code> statement, and will pick
+up values dynamically from the generated code.</p>
 <p><a href="#top">top</a></p>
 <hr>
 </div>

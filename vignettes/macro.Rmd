@@ -86,7 +86,7 @@ R macro language:
   avoid syntax errors. Inside comments, strings, and other macro commands, they do not 
   need backticks. 
   
-  
+Otherwise, the R macro language is similar to SAS in terms of basic functionality.
   
 ## Available Functionality
 
@@ -323,15 +323,15 @@ will run and display the following:
 library(procs)
  library(macro)
  
- # Analysis of 'mpg`
+ # Analysis of 'mpg'
  anl_mpg <- proc_means(mtcars, mpg, class = cyl,
                        output = report)
  
- # Analysis of 'disp`
+ # Analysis of 'disp'
  anl_disp <- proc_means(mtcars, disp, class = cyl,
                        output = report)
  
- # Analysis of 'drat`
+ # Analysis of 'drat'
  anl_drat <- proc_means(mtcars, drat, class = cyl,
                        output = report)
  
@@ -469,7 +469,7 @@ parameter to TRUE:
 [  23][    ]: #%let dat <- mtcars 
 [  24][    ]: #%let var <- mpg 
 [  25][    ]:  
-[  26][   5]: # Analysis of 'mpg` 
+[  26][   5]: # Analysis of 'mpg' 
 [  27][   6]: anl_mpg <- proc_means(mtcars, mpg, class = cyl, 
 [  28][   7]:                       output = report) 
 [  29][   8]:  
@@ -480,7 +480,7 @@ parameter to TRUE:
 [  34][    ]: #%let dat <- mtcars 
 [  35][    ]: #%let var <- disp 
 [  36][    ]:  
-[  37][   9]: # Analysis of 'disp` 
+[  37][   9]: # Analysis of 'disp' 
 [  38][  10]: anl_disp <- proc_means(mtcars, disp, class = cyl, 
 [  39][  11]:                       output = report) 
 [  40][  12]:  
@@ -491,7 +491,7 @@ parameter to TRUE:
 [  45][    ]: #%let dat <- mtcars 
 [  46][    ]: #%let var <- drat 
 [  47][    ]:  
-[  48][  13]: # Analysis of 'drat` 
+[  48][  13]: # Analysis of 'drat' 
 [  49][  14]: anl_drat <- proc_means(mtcars, drat, class = cyl, 
 [  50][  15]:                       output = report) 
 [  51][  16]:  
@@ -520,15 +520,15 @@ parameter to TRUE:
 
 > library(macro)
 
-> # Analysis of 'mpg`
+> # Analysis of 'mpg'
 > anl_mpg <- proc_means(mtcars, mpg, class = cyl,
 +                       output = report)
 
-> # Analysis of 'disp`
+> # Analysis of 'disp'
 > anl_disp <- proc_means(mtcars, disp, class = cyl,
 +                       output = report)
 
-> # Analysis of 'drat`
+> # Analysis of 'drat'
 > anl_drat <- proc_means(mtcars, drat, class = cyl,
 +                       output = report)
 
@@ -586,5 +586,4 @@ Here are some more articles for further exploration:
 - [Example 1: Listing](macro-example1.html)
 - [Example 2: Another Listing](macro-example2.html)
 - [Example 3: Table](macro-example3.html)
-- [Disclaimer](macro-disclaimer.html)
 - [Frequently Asked Questions](macro-faq.html)
