@@ -1,17 +1,17 @@
 Package: macro
 Type: Package
-Title: A Macro Pre-processor for 'R' Programs
-Version: 0.1.3
+Title: A Macro Language for 'R' Programs
+Version: 0.1.4
 Authors@R: c(
     person("David", "Bosak", email = "dbosak01@gmail.com", role = c("aut", "cre")),
     person("Bill", "Huang", email = "Bill.Huang@Toastmasters.org.tw", role = "ctb"),
     person("Duong", "Tran", email = "trand000@aol.com", role = c("ctb"))
   )
-Description: A macro pre-processor for 'R' programs, which 
+Description: A macro language for 'R' programs, which 
     provides a macro facility similar to 'SAS®'.  This 
-    preprocessor contains basic macro capabilities 
-    like defining macro variables and executing conditional
-    logic. 
+    package contains basic macro capabilities 
+    like defining macro variables, executing conditional
+    logic, and defining macro functions.
 License: CC0
 Encoding: UTF-8
 URL: https://macro.r-sassy.org, https://github.com/dbosak01/macro

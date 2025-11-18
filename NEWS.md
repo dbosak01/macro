@@ -1,3 +1,7 @@
+# macro 0.1.4
+
+* Fixes for CRAN.
+
 # macro 0.1.3
 
 * Created addin menus to make package more interactive.

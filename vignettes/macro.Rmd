@@ -384,7 +384,7 @@ It looks like this:
 See the [procs](https://procs.r-sassy.org) package documentation for more 
 information about the `proc_means()` and `proc_print()` functions. Both
 the **macro** package and the **procs** package are part of the 
-[sassy](https://www.r-sassy.org) system of packages.
+[sassy](https://r-sassy.org) system of packages.
 
 # Additional Features
 
