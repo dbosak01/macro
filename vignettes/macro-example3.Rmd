@@ -99,9 +99,10 @@ Note the following in the above driver:
   * The above approach also allows you to execute `msource()` directly
   from the driver script.  You can run this script from the "Source" or 
   "Run" button in your development environment.
-  * The above call to `msource()` includes the `debug = TRUE` parameter. 
+  * The above call to `msource()` includes the `debug = TRUE` and 
+  `symbolgen = TRUE` parameters. 
   The debug information will be shown below.
-  * The above call to `msource()` also sets the `clear = FALSE` parameter so
+  * The above call to `msource()` also sets `clear = FALSE` so
   the macro variables you set with `symput()` do not get wiped out when
   `msource()` runs.
 

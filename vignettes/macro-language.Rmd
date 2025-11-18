@@ -127,7 +127,7 @@ x <- 1
 y <- 2
 
 ```
-Both variables `a.` and `b.` have been replaced as assigned. 
+Both variables `&a` and `&b` have been replaced as assigned. 
 
 Note the use of backticks ("`") on the macro variables.  The backticks are necessary
 because R does not normally permit a special character to begin the name
@@ -698,17 +698,22 @@ x <- "> 5"
 x <- "<= 5"
 #%end
 print(x)
-print("The mean of 'a' is %sysfunc(mean(&a., %.2f))")
+print("The mean of 'a' is %sysfunc(mean(&a.), %.2f)")
 ```
-The above macro function evaluates the mean of `&a.`, compares to the hard-coded
+The above macro evaluates the mean of `&a.`, compares to the hard-coded
 value 5, and then sets the value of `x`.  The `%sysfunc()` macro function
 allows for immediate evaluation of the Base R `mean()` function. 
 
-Here is the resolved code:
+Here is the execution of the above example:
 ```{r eval=FALSE, echo=TRUE}
-x <- ">5"
-print(x)
-print("The mean of 'a' is 5.09")
+> msource()
+# ---------
+# x <- "> 5"
+#  print(x)
+#  print("The mean of 'a' is 5.09")
+# ---------
+# [1] "> 5"
+# [1] "The mean of 'a' is 5.09"
 ```
 In the above example, `%sysfunc()` is used in the conditional, and inside a
 text string.  You can see that it is resolved in both cases.
@@ -776,25 +781,27 @@ v1 <- c("one", "two", "three")
 a <- `&x`
 b <- `&y`
 
+# Print to console
+print(a)
+print(b)
+
 ```
 If you run the above code in `msource()`, you will get the following output:
 ```
 > msource()
+---------
+# Assign vector
+ v1 <- c("one", "two", "three")
+ 
+ # Use macro variables
+ a <- 3
+ b <- c('one', 'two', 'three')
+ 
+ print(a)
+ print(b)
+---------
 [1] 3
 [1] "one"   "two"   "three"
-```
-And the generated code looks like this:
-```{r eval=FALSE, echo=TRUE}
-# Assign vector
-v1 <- c("one", "two", "three")
-
-# Use macro variables
-a <- 3
-b <- c('one', 'two', 'three')
-
-# Print to console
-print(a)
-print(b)
 ```
 You can see the length and value of vector 'v1' has been pulled from normal
 R code into macro variables.  These macro variables can then be used with
@@ -851,7 +858,6 @@ print("Hello #&x.")
 ```
 The console output from the above macro do loop is as follows:
 ```{r eval=FALSE, echo=TRUE}
-> msource()
 [1] "Hello #1"
 [1] "Hello #2"
 [1] "Hello #3"
@@ -875,7 +881,7 @@ dat <- mtcars
 #%do v = 1 %to %sysfunc(length(&vars))
 #%let var <- %sysfunc(&vars[&v])
 
-# Calculate mean for var.
+# Calculate mean for &var.
 mn&v. <- sprintf("%.2f", mean(dat$`&var.`))
 print(paste0("Mean of '&var.' is ", mn&v.))
 
@@ -886,9 +892,8 @@ This example calculates the mean for several variables in the "mtcars" sample
 data frame.  The macro loops through a vector of variables and constructs
 a code block for each variable. 
 
-Here is the console output from the generated code:
+Here is the console output:
 ```
-> msource()
 [1] "Mean of 'mpg' is 20.09"
 [1] "Mean of 'disp' is 230.72"
 [1] "Mean of 'hp' is 146.69"
@@ -984,11 +989,10 @@ print("Print the text: &txt.")
 The console output for the above code is this:
 ```
 > msource()
-[1] "Print the text: Hello!"
-```
-And the generated code is this:
-```{r eval=FALSE, echo=TRUE}
+---------
 print("Print the text: Hello!")
+---------
+[1] "Print the text: Hello!"
 ```
 Note that the macro definition and call have both been removed.  Only the 
 code inside the macro function has been emitted.
@@ -1017,12 +1021,10 @@ cat("\n")
 ```
 The above example loops through some variables on the `iris` dataset and 
 prints an analysis for each to the console.  The macro function `print_analysis()`
-uses the **dplyr** package, and accepts parameters for the dataset name, by variable, 
-and analysis variable. 
+uses the **dplyr** package, and accepts parameters for the dataset name, by variable, and analysis variable. 
 
 Here is the console output:
 ```
-> msource()
 Analysis for Sepal.Length
      Species  Mean        SD Quantile
 1     setosa 5.006 0.3524897    4.800
@@ -1150,7 +1152,6 @@ print(a)
 ```
 And the printed result is this:
 ```
-> msource()
        ARM A        ARM B        ARM C        ARM D 
    "Placebo"  "Drug 10mg"  "Drug 20mg" "Competitor" 
 
