@@ -7,12 +7,14 @@
 symtable()
 }
 \value{
-A data frame of macro symbols and their values.
+An object of class "symtable".  The object contains a list of macro symbols
+and their values.  It also contains a list of macro functions, their parameters,
+and the associated code.
 }
 \description{
 The \code{symtable} function extracts the contents of the macro symbol table
-as a data frame, and, by default, displays it in the console.
-The function can be used to examine the symbol table values.
+and macro function list.  The symbol table information is returned as an object.
+The object can be printed or navigated programatically.
 }
 \examples{
 library(macro)

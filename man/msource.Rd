@@ -95,8 +95,14 @@ parameter.
 The \code{msource} function can be run on the command line or from an R script.
 When run from the command line, the function will take the currently active
 program in RStudio as the default input.  That means if you are working
-interactively in RStudio, you can easily execute your macro code just by
+in RStudio, you can easily execute your macro code just by
 running \code{msource()} on the command line with no parameters.
+
+In addition, the \strong{macro} package registers addin menus in RStudio
+when installed.
+These addin menus can be tied to keyboard shortcuts, which can make running
+\code{msource} even easier.  See \code{vignette("macro-setup")}
+to learn how to configure the keyboard shortcuts.
 }
 
 \section{Macro Commands}{
@@ -190,7 +196,7 @@ see the debugging vignette at \code{vignette('macro-debug')}.
 Once the output file has been generated successfully, the \code{msource}
 function will execute it normally using the Base R \code{source} function.
 At this point the generated code runs like a normal R program, and any
-errors or warnings will be sent to the console by default.
+errors or warnings will be sent to the console.
 
 If you do not wish to execute the generated code, use the \code{exec} parameter
 to turn off execution.
@@ -207,9 +213,6 @@ library(macro)
 # Get path to demo macro program
 src <- system.file("extdata/Demo1.R", package = "macro")
 
-# Create temporary output path
-tmp <- file.path(tempdir(), "Demo1_mod.R")
-
 # Display source code
 # - This is the macro input code
 cd <-readLines(src)
@@ -223,14 +226,11 @@ cat(paste(cd, "\n"))
 
 # Macro Execute Source Code
 # - Results displayed below
-msource(src, tmp)
-# [1] "Hello World!"
-
-# View output file
-# - This is the generated code
-tcd <- readLines(tmp)
-cat(paste(tcd, "\n"))
+msource(src)
+# ---------
 # print("Hello World!")
+# ---------
+# [1] "Hello World!"
 
 ########################################################################
 # Example 2:  Perform correlation analysis between variables in MTCARS
@@ -238,9 +238,6 @@ cat(paste(tcd, "\n"))
 
 # Get path to demo macro program
 src <- system.file("extdata/Demo2.R", package = "macro")
-
-# Create temporary output path
-tmp <- file.path(tempdir(), "Demo2_mod.R")
 
 # Display source code
 cd <- readLines(src)
@@ -279,16 +276,8 @@ cat(paste(cd, "\n"))
 # #\%get_correlation(mtcars, mpg, c("cyl", "disp", "drat"))
 
 # Macro Execute Source Code
-msource(src, tmp)
-#  XVAR YVAR        COR
-# 1  mpg  cyl -0.8521620
-# 2  mpg disp -0.8475514
-# 3  mpg drat  0.6811719
-
-# View output file
-tcd <- readLines(tmp)
-cat(paste0(tcd, "\n"))
-#
+msource(src)
+# ---------
 # # Perform Analysis ------------------------------------
 #
 #
@@ -319,5 +308,11 @@ cat(paste0(tcd, "\n"))
 #
 # # Print Results
 # print(final)
+#
+# ---------
+#  XVAR YVAR        COR
+# 1  mpg  cyl -0.8521620
+# 2  mpg disp -0.8475514
+# 3  mpg drat  0.6811719
 #
 }

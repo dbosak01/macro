@@ -8,7 +8,9 @@
 #' stored macro variables and macro functions.  The function is used
 #' to avoid contamination between one call to \code{msource} and the
 #' next.  It is called automatically when the "clear" parameter of
-#' \code{msource} is set to TRUE.  The function takes no parameters.
+#' \code{msource} is set to TRUE.  If the "clear" parameter is
+#' set to FALSE, you can clear the symbol table manually with
+#' the \code{symclear} function.
 #' @param variables Whether or not to clear the macro symbol table.
 #' Default is TRUE.
 #' @param functions Whether or not to clear the macro function list.
@@ -96,10 +98,12 @@ symclear <- function(variables = TRUE, functions = TRUE) {
 #' @title Examine the Macro Symbol Table
 #' @description
 #' The \code{symtable} function extracts the contents of the macro symbol table
-#' as a data frame, and, by default, displays it in the console.
-#' The function can be used to examine the symbol table values.
+#' and macro function list.  The symbol table information is returned as an object.
+#' The object can be printed or navigated programatically.
 #' @returns
-#' A data frame of macro symbols and their values.
+#' An object of class "symtable".  The object contains a list of macro symbols
+#' and their values.  It also contains a list of macro functions, their parameters,
+#' and the associated code.
 #' @examples
 #' library(macro)
 #'
@@ -334,46 +338,6 @@ print.symtable <- function(x, ..., verbose = FALSE) {
           }
         }
       }
-
-      # # Variable vectors
-      # fnm <- c()
-      # pnm <- c()
-      # dvl <- c()
-      #
-      # # Row counter
-      # rc <- 0
-      #
-      # for (idx in seq(1, length(nms))) {
-      #
-      #   nm <- nms[idx]
-      #   prms <- x$functions[[nm]]$parameters
-      #   pnms <- names(x$functions[[nm]]$parameters)
-      #
-      #   if (length(prms) == 0) {
-      #
-      #     rc <- rc + 1
-      #     fnm[rc] <- nm
-      #     pnm[rc] <- ""
-      #     dvl[rc] <- ""
-      #
-      #   } else {
-      #     for (idx2 in seq(1, length(prms))) {
-      #       rc <- rc + 1
-      #
-      #       fnm[rc] <- nm
-      #       pnm[rc] <- pnms[idx2]
-      #       dvl[rc] <- ifelse(is.null(prms[[idx2]]), "", prms[[idx2]])
-      #
-      #     }
-      #   }
-      # }
-      #
-      # # Create data frame from vectors
-      # fret <- data.frame(Name = fnm, Parameter = pnm, Default = dvl,
-      #                    stringsAsFactors = FALSE)
-      # # fret$Name <- ifelse(common::changed(fret$Name), fret$Name, "")
-      #
-      # print(fret)
     }
   }
 
@@ -409,7 +373,7 @@ print.symtable <- function(x, ..., verbose = FALSE) {
 #' #   #%let pth <- /projects/dev/data
 #' # #%end
 #'
-#' # Set environment variable using mset()
+#' # Set environment variable using symput()
 #' symput("env", "prod")
 #'
 #' # Macro Execute Source Code
@@ -473,7 +437,7 @@ symget <- function(name) {
 #' #   #%let pth <- /projects/dev/data
 #' # #%end
 #'
-#' # Set environment variable using symput()
+#' # Set env macro variable using symput()
 #' symput("env", "prod")
 #'
 #' # Macro Execute Source Code

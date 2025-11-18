@@ -211,8 +211,13 @@ parameter.</p>
 <p>The <code>msource</code> function can be run on the command line or from an R script.
 When run from the command line, the function will take the currently active
 program in RStudio as the default input.  That means if you are working
-interactively in RStudio, you can easily execute your macro code just by
+in RStudio, you can easily execute your macro code just by
 running <code>msource()</code> on the command line with no parameters.</p>
+<p>In addition, the <strong>macro</strong> package registers addin menus in RStudio
+when installed.
+These addin menus can be tied to keyboard shortcuts, which can make running
+<code>msource</code> even easier.  See <code><a href="../articles/macro-setup.html">vignette("macro-setup")</a></code>
+to learn how to configure the keyboard shortcuts.</p>
     </div>
     <div id="macro-commands">
     <h2>Macro Commands</h2>
@@ -302,7 +307,7 @@ see the debugging vignette at <code><a href="../articles/macro-debug.html">vigne
 <p>Once the output file has been generated successfully, the <code>msource</code>
 function will execute it normally using the Base R <code>source</code> function.
 At this point the generated code runs like a normal R program, and any
-errors or warnings will be sent to the console by default.</p>
+errors or warnings will be sent to the console.</p>
 <p>If you do not wish to execute the generated code, use the <code>exec</code> parameter
 to turn off execution.</p>
     </div>
@@ -319,9 +324,6 @@ to turn off execution.</p>
 <span><span class="co"># Get path to demo macro program</span></span>
 <span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo1.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create temporary output path</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Demo1_mod.R"</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># Display source code</span></span>
 <span><span class="co"># - This is the macro input code</span></span>
 <span><span class="va">cd</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
@@ -335,14 +337,11 @@ to turn off execution.</p>
 <span></span>
 <span><span class="co"># Macro Execute Source Code</span></span>
 <span><span class="co"># - Results displayed below</span></span>
-<span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span>, <span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co"># [1] "Hello World!"</span></span>
-<span></span>
-<span><span class="co"># View output file</span></span>
-<span><span class="co"># - This is the generated code</span></span>
-<span><span class="va">tcd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">tcd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
+<span><span class="co"># ---------</span></span>
 <span><span class="co"># print("Hello World!")</span></span>
+<span><span class="co"># ---------</span></span>
+<span><span class="co"># [1] "Hello World!"</span></span>
 <span></span>
 <span><span class="co">########################################################################</span></span>
 <span><span class="co"># Example 2:  Perform correlation analysis between variables in MTCARS</span></span>
@@ -350,9 +349,6 @@ to turn off execution.</p>
 <span></span>
 <span><span class="co"># Get path to demo macro program</span></span>
 <span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Demo2.R"</span>, package <span class="op">=</span> <span class="st">"macro"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create temporary output path</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"Demo2_mod.R"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Display source code</span></span>
 <span><span class="va">cd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
@@ -391,16 +387,8 @@ to turn off execution.</p>
 <span><span class="co"># #%get_correlation(mtcars, mpg, c("cyl", "disp", "drat"))</span></span>
 <span></span>
 <span><span class="co"># Macro Execute Source Code</span></span>
-<span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span>, <span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="co">#  XVAR YVAR        COR</span></span>
-<span><span class="co"># 1  mpg  cyl -0.8521620</span></span>
-<span><span class="co"># 2  mpg disp -0.8475514</span></span>
-<span><span class="co"># 3  mpg drat  0.6811719</span></span>
-<span></span>
-<span><span class="co"># View output file</span></span>
-<span><span class="va">tcd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">tcd</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#</span></span>
+<span><span class="fu">msource</span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
+<span><span class="co"># ---------</span></span>
 <span><span class="co"># # Perform Analysis ------------------------------------</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co">#</span></span>
@@ -431,6 +419,12 @@ to turn off execution.</p>
 <span><span class="co">#</span></span>
 <span><span class="co"># # Print Results</span></span>
 <span><span class="co"># print(final)</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># ---------</span></span>
+<span><span class="co">#  XVAR YVAR        COR</span></span>
+<span><span class="co"># 1  mpg  cyl -0.8521620</span></span>
+<span><span class="co"># 2  mpg disp -0.8475514</span></span>
+<span><span class="co"># 3  mpg drat  0.6811719</span></span>
 <span><span class="co">#</span></span></code></pre></div>
     </div>
   </div>

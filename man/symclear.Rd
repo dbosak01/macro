@@ -22,7 +22,9 @@ The \code{symclear} function clears the macro symbol table of any
 stored macro variables and macro functions.  The function is used
 to avoid contamination between one call to \code{msource} and the
 next.  It is called automatically when the "clear" parameter of
-\code{msource} is set to TRUE.  The function takes no parameters.
+\code{msource} is set to TRUE.  If the "clear" parameter is
+set to FALSE, you can clear the symbol table manually with
+the \code{symclear} function.
 }
 \examples{
 library(macro)

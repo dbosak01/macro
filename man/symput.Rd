@@ -41,7 +41,7 @@ cat(paste(cd, "\n"))
 #   #\%let pth <- /projects/dev/data
 # #\%end
 
-# Set environment variable using symput()
+# Set env macro variable using symput()
 symput("env", "prod")
 
 # Macro Execute Source Code
