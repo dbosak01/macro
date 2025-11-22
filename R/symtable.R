@@ -446,7 +446,15 @@ symput <- function(x, value = NULL) {
   nm <- paste0("&", x)
 
   if (!is.null(value)) {
-    assign(nm, as.character(value), envir = gbl$env)
+    vl <- value
+    if (!is.character(vl)) {
+      vl <- as.character(value)
+      if (!is.null(names(value))) {
+        names(vl) <- names(value)
+      }
+    }
+
+    assign(nm, vl, envir = gbl$env)
   } else {
     rm(list = nm, envir = gbl$env)
   }

@@ -127,6 +127,27 @@ test_that("symtable04: symput() works as expected.", {
 
   expect_equal("&q" %in% names(res4$variables), FALSE)
 
+  symput("trt", c("A" = "Placebo", "B" = "Treatment1"))
+
+
+  res5 <- symget("trt")
+
+  expect_equal(length(res5), 2)
+  expect_equal(names(res5), c("A", "B"))
+  expect_equal(as.character(res5), c("Placebo", "Treatment1"))
+
+
+
+  symput("trt2", c("A" = 1, "B" = 2))
+
+
+  res6 <- symget("trt2")
+
+  expect_equal(length(res6), 2)
+  expect_equal(names(res6), c("A", "B"))
+  expect_equal(as.character(res6), c("1", "2"))
+
+
 })
 
 test_that("symtable05: symtable() with vectors works as expected.", {

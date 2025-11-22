@@ -89,7 +89,7 @@ proc_freq(dm_f, tables = ARM,
           options = v(nopercent, nonobs)) -> arm_pop
 
 put("Log treatment groups variable")
-trt_grps <- c('Placebo', 'Drug 50mg', 'Drug 100mg', 'Competitor')
+trt_grps <- c('ARM A' = 'Placebo', 'ARM B' = 'Drug 50mg', 'ARM C' = 'Drug 100mg', 'ARM D' = 'Competitor')
 put(trt_grps)
 
 put("Categorize AGE")
