@@ -6,3 +6,4 @@
 ^\.github$
 ^LICENSE\.md$
 ^logo\.png$
+^cran-comments\.md$

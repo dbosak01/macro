@@ -59,29 +59,37 @@
 #' takes no parameters and is only used by the addin menu.
 #' @return The results of \code{msource}, invisibly.
 #' @examples
+#' \donttest{
 #' # Called from addin menu
-#' # runMSource()
+#' runMSource()
+#' }
 #' @export
 runMSource <- function() {
 
-  # Load macro package if not already loaded
-  if (!"macro" %in% .packages()) {
-    require(macro, quietly = TRUE, warn.conflicts = FALSE)
+  if (rstudioapi::isAvailable()) {
+
+    # Load macro package if not already loaded
+    if (!"macro" %in% .packages()) {
+      require(macro, quietly = TRUE, warn.conflicts = FALSE)
+    }
+
+    # Save current file if needed
+    autoSave()
+
+    # Run msource()
+    res <- tryCatch({msource(envir = parent.frame(), echo = TRUE, clear = FALSE)},
+                    warning = function(cond) {
+                      # print("here!")
+                      return(cond)
+                      },
+                    error = function(cond) {return(cond)})
+
+    # Deal with error messages
+    ret <- processMessages(res)
+
+  } else {
+    ret <- NULL
   }
-
-  # Save current file if needed
-  autoSave()
-
-  # Run msource()
-  res <- tryCatch({msource(envir = globalenv(), echo = TRUE, clear = FALSE)},
-                  warning = function(cond) {
-                    # print("here!")
-                    return(cond)
-                    },
-                  error = function(cond) {return(cond)})
-
-  # Deal with error messages
-  ret <- processMessages(res)
 
   invisible(ret)
 }
@@ -100,30 +108,39 @@ runMSource <- function() {
 #' takes no parameters and is only used by the addin menu.
 #' @return The results of \code{msource}, invisibly.
 #' @examples
+#' \donttest{
 #' # Called from addin menu
-#' # runMSourceDebug()
+#' runMSourceDebug()
+#' }
 #' @export
 runMSourceDebug <- function() {
 
-  # Load macro package if not already loaded
-  if (!"macro" %in% .packages()) {
-    require(macro, quietly = TRUE, warn.conflicts = FALSE)
+  if (rstudioapi::isAvailable()) {
+
+    # Load macro package if not already loaded
+    if (!"macro" %in% .packages()) {
+      require(macro, quietly = TRUE, warn.conflicts = FALSE)
+    }
+
+    # Save current file if needed
+    autoSave()
+
+    # Run msource() in debug mode
+    res <- tryCatch({msource(debug = TRUE, symbolgen = TRUE,
+                             envir = parent.frame(), clear = FALSE)},
+                    warning = function(cond) {
+                      # print("here!")
+                      return(cond)
+                      },
+                    error = function(cond) { return(cond) })
+
+    # Deal with error messages
+    ret <- processMessages(res)
+
+  } else {
+
+    ret <- NULL
   }
-
-  # Save current file if needed
-  autoSave()
-
-  # Run msource() in debug mode
-  res <- tryCatch({msource(debug = TRUE, symbolgen = TRUE,
-                           envir = globalenv(), clear = FALSE)},
-                  warning = function(cond) {
-                    # print("here!")
-                    return(cond)
-                    },
-                  error = function(cond) { return(cond) })
-
-  # Deal with error messages
-  ret <- processMessages(res)
 
   invisible(ret)
 
@@ -140,7 +157,8 @@ processMessages <- function(res) {
 
   if ("warning" %in% class(res)) {
 
-    print(warnings())
+    # See comment below
+    cat(warnings())
 
   }
 
@@ -154,6 +172,15 @@ processMessages <- function(res) {
 
     msg <- paste0("Error in ", cl, ": ", res$message, "\n", collapse = "\n")
 
+    # NOTE to CRAN: The cat() is needed because these functions are called
+    # from an RStudio addin.  When called from an RStudio addin, RStudio
+    # has this very annoying behavior of popping up a dialog with the
+    # error or warning message.  I just want the error or warning message
+    # sent to the console like normal, and don't want the pop-up dialog.
+    # The only work-around I can find is to trap the error/warning and cat()
+    # it to the console so the user gets the error/warning message,
+    # but does not have to get a pop-up dialog.  Please allow the cat()
+    # in this case. It is only to help the user.
     cat(msg)
   }
 

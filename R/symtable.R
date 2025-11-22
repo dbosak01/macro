@@ -70,7 +70,7 @@ symclear <- function(variables = TRUE, functions = TRUE) {
   cnt <- 0
 
   if (variables) {
-    cat("Clearing macro symbol table...\n")
+    message("Clearing macro symbol table...\n")
 
     # Clear out macro environment (symbol table)
     enms <- ls(gbl$env)
@@ -88,7 +88,7 @@ symclear <- function(variables = TRUE, functions = TRUE) {
     }
   }
 
-  cat(paste0(cnt, " items cleared.\n"))
+  message(paste0(cnt, " items cleared.\n"))
 
 
   invisible(cnt)
@@ -211,20 +211,6 @@ symtable <- function() {
 #'
 #' # Get path to demo macro program
 #' src <- system.file("extdata/Demo4.R", package = "macro")
-#'
-#' # Display source code
-#' # - This is the macro input code
-#' cd <- readLines(src)
-#' cat(paste(cd, "\n"))
-#' # #% Create some macro variables
-#' # #%let x <- 1
-#' # #%let y <- 2
-#' # #%let z <- &x + &y
-#' #
-#' # #% Create a macro function
-#' # #%macro test(vl = Hello!)
-#' # print("&vl")
-#' # #%mend
 #'
 #' # Execute source code
 #' msource(src, echo = FALSE)

@@ -20,6 +20,8 @@ to enhance the user experience.  The function
 takes no parameters and is only used by the addin menu.
 }
 \examples{
+\donttest{
 # Called from addin menu
-# runMSourceDebug()
+runMSourceDebug()
+}
 }

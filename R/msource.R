@@ -409,6 +409,9 @@ msource <- function(pth = NULL, file_out = NULL, envir = parent.frame(),
     }
 
     # Echo generated code
+    # NOTE to CRAN:  This cat() is requested by the user from the
+    # "echo" parameter on msource().  User can turn it off by
+    # setting "echo = FALSE" or "globals('macro.echo' = FALSE)"
     cat("---------\n")
     cat(paste0(lns, "\n"))
     cat("---------\n")

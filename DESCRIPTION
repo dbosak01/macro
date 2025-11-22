@@ -1,7 +1,7 @@
 Package: macro
 Type: Package
 Title: A Macro Language for 'R' Programs
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: c(
     person("David", "Bosak", email = "dbosak01@gmail.com", role = c("aut", "cre")),
     person("Bill", "Huang", email = "Bill.Huang@Toastmasters.org.tw", role = "ctb"),
@@ -30,5 +30,5 @@ Imports: fmtr,
          crayon
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr

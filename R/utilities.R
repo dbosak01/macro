@@ -1097,6 +1097,11 @@ log_debug <- function(vl, file_path = NULL, appnd = TRUE) {
   }
 
   # Write to log or console
+  # NOTE to CRAN: This function is only called if the "debug" parameter
+  # on the msource() function is TRUE. What "debug = TRUE"
+  # means is that the user WANTS to see the information
+  # sent to the console.  They can suppress it by setting
+  # "debug = FALSE", which is actually the default.
   cat(vl, "\n", file = pth, append = appnd)
 
 }
