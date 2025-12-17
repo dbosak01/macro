@@ -53,6 +53,12 @@ Then put the following line at the top of your script:
 
 The **macro** package will then be loaded, and available for use in your project.
 
+### Introductory Video
+
+Check out the following video for a demo of the **macro** package setup procedure,
+and a quick overview of the core package features:
+
+[![Macro Package Introduction](https://img.youtube.com/vi/UBEkCRRMboU/0.jpg)](https://www.youtube.com/watch?v=UBEkCRRMboU)
 
 ### Getting Help
 
