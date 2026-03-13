@@ -146,106 +146,114 @@ sub_funcs <- function(ln) {
   ret <- ln
 
   # Look for %sysfunc
-  pos <- regexpr("%sysfunc(", ln, fixed = TRUE)[[1]]
-  if (pos > 0) {
+  posv <- gregexpr("%sysfunc(", ln, fixed = TRUE)[[1]]
+  for (pos in posv) {
+    if (pos > 0) {
 
-    spos <- pos + 8
-    tmp <- substring(ln, spos)
-    epos <- nchar(ln)
-    splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
-    open <- 0
-    sysex <- ""   # expression
-    idx <- spos
-    cma <- NA
-    fmt <- NA
+      npos <- regexpr("%sysfunc(", ret, fixed = TRUE)[[1]]
 
-    # Have to traverse character by character
-    for (chr in splt) {
-      if (chr == "(") {
-        open <- open + 1
-      }
-      if (chr == ")") {
-        open <- open - 1
-      }
-      if (chr == "," & open == 1) {
+      spos <- npos + 8
+      tmp <- substring(ret, spos)
+      epos <- nchar(ret)
+      splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
+      open <- 0
+      sysex <- ""   # expression
+      idx <- spos
+      cma <- NA
+      fmt <- NA
 
-        cma <- idx
-      }
-      if (open == 0) {
-        epos <- idx
-        if (is.na(cma)) {
-
-          sysex <- substring(ln, spos + 1, epos - 1)
-        } else {
-          sysex <- substring(ln, spos + 1, cma - 1)
-          fmt <- trimws(substring(ln, cma + 1, epos - 1))
+      # Have to traverse character by character
+      for (chr in splt) {
+        if (chr == "(") {
+          open <- open + 1
         }
-        break
+        if (chr == ")") {
+          open <- open - 1
+        }
+        if (chr == "," & open == 1) {
+
+          cma <- idx
+        }
+        if (open == 0) {
+          epos <- idx
+          if (is.na(cma)) {
+
+            sysex <- substring(ret, spos + 1, epos - 1)
+          } else {
+            sysex <- substring(ret, spos + 1, cma - 1)
+            fmt <- trimws(substring(ret, cma + 1, epos - 1))
+          }
+          break
+        }
+        idx <- idx + 1
       }
-      idx <- idx + 1
-    }
-    if (sysex != "") {
+      if (sysex != "") {
 
-      nsysex <- mreplace(sysex)
+        nsysex <- mreplace(sysex)
 
-      # Evaluate expression
-      tres <- tryCatch({eval(str2expression(nsysex), envir = gbl$env)},
-                       error = function(cond) { return(cond) })
+        # Evaluate expression
+        tres <- tryCatch({eval(str2expression(nsysex), envir = gbl$env)},
+                         error = function(cond) { return(cond) })
 
-      if ("error" %in% class(tres)) {
-        msg <- paste0("Failed to evaluate \n%sysfunc expression: '",
-                      nsysex, "'\n", "-Message: ", tres$message)
-        stop(msg)
+        if ("error" %in% class(tres)) {
+          msg <- paste0("Failed to evaluate \n%sysfunc expression: '",
+                        nsysex, "'\n", "-Message: ", tres$message)
+          stop(msg)
+        }
+
+        # Format if requested
+        if (!is.na(fmt)) {
+
+           tres <- fapply(tres, fmt)
+        }
+        # Return evaluated result in context
+        ret <- paste0(substring(ret, 1, npos -1),
+                      as.character(tres),
+                      substring(ret, epos + 1))
       }
-
-      # Format if requested
-      if (!is.na(fmt)) {
-
-         tres <- fapply(tres, fmt)
-      }
-      # Return evaluated result in context
-      ret <- paste0(substring(ln, 1, pos -1),
-                    as.character(tres),
-                    substring(ln, epos + 1))
     }
   }
 
   # Look for %symexist
-  pos2 <- regexpr("%symexist(", ret, fixed = TRUE)[[1]]
-  if (pos2 > 0) {
+  pos2v <- gregexpr("%symexist(", ret, fixed = TRUE)[[1]]
+  for (pos2 in pos2v) {
+    if (pos2 > 0) {
 
-    spos <- pos2 + 9
-    tmp <- substring(ret, spos)
-    epos <- nchar(ret)
-    splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
-    open <- 0
-    sysex <- ""
-    idx <- spos
+      npos2 <- regexpr("%symexist(", ret, fixed = TRUE)[[1]]
 
-    # Traverse character by character
-    for (chr in splt) {
-      if (chr == "(") {
-        open <- open + 1
+      spos <- npos2 + 9
+      tmp <- substring(ret, spos)
+      epos <- nchar(ret)
+      splt <- strsplit(tmp, "", fixed = TRUE)[[1]]
+      open <- 0
+      sysex <- ""
+      idx <- spos
+
+      # Traverse character by character
+      for (chr in splt) {
+        if (chr == "(") {
+          open <- open + 1
+        }
+        if (chr == ")") {
+          open <- open - 1
+        }
+        if (open == 0) {
+          epos <- idx
+          sysex <- substring(ret, spos + 1, epos - 1)
+          break
+        }
+        idx <- idx + 1
       }
-      if (chr == ")") {
-        open <- open - 1
-      }
-      if (open == 0) {
-        epos <- idx
-        sysex <- substring(ret, spos + 1, epos - 1)
-        break
-      }
-      idx <- idx + 1
-    }
-    if (sysex != "") {
+      if (sysex != "") {
 
-      # Make sure it exists in symbol table
-      tres <- exists(paste0("&", sysex), envir = gbl$env)
+        # Make sure it exists in symbol table
+        tres <- exists(paste0("&", sysex), envir = gbl$env)
 
-      # Return in context
-      ret <- paste0(substring(ret, 1, pos2 -1),
-                    as.character(tres),
-                    substring(ret, epos + 1))
+        # Return in context
+        ret <- paste0(substring(ret, 1, npos2 -1),
+                      as.character(tres),
+                      substring(ret, epos + 1))
+      }
     }
   }
 
@@ -816,7 +824,7 @@ get_parms <- function(ln, nm, def = TRUE) {
     }
 
     # Get end position
-    epos <- nchar(nl) - ppos
+    epos <- nchar(nl) - ppos + 1
 
   }
 
@@ -852,6 +860,7 @@ get_parms <- function(ln, nm, def = TRUE) {
 
         nmflg <- FALSE
         pnm <- trimws(paste0(pnm, collapse = ""))
+        vl <- ""
 
       } else if (ch == ",") {  # Comma starts new parameter
 
@@ -859,7 +868,14 @@ get_parms <- function(ln, nm, def = TRUE) {
 
         # At this point, name is done and can be concatenated
         pnm <- trimws(paste0(pnm, collapse = ""))
-        ret[[pnm]] <- trimws(paste0(vl, collapse = ""))
+
+        if (is.null(vl) & def) {
+          ret[[pnm]] <- ".REQUIRED."
+        } else if (is.null(vl) & !def) {
+          ret[[length(ret) + 1]] <- trimws(paste0(pnm, collapse = ""))
+        } else {
+          ret[[pnm]] <- trimws(paste0(vl, collapse = ""))
+        }
 
         # Reset name and value vectors
         pnm <- c()
@@ -891,23 +907,27 @@ get_parms <- function(ln, nm, def = TRUE) {
   # Deal with last parameter
   if (length(pnm) > 0) {
     pnm <- trimws(paste0(pnm, collapse = ""))
-    ret[[pnm]] <- trimws(paste(vl, collapse = ""))
+    if (is.null(vl) & !def) {
+      ret[[length(ret) + 1]] <- pnm
+    } else {
+      ret[[pnm]] <- trimws(paste(vl, collapse = ""))
+    }
   }
 
   # Macro Call parameters may be positional.
   # Swap name for value if needed.
-  if (def == FALSE) {
-    if (length(ret) > 0) {
-      nms <-  names(ret)
-      for (idx in seq(1, length(ret))) {
-        if (ret[[idx]] == "") {
-          vl <- nms[idx]
-          ret[[idx]] <- vl
-          names(ret)[idx] <- ""
-        }
-      }
-    }
-  }
+  # if (def == FALSE) {
+  #   if (length(ret) > 0) {
+  #     nms <-  names(ret)
+  #     for (idx in seq(1, length(ret))) {
+  #       if (ret[[idx]] == "") {
+  #         vl <- nms[idx]
+  #         ret[[idx]] <- vl
+  #         names(ret)[idx] <- ""
+  #       }
+  #     }
+  #   }
+  # }
 
   return(ret)
 }
@@ -1028,6 +1048,11 @@ get_macro_call <- function(mnm, mfunc, cpm, ln) {
   mnms <- names(prms)
   cnms <- names(cpm)
 
+  # Deal with all positional parameters
+  if (is.null(cnms)) {
+    cnms <- rep("", length(cpm))
+  }
+
   if (length(mnms) > 0) {
     # Let macro drive the comparison
     for (idx in seq(1, length(mnms))) {
@@ -1058,12 +1083,12 @@ get_macro_call <- function(mnm, mfunc, cpm, ln) {
       }
 
       # If there is no default value and no called value, throw error.
-      if (dvl == "" & is.null(vl)) {
+      if (dvl == ".REQUIRED." & is.null(vl)) {
         stop(paste0("Required parameter '", nm, "' for macro '", mnm, "' not found."))
       }
 
       # If there is a default value, use it
-      if (is.null(vl) & dvl != "") {
+      if (is.null(vl)) {
         vl <- dvl
       }
 

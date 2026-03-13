@@ -463,7 +463,7 @@ test_that("utils14: get_parms() basic functionality.", {
   nms <- names(res)
 
   expect_equal(nms, c('x', 'y', 'z'))
-  expect_equal(res$x, "")
+  expect_equal(res$x, ".REQUIRED.")
   expect_equal(res$y, "NA")
   expect_equal(res$z, "'Two'")
 
@@ -472,20 +472,34 @@ test_that("utils14: get_parms() basic functionality.", {
 
   res <- get_parms(l1, "bork")
 
+  expect_equal(res$x, ".REQUIRED.")
+  expect_equal(res$y, "max(1, 2, 3)")
+  expect_equal(res$z, "'Two'")
+
   # Parameter with vector
   l1 <- "(x, y = c(a = 1, b = 2, c = 3), z = 'Two')"
 
   res <- get_parms(l1, "bork")
+
+  expect_equal(res$x, ".REQUIRED.")
+  expect_equal(res$y, "c(a = 1, b = 2, c = 3)")
+  expect_equal(res$z, "'Two'")
 
   # Close paren not last character
   l1 <- "(x, y = &x., z = 'Two') # hello"
 
   res <- get_parms(l1, "bork")
 
+  expect_equal(res$x, ".REQUIRED.")
+  expect_equal(res$y, "&x.")
+  expect_equal(res$z, "'Two'")
+
   # No parameters
   l1 <- "()"
 
   res <- get_parms(l1, "bork")
+
+  expect_equal(length(res) == 0, TRUE)
 
   # Missing open paren
   l1 <- "x, y = NA, z = 'Two')"
@@ -523,6 +537,32 @@ test_that("utils14: get_parms() basic functionality.", {
   expect_equal(res$x, "1")
   expect_equal(res$y, "'Two'")
   expect_equal(res$z, "mean(1, 2)")
+
+
+  # Blank defaults
+  l1 <- "(x = 1, y = , z = )"
+
+  res <- get_parms(l1, "bork", TRUE)
+
+  nms <- names(res)
+  expect_equal(nms, c('x', 'y', 'z'))
+  expect_equal(res$x, "1")
+  expect_equal(res$y, "")
+  expect_equal(res$z, "")
+
+  # Blank defaults
+  l1 <- "(w = 1, x, y =, z =)"
+
+  res <- get_parms(l1, "bork", FALSE)
+
+  nms <- names(res)
+  expect_equal(nms, c('w', '', 'y', 'z'))
+  expect_equal(res$w, "1")
+  expect_equal(res[[2]], "x")
+  expect_equal(res$y, "")
+  expect_equal(res$z, "")
+
+
 
 })
 

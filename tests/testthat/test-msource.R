@@ -773,3 +773,68 @@ test_that("msource30: %nrstr() works as expected.", {
 })
 
 
+test_that("msource31: optional macro parameter works as expected.", {
+
+  fl <- file.path(base_path, "programs/test28.R")
+  fl2 <- file.path(base_path, "programs/test28_mod.R")
+
+  ne <- new.env()
+
+  res <- msource(fl, fl2, debug = TRUE, symbolgen = TRUE, envir = ne)
+
+
+  expect_equal(ne$x, "7")
+  expect_equal(ne$y, "")
+  expect_equal(ne$z, "NULL")
+
+})
+
+test_that("msource32: two %sysfunc() on same line resolve as expected.", {
+
+  fl <- file.path(base_path, "programs/test29.R")
+  fl2 <- file.path(base_path, "programs/test29_mod.R")
+
+  ne <- new.env()
+
+  res <- msource(fl, fl2, debug = TRUE, symbolgen = TRUE, envir = ne)
+
+  scn <- grepl("%sysfunc(", ne$z, fixed = TRUE)
+
+  expect_equal(scn, FALSE)
+
+
+})
+
+test_that("msource33: two %symexist() on same line resolve as expected.", {
+
+  fl <- file.path(base_path, "programs/test30.R")
+  fl2 <- file.path(base_path, "programs/test30_mod.R")
+
+  ne <- new.env()
+
+  res <- msource(fl, fl2, debug = TRUE, symbolgen = TRUE, envir = ne)
+
+  scn <- grepl("%symexist(", ne$z, fixed = TRUE)
+
+  expect_equal(scn, FALSE)
+
+
+})
+
+test_that("msource34: optional macro parameter works as expected.", {
+
+  fl <- file.path(base_path, "programs/test31.R")
+  fl2 <- file.path(base_path, "programs/test31_mod.R")
+
+  ne <- new.env()
+
+  res <- msource(fl, fl2, debug = TRUE, symbolgen = TRUE, envir = ne)
+
+
+  expect_equal(ne$x, "2")
+  expect_equal(ne$y, "3")
+  expect_equal(ne$z, "")
+
+})
+
+

@@ -1,3 +1,11 @@
+# macro 0.1.6
+
+* Still more real-life testing.
+* Upgraded lifecycle.
+* Allow optional blank parameter on macro function.
+* Bug fixes.
+
+
 # macro 0.1.5
 
 * Fixes for CRAN.

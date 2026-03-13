@@ -316,7 +316,7 @@ print.symtable <- function(x, ..., verbose = FALSE) {
         if (length(pnms) > 0) {
           for (pnm in pnms) {
 
-            if (is.null(prms[[pnm]]) || prms[[pnm]] == "") {
+            if (is.null(prms[[pnm]]) || prms[[pnm]] == ".REQUIRED.") {
               cat(paste0("- ", pnm, "\n"))
             } else {
               cat(paste0("- ", pnm, " = ", prms[[pnm]], "\n"))

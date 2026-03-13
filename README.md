@@ -1,7 +1,7 @@
 <!-- badges: start -->
 
 [![macro version](https://www.r-pkg.org/badges/version/macro)](https://cran.r-project.org/package=macro)
-[![macro lifecycle](https://img.shields.io/badge/lifecycle-experimental-red.svg)](https://cran.r-project.org/package=macro)
+[![macro lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://cran.r-project.org/package=macro)
 [![macro downloads](https://cranlogs.r-pkg.org/badges/macro)](https://cran.r-project.org/package=macro)
 [![macro total downloads](https://cranlogs.r-pkg.org/badges/grand-total/macro)](https://cran.r-project.org/package=macro)
 [![R-CMD-check](https://github.com/dbosak01/macro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dbosak01/macro/actions/workflows/R-CMD-check.yaml)
